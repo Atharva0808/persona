@@ -1,6 +1,10 @@
 import React from "react";
 
-export const GithubIcon = React.forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElement>>(
+export interface IconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const GithubIcon = React.forwardRef<SVGSVGElement, IconProps>(
   ({ color = "currentColor", size = 24, strokeWidth = 2, ...props }, ref) => (
     <svg
       ref={ref}
@@ -22,7 +26,7 @@ export const GithubIcon = React.forwardRef<SVGSVGElement, React.SVGProps<SVGSVGE
 );
 GithubIcon.displayName = "GithubIcon";
 
-export const LinkedinIcon = React.forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElement>>(
+export const LinkedinIcon = React.forwardRef<SVGSVGElement, IconProps>(
   ({ color = "currentColor", size = 24, strokeWidth = 2, ...props }, ref) => (
     <svg
       ref={ref}
