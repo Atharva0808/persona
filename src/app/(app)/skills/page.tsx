@@ -329,8 +329,8 @@ export default function SkillsPage() {
                             {phase.skills.map((skill) => (
                               <Badge
                                 key={skill}
-                                variant="secondary"
-                                className="bg-neutral-800 text-neutral-300"
+                                variant="default"
+                                className="bg-neutral-800 text-neutral-300 border-none"
                               >
                                 {skill}
                               </Badge>
