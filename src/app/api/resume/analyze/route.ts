@@ -34,8 +34,8 @@ export async function POST(request: NextRequest) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    // Dynamic import for pdf-parse
-    const pdfParseModule = await import("pdf-parse");
+    // Dynamic import for pdf-parse (bypass index.js bug)
+    const pdfParseModule = await import("pdf-parse/lib/pdf-parse.js");
     const pdfParse = pdfParseModule.default || pdfParseModule;
     const pdfData = await pdfParse(buffer);
     const resumeText = pdfData.text;
