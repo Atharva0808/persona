@@ -9,7 +9,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Persona — Interview Readiness Platform",
+  title: "Persona",
   description:
     "Analyze your resume, GitHub, LinkedIn, and skills to maximize your chances of landing software engineering interviews.",
   keywords: [
