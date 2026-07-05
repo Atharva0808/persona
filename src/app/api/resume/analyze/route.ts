@@ -35,6 +35,7 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(arrayBuffer);
 
     // Dynamic import for pdf-parse (bypass index.js bug)
+    // @ts-expect-error - No types available for the internal lib path
     const pdfParseModule = await import("pdf-parse/lib/pdf-parse.js");
     const pdfParse = pdfParseModule.default || pdfParseModule;
     const pdfData = await pdfParse(buffer);
