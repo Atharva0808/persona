@@ -4,10 +4,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import {
-  ArrowRight,
-  Briefcase,
   CheckCircle2,
-  AlertTriangle,
   Lightbulb,
 } from "lucide-react";
 import { LinkedinIcon as Linkedin } from "@/components/icons";
@@ -19,7 +16,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
 import { ScoreRing, ScoreBar } from "@/components/ui/score";
-import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import type { LinkedInAnalysis, SectionAnalysis } from "@/lib/types";
 
@@ -167,7 +163,7 @@ export default function LinkedInPage() {
                   <div>
                     <CardTitle>Profile Details</CardTitle>
                     <p className="text-sm text-neutral-500 mt-1">
-                      Paste your LinkedIn sections below. We don't use automated
+                      Paste your LinkedIn sections below. We don&apos;t use automated
                       scraping to keep your account safe.
                     </p>
                   </div>

@@ -22,7 +22,6 @@ import { Badge } from "@/components/ui/badge";
 import { Spinner } from "@/components/ui/spinner";
 import { ScoreRing } from "@/components/ui/score";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
 import type { GitHubAnalysis, GitHubRepo } from "@/lib/types";
 
 export default function GitHubPage() {

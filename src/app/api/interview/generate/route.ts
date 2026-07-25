@@ -42,8 +42,7 @@ export async function POST(request: NextRequest) {
         resumeText,
         githubProjects,
         skills,
-      },
-      user.id
+      }
     );
 
     // Save to database

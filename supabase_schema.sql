@@ -112,26 +112,31 @@ $$ language sql security definer;
 -- Resume RLS
 create policy "Users can view own resume analyses" on public.resume_analyses for select using (is_owner(user_id));
 create policy "Users can insert own resume analyses" on public.resume_analyses for insert with check (is_owner(user_id));
+create policy "Users can update own resume analyses" on public.resume_analyses for update using (is_owner(user_id));
 create policy "Users can delete own resume analyses" on public.resume_analyses for delete using (is_owner(user_id));
 
 -- GitHub RLS
 create policy "Users can view own github analyses" on public.github_analyses for select using (is_owner(user_id));
 create policy "Users can insert own github analyses" on public.github_analyses for insert with check (is_owner(user_id));
+create policy "Users can update own github analyses" on public.github_analyses for update using (is_owner(user_id));
 create policy "Users can delete own github analyses" on public.github_analyses for delete using (is_owner(user_id));
 
 -- LinkedIn RLS
 create policy "Users can view own linkedin analyses" on public.linkedin_analyses for select using (is_owner(user_id));
 create policy "Users can insert own linkedin analyses" on public.linkedin_analyses for insert with check (is_owner(user_id));
+create policy "Users can update own linkedin analyses" on public.linkedin_analyses for update using (is_owner(user_id));
 create policy "Users can delete own linkedin analyses" on public.linkedin_analyses for delete using (is_owner(user_id));
 
 -- Skill Gap RLS
 create policy "Users can view own skill gap analyses" on public.skill_gap_analyses for select using (is_owner(user_id));
 create policy "Users can insert own skill gap analyses" on public.skill_gap_analyses for insert with check (is_owner(user_id));
+create policy "Users can update own skill gap analyses" on public.skill_gap_analyses for update using (is_owner(user_id));
 create policy "Users can delete own skill gap analyses" on public.skill_gap_analyses for delete using (is_owner(user_id));
 
 -- Interview Sessions RLS
 create policy "Users can view own interview sessions" on public.interview_sessions for select using (is_owner(user_id));
 create policy "Users can insert own interview sessions" on public.interview_sessions for insert with check (is_owner(user_id));
+create policy "Users can update own interview sessions" on public.interview_sessions for update using (is_owner(user_id));
 create policy "Users can delete own interview sessions" on public.interview_sessions for delete using (is_owner(user_id));
 
 -- Storage Bucket for Resumes

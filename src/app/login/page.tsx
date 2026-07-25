@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
+import { Logo } from "@/components/ui/logo";
 import { createClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
@@ -66,9 +67,7 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="flex items-center gap-3 mb-8">
-          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-white">
-            <span className="text-sm font-bold text-neutral-950">P</span>
-          </div>
+          <Logo size={24} />
           <span className="text-sm font-semibold text-neutral-100 tracking-tight">
             persona
           </span>

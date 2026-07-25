@@ -49,16 +49,20 @@ export async function POST(request: NextRequest) {
     }
 
     // Analyze with AI
-    const analysis = await analyzeResume(resumeText, user.id);
+    const analysis = await analyzeResume(resumeText);
 
     // Optionally store the file in Supabase Storage
     const fileName = `${user.id}/${Date.now()}_${file.name}`;
-    const { data: uploadData } = await supabase.storage
+    const { data: uploadData, error: uploadError } = await supabase.storage
       .from("resumes")
       .upload(fileName, buffer, {
         contentType: "application/pdf",
         upsert: true,
       });
+
+    if (uploadError) {
+      console.error("Storage upload error:", uploadError);
+    }
 
     const fileUrl = uploadData?.path
       ? supabase.storage.from("resumes").getPublicUrl(uploadData.path).data

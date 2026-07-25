@@ -24,8 +24,7 @@ export async function POST(request: NextRequest) {
     }
 
     const analysis = await analyzeLinkedIn(
-      { headline, about, experience, skills, featured, profileUrl },
-      user.id
+      { headline, about, experience, skills, featured, profileUrl }
     );
 
     // Save to database

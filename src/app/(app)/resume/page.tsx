@@ -18,9 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Spinner } from "@/components/ui/spinner";
 import { ScoreRing, ScoreBar } from "@/components/ui/score";
-import { EmptyState } from "@/components/ui/empty-state";
 import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import type { ResumeAnalysis } from "@/lib/types";
 
 export default function ResumePage() {

@@ -2,7 +2,6 @@ import { ai } from "@/lib/gemini";
 import type {
   TargetRole,
   InterviewQuestion,
-  QuestionCategory,
 } from "@/lib/types";
 
 export async function generateInterviewQuestions(
@@ -12,7 +11,6 @@ export async function generateInterviewQuestions(
     targetRole: TargetRole;
     skills?: string[];
   },
-  userId: string
 ): Promise<InterviewQuestion[]> {
   const roleMap: Record<TargetRole, string> = {
     frontend: "Frontend Developer",
@@ -85,6 +83,11 @@ Make questions specific and relevant to their actual experience and projects whe
     throw new Error("No response from AI");
   }
 
-  const result = JSON.parse(content);
+  let result;
+  try {
+    result = JSON.parse(content);
+  } catch {
+    throw new Error("Failed to parse AI response. Please try again.");
+  }
   return result.questions as InterviewQuestion[];
 }

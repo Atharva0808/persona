@@ -20,8 +20,7 @@ const ROLE_DESCRIPTIONS: Record<TargetRole, string> = {
 
 export async function analyzeSkillGap(
   currentSkills: string[],
-  targetRole: TargetRole,
-  userId: string
+  targetRole: TargetRole
 ): Promise<Omit<SkillGapAnalysis, "id" | "user_id" | "created_at">> {
   const roleDescription = ROLE_DESCRIPTIONS[targetRole];
 
@@ -77,7 +76,12 @@ Provide 12-15 required skills and a 4-phase roadmap. Be specific and actionable.
     throw new Error("No response from AI");
   }
 
-  const result = JSON.parse(content);
+  let result;
+  try {
+    result = JSON.parse(content);
+  } catch {
+    throw new Error("Failed to parse AI response. Please try again.");
+  }
 
   return {
     target_role: targetRole,

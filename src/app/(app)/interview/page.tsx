@@ -7,12 +7,11 @@ import {
   MessageSquare,
   HelpCircle,
   Lightbulb,
-  ChevronDown,
   RefreshCw,
 } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Spinner } from "@/components/ui/spinner";
 import {
@@ -135,7 +134,7 @@ export default function InterviewPage() {
           .single();
         if (data?.repositories) {
           githubProjects = data.repositories.map(
-            (r: any) => `${r.name}: ${r.description || "No description"}`
+            (r: { name: string; description?: string }) => `${r.name}: ${r.description || "No description"}`
           );
         }
       }
@@ -244,7 +243,7 @@ export default function InterviewPage() {
                   Mock Interview Setup
                 </h2>
                 <p className="text-sm text-neutral-500 mb-6 text-center">
-                  We'll generate questions tailored to the context you've
+                  We&apos;ll generate questions tailored to the context you&apos;ve
                   provided across Persona.
                 </p>
 

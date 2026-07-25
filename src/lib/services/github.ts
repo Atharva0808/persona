@@ -19,6 +19,12 @@ async function githubFetch(path: string) {
 
   const res = await fetch(`${GITHUB_API}${path}`, { headers });
   if (!res.ok) {
+    if (res.status === 404) {
+      throw new Error("GitHub user not found. Please check the username.");
+    }
+    if (res.status === 403) {
+      throw new Error("GitHub API rate limit exceeded. Please try again later or configure a GITHUB_TOKEN.");
+    }
     throw new Error(`GitHub API error: ${res.status} ${res.statusText}`);
   }
   return res.json();
@@ -56,7 +62,7 @@ async function fetchRepos(username: string): Promise<GitHubRepo[]> {
       );
       if (readmeRes) {
         hasReadme = true;
-        const content = atob(readmeRes.content);
+        const content = Buffer.from(readmeRes.content, "base64").toString("utf-8");
         const length = content.length;
         if (length > 2000) readmeQuality = "excellent";
         else if (length > 500) readmeQuality = "good";
@@ -146,8 +152,7 @@ function extractLanguages(repos: GitHubRepo[]): Record<string, number> {
 }
 
 export async function analyzeGitHub(
-  username: string,
-  userId: string
+  username: string
 ): Promise<
   Omit<GitHubAnalysis, "id" | "user_id" | "created_at">
 > {
@@ -207,9 +212,14 @@ export async function analyzeGitHub(
   });
 
   const aiContent = aiResponse.text;
-  const recommendations = aiContent
-    ? JSON.parse(aiContent).recommendations
-    : ["Add detailed READMEs to all projects", "Increase commit frequency"];
+  let recommendations: string[];
+  try {
+    recommendations = aiContent
+      ? JSON.parse(aiContent).recommendations
+      : ["Add detailed READMEs to all projects", "Increase commit frequency"];
+  } catch {
+    recommendations = ["Add detailed READMEs to all projects", "Increase commit frequency"];
+  }
 
   return {
     username,

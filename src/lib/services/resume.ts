@@ -6,8 +6,7 @@ import type {
 } from "@/lib/types";
 
 export async function analyzeResume(
-  resumeText: string,
-  userId: string
+  resumeText: string
 ): Promise<Omit<ResumeAnalysis, "id" | "user_id" | "file_name" | "file_url" | "created_at">> {
   const prompt = `You are an expert resume analyst and ATS (Applicant Tracking System) specialist for software engineering roles. Analyze the given resume text thoroughly and provide a detailed analysis.
 
@@ -63,7 +62,12 @@ Evaluation criteria:
     throw new Error("No response from AI");
   }
 
-  const result = JSON.parse(content);
+  let result;
+  try {
+    result = JSON.parse(content);
+  } catch {
+    throw new Error("Failed to parse AI response. Please try again.");
+  }
 
   return {
     raw_text: resumeText,

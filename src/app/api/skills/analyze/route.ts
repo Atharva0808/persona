@@ -48,8 +48,7 @@ export async function POST(request: NextRequest) {
 
     const analysis = await analyzeSkillGap(
       currentSkills,
-      targetRole as TargetRole,
-      user.id
+      targetRole as TargetRole
     );
 
     // Save to database

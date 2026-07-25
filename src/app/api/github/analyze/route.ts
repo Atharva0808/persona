@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const analysis = await analyzeGitHub(username.trim(), user.id);
+    const analysis = await analyzeGitHub(username.trim());
 
     // Save to database
     const { data: savedAnalysis, error: dbError } = await supabase

@@ -9,8 +9,7 @@ export async function analyzeLinkedIn(
     skills?: string;
     featured?: string;
     profileUrl: string;
-  },
-  userId: string
+  }
 ): Promise<Omit<LinkedInAnalysis, "id" | "user_id" | "created_at">> {
   const prompt = `You are an expert LinkedIn profile optimizer for software engineers. Analyze each section of the LinkedIn profile and provide detailed feedback.
 
@@ -75,7 +74,12 @@ Focus on:
     throw new Error("No response from AI");
   }
 
-  const result = JSON.parse(content);
+  let result;
+  try {
+    result = JSON.parse(content);
+  } catch {
+    throw new Error("Failed to parse AI response. Please try again.");
+  }
 
   return {
     profile_url: profileData.profileUrl,
