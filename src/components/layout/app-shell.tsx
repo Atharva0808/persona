@@ -26,7 +26,7 @@ export function AppShell({ children, user }: AppShellProps) {
   };
 
   return (
-    <div className="flex h-screen bg-neutral-950 overflow-hidden">
+    <div className="flex h-screen bg-[#07080b] text-slate-100 font-sans overflow-hidden">
       <Sidebar
         user={user}
         collapsed={collapsed}
@@ -34,7 +34,7 @@ export function AppShell({ children, user }: AppShellProps) {
         onSignOut={handleSignOut}
       />
       <main className="flex-1 overflow-y-auto">
-        <div className="max-w-5xl mx-auto px-6 py-8">{children}</div>
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 py-8 sm:py-10">{children}</div>
       </main>
     </div>
   );

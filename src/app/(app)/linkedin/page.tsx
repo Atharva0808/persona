@@ -1,22 +1,24 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
 import {
   CheckCircle2,
-  Lightbulb,
+  ArrowRight,
+  RefreshCw,
+  Sparkles,
 } from "lucide-react";
 import { LinkedinIcon as Linkedin } from "@/components/icons";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
-import { ScoreRing, ScoreBar } from "@/components/ui/score";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { ScoreRing } from "@/components/ui/score";
 import type { LinkedInAnalysis, SectionAnalysis } from "@/lib/types";
 
 export default function LinkedInPage() {
@@ -76,266 +78,175 @@ export default function LinkedInPage() {
 
   const renderSectionAnalysis = (title: string, section: SectionAnalysis) => {
     return (
-      <Card>
-        <CardHeader className="pb-3 border-b border-neutral-800">
-          <div className="flex items-center justify-between">
-            <CardTitle>{title}</CardTitle>
-            <ScoreRing score={section.score} size={48} strokeWidth={4} />
+      <Card className="rounded-3xl border border-white/[0.08] bg-[#0d0e15]/80 p-6 space-y-4 shadow-lg">
+        <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
+          <h3 className="text-base font-semibold text-slate-100">{title}</h3>
+          <span className="text-xs font-mono font-bold text-sky-400 px-2.5 py-0.5 rounded-full bg-sky-500/10 border border-sky-500/20">
+            {section.score} / 100
+          </span>
+        </div>
+        <div className="space-y-3">
+          <div className="p-3.5 rounded-2xl border border-white/[0.06] bg-black/40 text-xs">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 block mb-1">Current Section Content</span>
+            <p className="text-slate-300 line-clamp-3 font-normal">{section.current || "Not provided"}</p>
           </div>
-        </CardHeader>
-        <CardContent className="pt-4">
-          <div className="space-y-4">
-            <div>
-              <span className="text-xs text-neutral-500 uppercase tracking-wider block mb-1">
-                Current
-              </span>
-              <p className="text-sm text-neutral-400 bg-neutral-900/50 p-3 rounded-lg border border-neutral-800 line-clamp-3">
-                {section.current}
-              </p>
+          <p className="text-xs text-slate-400 font-normal leading-relaxed">{section.feedback}</p>
+          {section.suggestions.length > 0 && (
+            <div className="space-y-1.5 pt-2 border-t border-white/[0.06]">
+              {section.suggestions.map((sug, i) => (
+                <div key={i} className="text-[11px] text-slate-300 font-normal flex items-start gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                  <span>{sug}</span>
+                </div>
+              ))}
             </div>
-            <div>
-              <span className="text-xs text-neutral-500 uppercase tracking-wider block mb-1">
-                Feedback
-              </span>
-              <p className="text-sm text-neutral-300">{section.feedback}</p>
-            </div>
-            {section.suggestions && section.suggestions.length > 0 && (
-              <div>
-                <span className="text-xs text-neutral-500 uppercase tracking-wider block mb-2">
-                  Suggestions
-                </span>
-                <ul className="space-y-2">
-                  {section.suggestions.map((suggestion, i) => (
-                    <li
-                      key={i}
-                      className="flex items-start gap-2 text-sm text-emerald-400/90"
-                    >
-                      <CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0" />
-                      <span>{suggestion}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        </CardContent>
+          )}
+        </div>
       </Card>
     );
   };
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 4 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="space-y-8"
     >
       <PageHeader
-        title="LinkedIn Review"
-        description="Optimize your LinkedIn profile to attract recruiters and passing automated screening."
+        title="LinkedIn Recruiter Inbound Magnet"
+        description="Optimize your headline, experience summaries, and skill tags for recruiter search visibility."
         actions={
           analysis ? (
             <Button
               variant="outline"
               size="sm"
               onClick={() => setAnalysis(null)}
+              className="rounded-xl border-white/10 text-slate-300 hover:bg-white/[0.06] hover:text-amber-300"
             >
-              New Analysis
+              <RefreshCw className="h-3.5 w-3.5 mr-2" />
+              New Review
             </Button>
-          ) : undefined
+          ) : null
         }
       />
 
-      <AnimatePresence mode="wait">
-        {!analysis ? (
-          <motion.div
-            key="input"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="max-w-2xl mx-auto"
-          >
-            <Card>
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-[#0077b5]/10 border border-[#0077b5]/20">
-                    <Linkedin className="h-5 w-5 text-[#0077b5]" />
-                  </div>
-                  <div>
-                    <CardTitle>Profile Details</CardTitle>
-                    <p className="text-sm text-neutral-500 mt-1">
-                      Paste your LinkedIn sections below. We don&apos;t use automated
-                      scraping to keep your account safe.
-                    </p>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleAnalyze} className="space-y-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="profileUrl">Profile URL *</Label>
-                    <Input
-                      id="profileUrl"
-                      name="profileUrl"
-                      placeholder="https://linkedin.com/in/johndoe"
-                      value={formData.profileUrl}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
+      {!analysis ? (
+        <Card className="rounded-3xl border border-white/[0.08] bg-[#0d0e15]/80 shadow-2xl p-6 sm:p-10">
+          <CardContent className="p-0">
+            <form onSubmit={handleAnalyze} className="space-y-6">
+              <div className="space-y-2">
+                <Label className="text-xs font-mono uppercase tracking-wider text-slate-300 font-semibold">
+                  LinkedIn Profile URL *
+                </Label>
+                <Input
+                  name="profileUrl"
+                  placeholder="https://linkedin.com/in/yourprofile"
+                  value={formData.profileUrl}
+                  onChange={handleChange}
+                  className="h-11 bg-black/40 border-white/10 text-slate-100 rounded-xl focus:border-amber-400 font-mono text-sm"
+                  required
+                />
+              </div>
 
-                  <Accordion type="single" collapsible className="w-full">
-                    <AccordionItem value="headline">
-                      <AccordionTrigger>Headline & About</AccordionTrigger>
-                      <AccordionContent className="space-y-4 pt-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="headline">Headline</Label>
-                          <Input
-                            id="headline"
-                            name="headline"
-                            placeholder="Software Engineer | React | Node.js"
-                            value={formData.headline}
-                            onChange={handleChange}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="about">About Section</Label>
-                          <Textarea
-                            id="about"
-                            name="about"
-                            placeholder="I am a passionate software engineer..."
-                            value={formData.about}
-                            onChange={handleChange}
-                            className="h-32"
-                          />
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
-
-                    <AccordionItem value="experience">
-                      <AccordionTrigger>Experience & Skills</AccordionTrigger>
-                      <AccordionContent className="space-y-4 pt-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="experience">Experience Summary</Label>
-                          <Textarea
-                            id="experience"
-                            name="experience"
-                            placeholder="Briefly paste your recent experience bullets..."
-                            value={formData.experience}
-                            onChange={handleChange}
-                            className="h-32"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="skills">Top Skills</Label>
-                          <Input
-                            id="skills"
-                            name="skills"
-                            placeholder="JavaScript, React, Python..."
-                            value={formData.skills}
-                            onChange={handleChange}
-                          />
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
-
-                    <AccordionItem value="featured">
-                      <AccordionTrigger>Featured Section</AccordionTrigger>
-                      <AccordionContent className="space-y-4 pt-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="featured">Featured Items</Label>
-                          <Textarea
-                            id="featured"
-                            name="featured"
-                            placeholder="Articles, posts, or links in your featured section..."
-                            value={formData.featured}
-                            onChange={handleChange}
-                            className="h-24"
-                          />
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
-
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    disabled={loading || !formData.profileUrl.trim()}
-                  >
-                    {loading ? (
-                      <>
-                        <Spinner size="sm" className="mr-2 text-neutral-950" />
-                        Analyzing Profile...
-                      </>
-                    ) : (
-                      "Analyze Profile"
-                    )}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ) : (
-          <motion.div
-            key="results"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="space-y-6"
-          >
-            {/* Overview Score */}
-            <div className="grid md:grid-cols-3 gap-4">
-              <Card className="md:col-span-1">
-                <CardContent className="p-6 flex flex-col items-center justify-center h-full">
-                  <ScoreRing
-                    score={analysis.score}
-                    size={140}
-                    label="Profile Score"
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label className="text-xs font-mono uppercase tracking-wider text-slate-300 font-semibold">
+                    Current Headline
+                  </Label>
+                  <Input
+                    name="headline"
+                    placeholder="e.g. Senior Software Engineer @ TechCorp | React, Node.js"
+                    value={formData.headline}
+                    onChange={handleChange}
+                    className="h-11 bg-black/40 border-white/10 text-slate-100 rounded-xl focus:border-amber-400 text-sm"
                   />
-                  <div className="mt-6 w-full space-y-2">
-                    <ScoreBar
-                      score={analysis.recruiter_attractiveness}
-                      label="Recruiter Appeal"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
+                </div>
 
-              <Card className="md:col-span-2">
-                <CardHeader>
-                  <CardTitle>Top Recommendations</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {analysis.recommendations.map((rec, i) => (
-                      <div
-                        key={i}
-                        className="flex items-start gap-3 bg-neutral-900/50 p-4 rounded-xl border border-neutral-800"
-                      >
-                        <div className="mt-0.5">
-                          <Lightbulb className="h-5 w-5 text-amber-400" />
-                        </div>
-                        <p className="text-sm text-neutral-300">{rec}</p>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+                <div className="space-y-2">
+                  <Label className="text-xs font-mono uppercase tracking-wider text-slate-300 font-semibold">
+                    Skill Keywords
+                  </Label>
+                  <Input
+                    name="skills"
+                    placeholder="e.g. TypeScript, React, Next.js, Microservices"
+                    value={formData.skills}
+                    onChange={handleChange}
+                    className="h-11 bg-black/40 border-white/10 text-slate-100 rounded-xl focus:border-amber-400 text-sm"
+                  />
+                </div>
+              </div>
 
-            {/* Section Breakdown */}
-            <h2 className="text-lg font-semibold text-neutral-100 mt-8 mb-4">
-              Section Breakdown
-            </h2>
-            <div className="grid md:grid-cols-2 gap-4">
-              {renderSectionAnalysis("Headline", analysis.headline)}
-              {renderSectionAnalysis("About Section", analysis.about)}
-              {renderSectionAnalysis("Experience", analysis.experience)}
-              {renderSectionAnalysis("Skills & Endorsements", analysis.skills)}
-              {renderSectionAnalysis("Featured Content", analysis.featured)}
+              <div className="space-y-2">
+                <Label className="text-xs font-mono uppercase tracking-wider text-slate-300 font-semibold">
+                  About Section Summary
+                </Label>
+                <Textarea
+                  name="about"
+                  placeholder="Paste your LinkedIn About section text here..."
+                  value={formData.about}
+                  onChange={handleChange}
+                  rows={4}
+                  className="bg-black/40 border-white/10 text-slate-100 rounded-xl focus:border-amber-400 text-sm resize-none"
+                />
+              </div>
+
+              <div className="pt-2 flex justify-end">
+                <ShimmerButton
+                  shimmerColor="#38bdf8"
+                  shimmerDuration="2.5s"
+                  borderRadius="16px"
+                  disabled={loading}
+                  type="submit"
+                  className="h-12 px-8 text-sm font-semibold text-slate-100 disabled:opacity-50 shadow-xl shadow-sky-950/40"
+                >
+                  {loading ? (
+                    <span className="flex items-center gap-2">
+                      <Spinner className="h-4 w-4 text-sky-300" />
+                      Evaluating Search Rank...
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-2">
+                      Analyze LinkedIn Profile
+                      <ArrowRight className="h-4 w-4 text-sky-400" />
+                    </span>
+                  )}
+                </ShimmerButton>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="space-y-8">
+          <Card className="rounded-3xl border border-white/[0.08] bg-[#0d0e15]/80 p-6 sm:p-8 shadow-2xl">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="space-y-3 max-w-xl">
+                <div className="flex items-center gap-2 font-mono text-xs text-sky-400 font-semibold">
+                  <Linkedin className="w-4 h-4" />
+                  <span>Recruiter Search Visibility Report</span>
+                </div>
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-100 tracking-tight">
+                  Recruiter Attractiveness Score
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-normal">
+                  Your profile ranks in the top percentile for technical recruiter inbound searches.
+                </p>
+              </div>
+
+              <div className="flex items-center justify-center p-4 rounded-2xl bg-black/40 border border-white/[0.06] shrink-0">
+                <ScoreRing score={analysis.recruiter_attractiveness} label="Recruiter Rank" size={120} />
+              </div>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </Card>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {renderSectionAnalysis("Headline Analysis", analysis.headline)}
+            {renderSectionAnalysis("About Section Analysis", analysis.about)}
+            {renderSectionAnalysis("Experience Section", analysis.experience)}
+            {renderSectionAnalysis("Skill Endorsements", analysis.skills)}
+          </div>
+        </div>
+      )}
     </motion.div>
   );
 }

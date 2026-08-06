@@ -9,20 +9,21 @@ import {
   BookOpen,
   Activity,
   Code2,
-  Trophy,
   ArrowRight,
   Search,
+  RefreshCw,
+  CheckCircle2,
 } from "lucide-react";
 import { GithubIcon as Github } from "@/components/icons";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Spinner } from "@/components/ui/spinner";
 import { ScoreRing } from "@/components/ui/score";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import type { GitHubAnalysis, GitHubRepo } from "@/lib/types";
+import type { GitHubAnalysis } from "@/lib/types";
 
 export default function GitHubPage() {
   const [username, setUsername] = useState("");
@@ -59,286 +60,178 @@ export default function GitHubPage() {
     }
   };
 
-  const getConsistencyColor = (consistency: string) => {
-    switch (consistency) {
-      case "excellent":
-        return "success";
-      case "good":
-        return "info";
-      case "inconsistent":
-        return "warning";
-      default:
-        return "destructive";
-    }
-  };
-
-  const getReadmeQualityColor = (quality: string) => {
-    switch (quality) {
-      case "excellent":
-        return "success";
-      case "good":
-        return "info";
-      case "needs_improvement":
-        return "warning";
-      default:
-        return "destructive";
-    }
-  };
-
   return (
     <motion.div
-      initial={{ opacity: 0, y: 4 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="space-y-8"
     >
       <PageHeader
-        title="GitHub Analysis"
-        description="Analyze your repositories, commit activity, and code quality."
+        title="GitHub Repository & Commit Audit"
+        description="Audits repository documentation, commit streak consistency, README depth, and star counts."
         actions={
           analysis ? (
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setAnalysis(null)}
+              onClick={() => {
+                setAnalysis(null);
+                setUsername("");
+              }}
+              className="rounded-xl border-white/10 text-slate-300 hover:bg-white/[0.06] hover:text-amber-300"
             >
-              New Analysis
+              <RefreshCw className="h-3.5 w-3.5 mr-2" />
+              New Audit
             </Button>
-          ) : undefined
+          ) : null
         }
       />
 
-      <AnimatePresence mode="wait">
-        {!analysis ? (
-          <motion.div
-            key="input"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="max-w-xl mx-auto mt-12"
-          >
-            <Card>
-              <CardContent className="p-8 text-center">
-                <div className="flex justify-center mb-6">
-                  <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-neutral-900 border border-neutral-800">
-                    <Github className="h-8 w-8 text-neutral-400" />
+      {!analysis ? (
+        <Card className="rounded-3xl border border-white/[0.08] bg-[#0d0e15]/80 shadow-2xl p-6 sm:p-10">
+          <CardContent className="p-0 space-y-6">
+            <form onSubmit={handleAnalyze} className="space-y-4 max-w-xl">
+              <div className="space-y-2">
+                <label className="text-xs font-mono uppercase tracking-wider text-slate-300 font-semibold">
+                  GitHub Username
+                </label>
+                <div className="relative">
+                  <Search className="absolute left-3.5 top-3 h-4 w-4 text-slate-500" />
+                  <Input
+                    type="text"
+                    placeholder="e.g. torvalds or your-username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="pl-10 h-11 bg-black/40 border-white/10 text-slate-100 rounded-xl focus:border-amber-400 font-mono text-sm"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <ShimmerButton
+                  shimmerColor="#f59e0b"
+                  shimmerDuration="2.5s"
+                  borderRadius="16px"
+                  disabled={!username.trim() || loading}
+                  type="submit"
+                  className="h-12 px-8 text-sm font-semibold text-amber-100 disabled:opacity-50 shadow-xl shadow-amber-950/40"
+                >
+                  {loading ? (
+                    <span className="flex items-center gap-2">
+                      <Spinner className="h-4 w-4 text-amber-300" />
+                      Auditing GitHub Repos...
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-2">
+                      Analyze Profile
+                      <ArrowRight className="h-4 w-4 text-amber-400" />
+                    </span>
+                  )}
+                </ShimmerButton>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="space-y-8">
+          {/* Profile & Score Banner */}
+          <Card className="rounded-3xl border border-white/[0.08] bg-[#0d0e15]/80 p-6 sm:p-8 shadow-2xl">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="flex items-center gap-4">
+                <Avatar className="h-16 w-16 border-2 border-amber-500/30">
+                  <AvatarImage src={analysis.profile.avatar_url} />
+                  <AvatarFallback className="bg-amber-500/10 text-amber-300 font-mono font-bold">
+                    {analysis.username.slice(0, 2).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-xl font-bold text-slate-100">{analysis.profile.name}</h2>
+                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-300 font-mono">
+                      @{analysis.username}
+                    </span>
+                  </div>
+                  {analysis.profile.bio && (
+                    <p className="text-xs text-slate-400 font-normal">{analysis.profile.bio}</p>
+                  )}
+                  <div className="flex items-center gap-4 pt-1 text-xs text-slate-400 font-mono">
+                    <span>{analysis.profile.public_repos} Repos</span>
+                    <span>•</span>
+                    <span>{analysis.profile.followers} Followers</span>
                   </div>
                 </div>
-                <h2 className="text-xl font-semibold text-neutral-100 mb-2">
-                  Connect your GitHub
-                </h2>
-                <p className="text-sm text-neutral-500 mb-8">
-                  Enter your GitHub username to analyze your profile and get an
-                  objective score on your open-source presence.
-                </p>
+              </div>
 
-                <form onSubmit={handleAnalyze} className="flex gap-2">
-                  <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-500" />
-                    <Input
-                      placeholder="torvalds"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      className="pl-9"
-                    />
-                  </div>
-                  <Button type="submit" disabled={loading || !username.trim()}>
-                    {loading ? (
-                      <Spinner size="sm" className="text-neutral-950" />
-                    ) : (
-                      "Analyze"
-                    )}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ) : (
-          <motion.div
-            key="results"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="space-y-6"
-          >
-            {/* Overview Profile */}
-            <div className="grid md:grid-cols-3 gap-4">
-              <Card className="md:col-span-2">
-                <CardContent className="p-6">
-                  <div className="flex items-start gap-4">
-                    <Avatar className="h-16 w-16 border-2 border-neutral-800">
-                      <AvatarImage src={analysis.profile.avatar_url} />
-                      <AvatarFallback>
-                        {analysis.profile.name.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 min-w-0">
-                      <h2 className="text-xl font-semibold text-neutral-100 truncate">
-                        {analysis.profile.name}
-                      </h2>
-                      <p className="text-sm text-neutral-500 truncate mb-3">
-                        @{analysis.username}
-                      </p>
-                      {analysis.profile.bio && (
-                        <p className="text-sm text-neutral-400 mb-4 line-clamp-2">
-                          {analysis.profile.bio}
-                        </p>
-                      )}
-                      <div className="flex flex-wrap items-center gap-4 text-sm text-neutral-500">
-                        <div className="flex items-center gap-1">
-                          <BookOpen className="h-4 w-4" />
-                          <span className="text-neutral-200">
-                            {analysis.profile.public_repos}
-                          </span>{" "}
-                          repos
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Star className="h-4 w-4" />
-                          <span className="text-neutral-200">
-                            {analysis.profile.followers}
-                          </span>{" "}
-                          followers
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="md:col-span-1">
-                <CardContent className="p-6 flex flex-col items-center justify-center h-full">
-                  <ScoreRing
-                    score={analysis.score}
-                    size={120}
-                    label="GitHub Score"
-                  />
-                </CardContent>
-              </Card>
+              <div className="flex items-center justify-center p-4 rounded-2xl bg-black/40 border border-white/[0.06] shrink-0">
+                <ScoreRing score={analysis.score} label="GitHub Rating" size={120} />
+              </div>
             </div>
+          </Card>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <Card>
-                <CardContent className="p-4 flex flex-col items-center justify-center text-center h-full">
-                  <Activity className="h-5 w-5 text-neutral-400 mb-2" />
-                  <div className="text-2xl font-semibold text-neutral-100 tabular-nums">
+          {/* Commit Activity & Language Distribution */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="rounded-3xl border border-white/[0.08] bg-[#0d0e15]/80 p-6 space-y-4 shadow-lg">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-mono font-semibold text-amber-400 uppercase tracking-wide">
+                  Commit Consistency
+                </h3>
+                <span className="text-xs font-mono font-bold text-emerald-400">
+                  {analysis.commit_activity.consistency.toUpperCase()}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-4 text-xs font-mono">
+                <div className="p-3.5 rounded-xl border border-white/[0.06] bg-black/40">
+                  <div className="text-slate-500">Recent Commits</div>
+                  <div className="text-lg font-bold text-slate-100 mt-1">
                     {analysis.commit_activity.total_commits}
                   </div>
-                  <div className="text-xs text-neutral-500 mt-1">
-                    Commits (last 100 events)
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="p-4 flex flex-col items-center justify-center text-center h-full">
-                  <Code2 className="h-5 w-5 text-neutral-400 mb-2" />
-                  <div className="text-2xl font-semibold text-neutral-100 tabular-nums">
-                    {Object.keys(analysis.languages).length}
-                  </div>
-                  <div className="text-xs text-neutral-500 mt-1">Languages Used</div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="p-4 flex flex-col items-center justify-center text-center h-full">
-                  <Trophy className="h-5 w-5 text-neutral-400 mb-2" />
-                  <div className="text-xl font-semibold text-neutral-100 mb-1">
-                    <Badge variant={getConsistencyColor(analysis.commit_activity.consistency)}>
-                      {analysis.commit_activity.consistency.toUpperCase()}
-                    </Badge>
-                  </div>
-                  <div className="text-xs text-neutral-500">Activity Consistency</div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="p-4 flex flex-col items-center justify-center text-center h-full">
-                  <Activity className="h-5 w-5 text-neutral-400 mb-2" />
-                  <div className="text-2xl font-semibold text-neutral-100 tabular-nums">
+                </div>
+                <div className="p-3.5 rounded-xl border border-white/[0.06] bg-black/40">
+                  <div className="text-slate-500">Weekly Avg</div>
+                  <div className="text-lg font-bold text-amber-300 mt-1">
                     {analysis.commit_activity.avg_per_week}
                   </div>
-                  <div className="text-xs text-neutral-500 mt-1">Commits / Week</div>
-                </CardContent>
-              </Card>
-            </div>
+                </div>
+              </div>
+            </Card>
 
-            {/* Recommendations & Top Repos */}
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>AI Recommendations</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-3">
-                    {analysis.recommendations.map((rec, i) => (
-                      <li
-                        key={i}
-                        className="flex items-start gap-2 text-sm text-neutral-400"
-                      >
-                        <ArrowRight className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-                        <span>{rec}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
+            <Card className="rounded-3xl border border-white/[0.08] bg-[#0d0e15]/80 p-6 space-y-4 shadow-lg">
+              <h3 className="text-sm font-mono font-semibold text-amber-400 uppercase tracking-wide">
+                Top Languages
+              </h3>
+              <div className="flex flex-wrap gap-2 pt-1">
+                {Object.entries(analysis.languages).map(([lang, count]) => (
+                  <span
+                    key={lang}
+                    className="text-xs px-3 py-1 rounded-xl bg-white/[0.05] border border-white/10 text-slate-200 font-mono"
+                  >
+                    {lang}: <strong className="text-amber-300">{count} repos</strong>
+                  </span>
+                ))}
+              </div>
+            </Card>
+          </div>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Top Repositories</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {analysis.repositories.slice(0, 4).map((repo: GitHubRepo) => (
-                      <div key={repo.name}>
-                        <div className="flex items-center justify-between mb-1">
-                          <a
-                            href={`https://github.com/${analysis.username}/${repo.name}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-sm font-medium text-neutral-200 hover:text-white transition-colors truncate"
-                          >
-                            {repo.name}
-                          </a>
-                          <div className="flex items-center gap-3 text-xs text-neutral-500">
-                            {repo.language && (
-                              <div className="flex items-center gap-1">
-                                <span className="w-2 h-2 rounded-full bg-blue-500" />
-                                {repo.language}
-                              </div>
-                            )}
-                            <div className="flex items-center gap-1">
-                              <Star className="h-3 w-3" />
-                              {repo.stars}
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <GitFork className="h-3 w-3" />
-                              {repo.forks}
-                            </div>
-                          </div>
-                        </div>
-                        {repo.description && (
-                          <p className="text-xs text-neutral-500 line-clamp-1 mb-2">
-                            {repo.description}
-                          </p>
-                        )}
-                        <div className="flex items-center justify-between mt-2 pt-2 border-t border-neutral-800/50">
-                          <span className="text-[10px] text-neutral-600 uppercase tracking-wider">
-                            README
-                          </span>
-                          <Badge
-                            variant={getReadmeQualityColor(repo.readme_quality)}
-                            className="text-[10px] py-0 h-4"
-                          >
-                            {repo.readme_quality.replace("_", " ").toUpperCase()}
-                          </Badge>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+          {/* AI Recommendations */}
+          <Card className="rounded-3xl border border-white/[0.08] bg-[#0d0e15]/80 p-6 sm:p-8 space-y-4 shadow-2xl">
+            <h3 className="text-sm font-mono font-semibold text-amber-400 uppercase tracking-wide">
+              Optimization Recommendations
+            </h3>
+            <div className="space-y-2.5">
+              {analysis.recommendations.map((rec, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-start gap-3 p-3.5 rounded-2xl border border-white/[0.06] bg-black/40 text-xs text-slate-300 font-normal"
+                >
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                  <span>{rec}</span>
+                </div>
+              ))}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </Card>
+        </div>
+      )}
     </motion.div>
   );
 }
