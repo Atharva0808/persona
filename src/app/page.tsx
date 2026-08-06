@@ -7,8 +7,6 @@ import {
   ShieldCheck,
   Lock,
   Award,
-  CheckCircle2,
-  TrendingUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
@@ -222,30 +220,68 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* Enhanced CTA Section with Editorial Serif Accent */}
       <section className="relative z-10 border-t border-white/[0.06] py-28">
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <div className="rounded-3xl border border-amber-400/20 bg-gradient-to-b from-[#0e0f16] to-[#07080b] p-10 sm:p-16 space-y-6 shadow-2xl shadow-black/80">
-            <h2 className="text-2xl sm:text-4xl font-semibold text-slate-100 tracking-tight">
-              Ready to know where you stand?
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="relative rounded-3xl border border-amber-400/25 bg-gradient-to-b from-[#0f111a] via-[#0c0d13] to-[#07080b] p-10 sm:p-16 space-y-7 shadow-[0_25px_60px_-15px_rgba(245,158,11,0.08)] overflow-hidden"
+          >
+            {/* Ambient Background Warm Radial Glow */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-amber-500/[0.06] blur-[120px] pointer-events-none rounded-full" />
+
+            {/* Micro Badge */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-amber-400/20 bg-amber-400/[0.08] text-xs text-amber-300">
+              <Award className="w-3.5 h-3.5 text-amber-400" />
+              <span className="font-mono tracking-wide">Instant Readiness Assessment</span>
+            </div>
+
+            {/* Headline with Editorial Serif Italic Accent */}
+            <h2 className="text-3xl sm:text-5xl font-semibold text-slate-100 tracking-tight leading-tight">
+              Ready to know where{" "}
+              <em className="font-serif italic font-normal text-amber-200/95 tracking-normal">
+                you stand?
+              </em>
             </h2>
-            <p className="text-sm sm:text-base text-slate-400 max-w-xl mx-auto leading-relaxed font-normal">
-              Create your account now and receive your complete interview readiness assessment in minutes.
+
+            <p className="text-sm sm:text-base text-slate-400 max-w-lg mx-auto leading-relaxed font-normal">
+              Create your account now and receive your complete interview readiness assessment and roadmap in under two minutes.
             </p>
+
+            {/* Shimmer Button CTA */}
             <div className="pt-2 flex justify-center">
               <Link href="/signup">
                 <ShimmerButton
-                  shimmerColor="#f59e0b"
+                  shimmerColor="#fde68a"
                   shimmerDuration="2.2s"
                   borderRadius="16px"
-                  className="h-12 px-9 text-sm font-semibold text-amber-100 shadow-xl shadow-amber-950/40"
+                  className="h-13 px-9 text-base font-semibold text-amber-100 shadow-xl shadow-amber-950/40 group"
                 >
                   Get Started Free
-                  <ArrowRight className="w-4 h-4 ml-2 text-amber-400" />
+                  <ArrowRight className="w-4 h-4 ml-2 text-amber-300 group-hover:translate-x-1 transition-transform" />
                 </ShimmerButton>
               </Link>
             </div>
-          </div>
+
+            {/* Value Proof Pills */}
+            <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400 font-mono pt-4 border-t border-white/[0.06] max-w-md mx-auto">
+              <span className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                No credit card required
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                Free initial audit
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                Takes &lt; 2 minutes
+              </span>
+            </div>
+          </motion.div>
         </div>
       </section>
 
