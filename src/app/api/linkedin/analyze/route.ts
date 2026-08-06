@@ -13,19 +13,67 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const body = await request.json();
-    const { headline, about, experience, skills, featured, profileUrl } = body;
+    const contentType = request.headers.get("content-type") || "";
 
-    if (!profileUrl) {
-      return NextResponse.json(
-        { error: "LinkedIn profile URL is required" },
-        { status: 400 }
-      );
+    let profileData = {
+      headline: "",
+      about: "",
+      experience: "",
+      skills: "",
+      featured: "",
+      profileUrl: "https://linkedin.com/in/profile",
+    };
+
+    if (contentType.includes("multipart/form-data")) {
+      const formData = await request.formData();
+      const file = formData.get("file") as File;
+
+      if (!file) {
+        return NextResponse.json(
+          { error: "No PDF file provided" },
+          { status: 400 }
+        );
+      }
+
+      // Parse PDF using pdf-parse
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+
+      // @ts-expect-error - Internal path
+      const pdfParseModule = await import("pdf-parse/lib/pdf-parse.js");
+      const pdfParse = pdfParseModule.default || pdfParseModule;
+      const pdfData = await pdfParse(buffer);
+      const extractedText = pdfData.text;
+
+      if (!extractedText || extractedText.trim().length < 30) {
+        return NextResponse.json(
+          { error: "Could not extract text from the LinkedIn PDF." },
+          { status: 400 }
+        );
+      }
+
+      profileData = {
+        headline: extractedText.slice(0, 300),
+        about: extractedText.slice(0, 2000),
+        experience: extractedText,
+        skills: "Extracted from LinkedIn PDF",
+        featured: "Extracted from LinkedIn PDF",
+        profileUrl: "LinkedIn PDF Export",
+      };
+    } else {
+      const body = await request.json();
+      const { headline, about, experience, skills, featured, profileUrl } = body;
+      profileData = {
+        headline: headline || "",
+        about: about || "",
+        experience: experience || "",
+        skills: skills || "",
+        featured: featured || "",
+        profileUrl: profileUrl || "https://linkedin.com/in/profile",
+      };
     }
 
-    const analysis = await analyzeLinkedIn(
-      { headline, about, experience, skills, featured, profileUrl }
-    );
+    const analysis = await analyzeLinkedIn(profileData);
 
     // Save to database
     const { data: savedAnalysis, error: dbError } = await supabase

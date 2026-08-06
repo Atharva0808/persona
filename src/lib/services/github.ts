@@ -45,39 +45,45 @@ async function fetchProfile(username: string): Promise<GitHubProfile> {
 
 async function fetchRepos(username: string): Promise<GitHubRepo[]> {
   const data = await githubFetch(
-    `/users/${username}/repos?sort=updated&per_page=30&type=owner`
+    `/users/${username}/repos?sort=updated&per_page=15&type=owner`
   );
 
   const repos: GitHubRepo[] = [];
+  const topRepos = data.filter((r: { fork: boolean }) => !r.fork).slice(0, 5);
 
-  for (const repo of data) {
-    if (repo.fork) continue;
-
+  // Fetch READMEs only for top 3 repos to preserve API quota
+  for (let i = 0; i < topRepos.length; i++) {
+    const repo = topRepos[i];
     let hasReadme = false;
     let readmeQuality: GitHubRepo["readme_quality"] = "missing";
 
-    try {
-      const readmeRes = await githubFetch(
-        `/repos/${username}/${repo.name}/readme`
-      );
-      if (readmeRes) {
-        hasReadme = true;
-        const content = Buffer.from(readmeRes.content, "base64").toString("utf-8");
-        const length = content.length;
-        if (length > 2000) readmeQuality = "excellent";
-        else if (length > 500) readmeQuality = "good";
-        else readmeQuality = "needs_improvement";
+    if (i < 3) {
+      try {
+        const readmeRes = await githubFetch(
+          `/repos/${username}/${repo.name}/readme`
+        );
+        if (readmeRes) {
+          hasReadme = true;
+          const content = Buffer.from(readmeRes.content, "base64").toString("utf-8");
+          const length = content.length;
+          if (length > 2000) readmeQuality = "excellent";
+          else if (length > 500) readmeQuality = "good";
+          else readmeQuality = "needs_improvement";
+        }
+      } catch {
+        hasReadme = false;
+        readmeQuality = "missing";
       }
-    } catch {
-      hasReadme = false;
-      readmeQuality = "missing";
+    } else {
+      // Heuristic fallback for remaining repos
+      hasReadme = Boolean(repo.description);
+      readmeQuality = repo.description ? "good" : "missing";
     }
 
     let repoScore = 0;
-    // Scoring logic
-    if (repo.description) repoScore += 10;
-    if (hasReadme) repoScore += 15;
-    if (readmeQuality === "excellent") repoScore += 15;
+    if (repo.description) repoScore += 15;
+    if (hasReadme) repoScore += 20;
+    if (readmeQuality === "excellent") repoScore += 20;
     else if (readmeQuality === "good") repoScore += 10;
     if (repo.stargazers_count > 0) repoScore += Math.min(repo.stargazers_count * 2, 20);
     if (repo.topics?.length > 0) repoScore += Math.min(repo.topics.length * 3, 15);
@@ -98,7 +104,7 @@ async function fetchRepos(username: string): Promise<GitHubRepo[]> {
     });
   }
 
-  return repos.slice(0, 15);
+  return repos;
 }
 
 async function fetchCommitActivity(
@@ -106,7 +112,7 @@ async function fetchCommitActivity(
 ): Promise<CommitActivity> {
   try {
     const events = await githubFetch(
-      `/users/${username}/events?per_page=100`
+      `/users/${username}/events?per_page=30`
     );
 
     const pushEvents = events.filter(
@@ -164,7 +170,6 @@ export async function analyzeGitHub(
 
   const languages = extractLanguages(repos);
 
-  // Calculate overall score
   let score = 0;
   const avgRepoScore =
     repos.length > 0

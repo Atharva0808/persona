@@ -23,7 +23,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const analysis = await analyzeGitHub(username.trim());
+    const cleanUsername = username.trim().toLowerCase();
+
+    // Check 24-Hour Cache in Database
+    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    const { data: cached } = await supabase
+      .from("github_analyses")
+      .select("*")
+      .ilike("username", cleanUsername)
+      .gte("created_at", twentyFourHoursAgo)
+      .order("created_at", { ascending: false })
+      .limit(1);
+
+    if (cached && cached.length > 0) {
+      return NextResponse.json(cached[0]);
+    }
+
+    const analysis = await analyzeGitHub(cleanUsername);
 
     // Save to database
     const { data: savedAnalysis, error: dbError } = await supabase

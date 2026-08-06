@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { targetRole, resumeText, githubProjects, skills } = body;
+    const { targetRole } = body;
 
     if (!targetRole || !VALID_ROLES.includes(targetRole as TargetRole)) {
       return NextResponse.json(
@@ -36,14 +36,50 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const questions = await generateInterviewQuestions(
-      {
-        targetRole: targetRole as TargetRole,
-        resumeText,
-        githubProjects,
-        skills,
-      }
-    );
+    // Ingest cross-vector profile context from Supabase
+    const [resumeRes, githubRes, linkedinRes] = await Promise.all([
+      supabase
+        .from("resume_analyses")
+        .select("weak_bullets, overall_feedback")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(1),
+      supabase
+        .from("github_analyses")
+        .select("languages, recommendations")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(1),
+      supabase
+        .from("linkedin_analyses")
+        .select("recommendations")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(1),
+    ]);
+
+    const resumeContext = resumeRes.data?.[0]
+      ? `Resume feedback: ${resumeRes.data[0].overall_feedback}. Weak bullet points to probe: ${JSON.stringify(resumeRes.data[0].weak_bullets)}`
+      : "";
+
+    const githubContext = githubRes.data?.[0]
+      ? `GitHub languages used: ${JSON.stringify(githubRes.data[0].languages)}. Recommendations: ${JSON.stringify(githubRes.data[0].recommendations)}`
+      : "";
+
+    const linkedinContext = linkedinRes.data?.[0]
+      ? `LinkedIn recommendations: ${JSON.stringify(linkedinRes.data[0].recommendations)}`
+      : "";
+
+    const combinedContext = [resumeContext, githubContext, linkedinContext]
+      .filter(Boolean)
+      .join("\n");
+
+    const questions = await generateInterviewQuestions({
+      targetRole: targetRole as TargetRole,
+      resumeText: combinedContext,
+      githubProjects: githubContext ? [githubContext] : [],
+      skills: [],
+    });
 
     // Save to database
     const { data: savedSession, error: dbError } = await supabase
