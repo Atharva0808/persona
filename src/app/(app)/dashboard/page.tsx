@@ -2,90 +2,63 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { motion, Variants } from "framer-motion";
-import {
-  FileText,
-  Target,
-  MessageSquare,
-  ArrowRight,
-  TrendingUp,
-  Clock,
-  Award,
-  Sparkles,
-  ChevronRight,
-} from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowRight, FileText, Target, MessageSquare } from "lucide-react";
 import { GithubIcon as Github, LinkedinIcon as Linkedin } from "@/components/icons";
 import { PageHeader } from "@/components/layout/page-header";
-import { ScoreRing } from "@/components/ui/score";
-import { Badge } from "@/components/ui/badge";
 import { createClient } from "@/lib/supabase/client";
 
-const tools = [
+interface ToolItem {
+  id: string;
+  name: string;
+  description: string;
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  scoreKey: "resume" | "github" | "linkedin" | "skills" | null;
+}
+
+const tools: ToolItem[] = [
   {
-    icon: FileText,
-    title: "ATS Resume Analysis",
-    description: "Upload your PDF resume to get ATS scores, weak bullet points, and quantified rewrites.",
+    id: "resume",
+    name: "Resume ATS Audit",
+    description: "PDF parsing, ATS keyword matching, action verbs, and bullet point rewrites",
     href: "/resume",
-    badge: "PDF Engine",
-    color: "text-blue-400",
-    bgColor: "bg-blue-500/10 border-blue-500/20",
+    icon: FileText,
+    scoreKey: "resume",
   },
   {
-    icon: Github,
-    title: "GitHub Repository Audit",
-    description: "Evaluate your repositories, commit frequency, README depth, and code quality.",
+    id: "github",
+    name: "GitHub Repository Audit",
+    description: "Commit activity stream, README documentation quality, and repo depth",
     href: "/github",
-    badge: "Repo Analysis",
-    color: "text-amber-300",
-    bgColor: "bg-amber-500/10 border-amber-500/20",
+    icon: Github,
+    scoreKey: "github",
   },
   {
-    icon: Linkedin,
-    title: "LinkedIn Recruiter Rank",
-    description: "Optimize headline, about section, and keywords for inbound recruiter visibility.",
+    id: "linkedin",
+    name: "LinkedIn Profile Review",
+    description: "Headline optimization, recruiter search rank, and skill keyword density",
     href: "/linkedin",
-    badge: "Inbound Rank",
-    color: "text-sky-400",
-    bgColor: "bg-sky-500/10 border-sky-500/20",
+    icon: Linkedin,
+    scoreKey: "linkedin",
   },
   {
-    icon: Target,
-    title: "Skill Gap & Roadmap",
-    description: "Map your technical skills against 9 target roles and get a 4-phase learning roadmap.",
+    id: "skills",
+    name: "Skill Gap Analysis",
+    description: "Technical stack alignment across 9 engineering tracks & 4-phase roadmap",
     href: "/skills",
-    badge: "Role Alignment",
-    color: "text-emerald-400",
-    bgColor: "bg-emerald-500/10 border-emerald-500/20",
+    icon: Target,
+    scoreKey: "skills",
   },
   {
-    icon: MessageSquare,
-    title: "AI Interview Prep",
-    description: "Generate 20 personalized mock interview questions tailored to your actual profile.",
+    id: "interview",
+    name: "AI Technical Interview Prep",
+    description: "20 tailored mock questions spanning System Design, HR, and Technical domains",
     href: "/interview",
-    badge: "20 Questions",
-    color: "text-amber-400",
-    bgColor: "bg-amber-500/10 border-amber-500/20",
+    icon: MessageSquare,
+    scoreKey: null,
   },
 ];
-
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.08,
-    },
-  },
-};
-
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 16 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5, ease: "easeOut" },
-  },
-};
 
 export default function DashboardPage() {
   const [scores, setScores] = useState<{
@@ -101,7 +74,6 @@ export default function DashboardPage() {
   });
 
   const [loading, setLoading] = useState(true);
-  const [userName, setUserName] = useState<string>("Engineer");
 
   useEffect(() => {
     async function fetchScores() {
@@ -111,8 +83,6 @@ export default function DashboardPage() {
       } = await supabase.auth.getUser();
 
       if (!user) return;
-
-      setUserName(user.user_metadata?.full_name || user.email?.split("@")[0] || "Engineer");
 
       const [resumeRes, githubRes, linkedinRes, skillsRes] = await Promise.all([
         supabase
@@ -161,200 +131,91 @@ export default function DashboardPage() {
     (completedCount || 1);
 
   return (
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-      className="space-y-8"
-    >
+    <div className="space-y-8 text-neutral-100">
       <PageHeader
-        title="Candidate Readiness Command Center"
-        description="Comprehensive audit of your professional footprint & interview readiness."
+        title="Dashboard"
+        description="Candidate readiness overview and analytical suite."
       />
 
-      {/* Executive Banner */}
-      <motion.div
-        variants={itemVariants}
-        className="rounded-3xl border border-white/[0.08] bg-gradient-to-r from-[#0d0e15] via-[#0b0c12] to-[#07080b] p-6 sm:p-8 shadow-2xl relative overflow-hidden"
-      >
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-          <div className="space-y-3 max-w-xl">
-            <div className="flex items-center gap-2.5">
-              <span className="text-xs font-mono text-amber-400 uppercase tracking-widest font-semibold">
-                Candidate Profile
-              </span>
-              <span className="text-white/20">•</span>
-              <span className="text-xs font-mono px-2.5 py-0.5 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-300">
-                Software Engineer Track
-              </span>
-            </div>
-
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-100 tracking-tight">
-              Welcome back, {userName}
-            </h2>
-
-            <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-normal">
-              Complete all four vector assessments to establish your benchmark interview readiness score and personalized career roadmap.
-            </p>
-
-            <div className="flex flex-wrap items-center gap-3 pt-1">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.05] border border-white/[0.08] text-xs text-slate-300 font-mono">
-                <Clock className="w-3.5 h-3.5 text-amber-400" />
-                {completedCount} / 4 Assessments Completed
-              </div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-400 font-mono">
-                <TrendingUp className="w-3.5 h-3.5" />
-                {completedCount === 4
-                  ? "Interview Benchmark Ready"
-                  : completedCount > 0
-                  ? "Audit In Progress"
-                  : "Needs Initial Audit"}
-              </div>
-            </div>
+      {/* Clean Status Strip */}
+      <div className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="text-xs text-neutral-400 font-mono uppercase tracking-wider">
+            Overall Interview Readiness
           </div>
+          <div className="flex items-baseline gap-3">
+            <span className="text-3xl font-bold font-mono text-neutral-100">
+              {loading ? "—" : Math.round(totalScore)}%
+            </span>
+            <span className="text-xs text-neutral-400 font-mono">
+              {completedCount} of 4 assessments completed
+            </span>
+          </div>
+        </div>
 
-          <div className="flex items-center justify-center p-4 rounded-2xl bg-black/40 border border-white/[0.06] shrink-0">
-            <ScoreRing
-              score={Math.round(totalScore)}
-              label="Readiness"
-              size={120}
-              strokeWidth={8}
+        {/* Progress Bar */}
+        <div className="w-full sm:w-64 space-y-1.5">
+          <div className="flex justify-between text-xs text-neutral-400 font-mono">
+            <span>Progress</span>
+            <span>{completedCount * 25}%</span>
+          </div>
+          <div className="h-1.5 w-full bg-neutral-800 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-amber-400 transition-all duration-500"
+              style={{ width: `${completedCount * 25}%` }}
             />
           </div>
         </div>
-      </motion.div>
+      </div>
 
-      {/* 4 Vector Audit Cards */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xs font-mono uppercase tracking-widest text-slate-400 font-semibold">
-            Assessment Vectors
-          </h2>
-          <span className="text-xs font-mono text-slate-500">Live Database Sync</span>
+      {/* Functional Workspace Table */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between text-xs font-mono text-neutral-400 px-1">
+          <span>Analysis Engines</span>
+          <span>Status</span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[
-            {
-              label: "ATS Resume",
-              score: scores.resume,
-              icon: FileText,
-              color: "text-blue-400",
-              href: "/resume",
-              metricLabel: "Keyword Match",
-            },
-            {
-              label: "GitHub Depth",
-              score: scores.github,
-              icon: Github,
-              color: "text-amber-300",
-              href: "/github",
-              metricLabel: "Repo & Commit Index",
-            },
-            {
-              label: "LinkedIn Rank",
-              score: scores.linkedin,
-              icon: Linkedin,
-              color: "text-sky-400",
-              href: "/linkedin",
-              metricLabel: "Recruiter Attractiveness",
-            },
-            {
-              label: "Skill Gap",
-              score: scores.skills,
-              icon: Target,
-              color: "text-emerald-400",
-              href: "/skills",
-              metricLabel: "Target Role Match",
-            },
-          ].map((vector) => (
-            <motion.div key={vector.label} variants={itemVariants}>
-              <Link href={vector.href}>
-                <div className="rounded-2xl border border-white/[0.08] bg-[#0d0e15]/80 p-5 hover:border-amber-400/30 transition-all duration-300 hover:-translate-y-1 group shadow-lg flex flex-col justify-between h-full">
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="p-2 rounded-xl bg-white/[0.05] border border-white/10 text-slate-300 group-hover:text-amber-300 transition-colors">
-                        <vector.icon className="w-4 h-4" />
+        <div className="rounded-xl border border-neutral-800 bg-neutral-900/40 divide-y divide-neutral-800/60 overflow-hidden">
+          {tools.map((tool) => {
+            const score = tool.scoreKey ? scores[tool.scoreKey] : null;
+            return (
+              <Link key={tool.id} href={tool.href} className="block group">
+                <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-neutral-800/40 transition-colors">
+                  <div className="flex items-start gap-4">
+                    <tool.icon className="w-5 h-5 text-neutral-400 group-hover:text-amber-400 transition-colors mt-0.5 shrink-0" />
+                    <div>
+                      <div className="text-sm font-semibold text-neutral-200 group-hover:text-white transition-colors">
+                        {tool.name}
                       </div>
-                      <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-amber-400 transition-colors" />
-                    </div>
-                    <div className="text-xs font-medium text-slate-300 mb-1">
-                      {vector.label}
-                    </div>
-                    <div className="text-[11px] text-slate-500 font-mono mb-4">
-                      {vector.metricLabel}
+                      <div className="text-xs text-neutral-400 mt-0.5 leading-relaxed">
+                        {tool.description}
+                      </div>
                     </div>
                   </div>
 
-                  <div>
-                    {loading ? (
-                      <div className="text-xs text-slate-600 font-mono animate-pulse">
-                        Syncing...
-                      </div>
-                    ) : vector.score !== null ? (
-                      <div className="flex items-baseline gap-1.5">
-                        <span className={`text-2xl font-bold font-mono ${vector.color}`}>
-                          {Math.round(vector.score)}
+                  <div className="flex items-center justify-between sm:justify-end gap-6 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-neutral-800/60">
+                    <div className="text-right">
+                      {loading ? (
+                        <span className="text-xs text-neutral-600 font-mono">Loading...</span>
+                      ) : score !== null ? (
+                        <span className="text-sm font-bold font-mono text-neutral-200">
+                          {Math.round(score)} / 100
                         </span>
-                        <span className="text-xs text-slate-500 font-mono">/ 100</span>
-                      </div>
-                    ) : (
-                      <div className="text-xs text-amber-400/90 font-mono font-medium flex items-center gap-1">
-                        Run Audit <ArrowRight className="w-3 h-3" />
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-
-      {/* Analysis Tools Grid */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xs font-mono uppercase tracking-widest text-slate-400 font-semibold">
-            Analytical Tool Suite
-          </h2>
-          <span className="text-xs font-mono text-slate-500">5 Integrated Engines</span>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {tools.map((tool) => (
-            <motion.div key={tool.title} variants={itemVariants}>
-              <Link href={tool.href}>
-                <div className="rounded-2xl border border-white/[0.08] bg-[#0d0e15]/80 p-6 hover:border-amber-400/30 transition-all duration-300 hover:-translate-y-1 group shadow-lg flex flex-col justify-between h-full">
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <div className={`p-2.5 rounded-xl border ${tool.bgColor} ${tool.color}`}>
-                        <tool.icon className="w-5 h-5" />
-                      </div>
-                      <span className="text-[11px] font-mono px-2.5 py-0.5 rounded-full border border-white/10 bg-black/40 text-slate-400">
-                        {tool.badge}
-                      </span>
+                      ) : tool.scoreKey ? (
+                        <span className="text-xs text-neutral-500 font-mono">Not analyzed</span>
+                      ) : (
+                        <span className="text-xs text-neutral-400 font-mono">20 Qs</span>
+                      )}
                     </div>
 
-                    <h3 className="text-base font-semibold text-slate-100 mb-2 group-hover:text-amber-300 transition-colors flex items-center justify-between">
-                      {tool.title}
-                      <ArrowRight className="w-4 h-4 text-slate-600 group-hover:text-amber-400 transition-colors" />
-                    </h3>
-
-                    <p className="text-xs text-slate-400 leading-relaxed font-normal">
-                      {tool.description}
-                    </p>
-                  </div>
-
-                  <div className="pt-5 mt-4 border-t border-white/[0.06] flex items-center justify-between text-[11px] font-mono text-slate-500">
-                    <span>Est. Run Time: &lt; 1 min</span>
-                    <span className="text-amber-400/90 font-medium group-hover:underline">Launch</span>
+                    <ArrowRight className="w-4 h-4 text-neutral-600 group-hover:text-amber-400 group-hover:translate-x-0.5 transition-all" />
                   </div>
                 </div>
               </Link>
-            </motion.div>
-          ))}
+            );
+          })}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
