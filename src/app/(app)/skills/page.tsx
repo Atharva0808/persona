@@ -1,16 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion } from "framer-motion";
 import { toast } from "sonner";
-import {
-  Target,
-  ArrowRight,
-  CheckCircle2,
-  AlertCircle,
-  RefreshCw,
-  ExternalLink,
-} from "lucide-react";
+import { Target, ArrowRight, RefreshCw } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
@@ -91,46 +83,41 @@ export default function SkillsPage() {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      className="space-y-8"
-    >
+    <div className="space-y-8 text-neutral-100">
       <PageHeader
-        title="Skill Gap Analysis & Learning Roadmap"
-        description="Map your technical stack against target roles and receive a structured 4-phase learning roadmap."
+        title="Skill Gap Analysis"
+        description="Map current skills against target engineering roles to generate a 4-phase roadmap."
         actions={
           analysis ? (
             <Button
               variant="outline"
               size="sm"
               onClick={() => setAnalysis(null)}
-              className="rounded-xl border-white/10 text-slate-300 hover:bg-white/[0.06] hover:text-amber-300"
+              className="rounded-xl border-neutral-800 text-neutral-300 hover:bg-neutral-800 hover:text-white"
             >
               <RefreshCw className="h-3.5 w-3.5 mr-2" />
-              New Skill Gap Audit
+              New Audit
             </Button>
           ) : null
         }
       />
 
       {!analysis ? (
-        <Card className="rounded-3xl border border-white/[0.08] bg-[#0d0e15]/80 shadow-2xl p-6 sm:p-10">
+        <Card className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-6 sm:p-8">
           <CardContent className="p-0">
-            <form onSubmit={handleAnalyze} className="space-y-6 max-w-xl">
-              <div className="space-y-2">
-                <Label className="text-xs font-mono uppercase tracking-wider text-slate-300 font-semibold">
-                  Target Engineering Track *
+            <form onSubmit={handleAnalyze} className="space-y-5 max-w-xl">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-mono uppercase text-neutral-400 font-medium">
+                  Target Role Track *
                 </Label>
                 <Select
                   value={targetRole}
                   onValueChange={(v) => setTargetRole(v as TargetRole)}
                 >
-                  <SelectTrigger className="h-11 bg-black/40 border-white/10 text-slate-100 rounded-xl focus:border-amber-400 font-mono text-sm">
-                    <SelectValue placeholder="Select your target role" />
+                  <SelectTrigger className="h-10 bg-neutral-950/60 border-neutral-800 text-neutral-100 rounded-lg focus:border-amber-400 font-mono text-sm">
+                    <SelectValue placeholder="Select target role" />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#0c0d12] border-white/10 text-slate-200">
+                  <SelectContent className="bg-neutral-950 border-neutral-800 text-neutral-200">
                     {TARGET_ROLES.map((role) => (
                       <SelectItem key={role.value} value={role.value}>
                         {role.label}
@@ -140,37 +127,37 @@ export default function SkillsPage() {
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-xs font-mono uppercase tracking-wider text-slate-300 font-semibold">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-mono uppercase text-neutral-400 font-medium">
                   Current Skills (Comma Separated) *
                 </Label>
                 <Input
                   placeholder="e.g. React, TypeScript, Node.js, PostgreSQL, Docker"
                   value={skillsInput}
                   onChange={(e) => setSkillsInput(e.target.value)}
-                  className="h-11 bg-black/40 border-white/10 text-slate-100 rounded-xl focus:border-amber-400 font-mono text-sm"
+                  className="h-10 bg-neutral-950/60 border-neutral-800 text-neutral-100 rounded-lg focus:border-amber-400 font-mono text-sm"
                   required
                 />
               </div>
 
               <div className="pt-2 flex justify-end">
                 <ShimmerButton
-                  shimmerColor="#34d399"
+                  shimmerColor="#f59e0b"
                   shimmerDuration="2.5s"
-                  borderRadius="16px"
+                  borderRadius="12px"
                   disabled={loading || !targetRole || !skillsInput.trim()}
                   type="submit"
-                  className="h-12 px-8 text-sm font-semibold text-emerald-100 disabled:opacity-50 shadow-xl shadow-emerald-950/40"
+                  className="h-11 px-6 text-sm font-semibold text-amber-100 disabled:opacity-50"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">
-                      <Spinner className="h-4 w-4 text-emerald-300" />
+                      <Spinner className="h-4 w-4 text-amber-300" />
                       Computing Skill Matrix...
                     </span>
                   ) : (
                     <span className="flex items-center gap-2">
                       Analyze Skill Gap
-                      <ArrowRight className="h-4 w-4 text-emerald-400" />
+                      <ArrowRight className="h-4 w-4 text-amber-400" />
                     </span>
                   )}
                 </ShimmerButton>
@@ -179,69 +166,66 @@ export default function SkillsPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-8">
-          <Card className="rounded-3xl border border-white/[0.08] bg-[#0d0e15]/80 p-6 sm:p-8 shadow-2xl">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div className="space-y-3 max-w-xl">
-                <div className="flex items-center gap-2 font-mono text-xs text-emerald-400 font-semibold">
-                  <Target className="w-4 h-4" />
-                  <span>Role Gap Analysis</span>
-                </div>
-                <h2 className="text-xl sm:text-2xl font-bold text-slate-100 tracking-tight">
-                  Target Role Match Score
-                </h2>
-                <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-normal">
-                  Your current skill set aligns <strong className="text-emerald-400">{analysis.match_percentage}%</strong> with industry standard requirements for{" "}
-                  <span className="font-mono text-amber-300">
-                    {TARGET_ROLES.find((r) => r.value === analysis.target_role)?.label}
-                  </span>.
-                </p>
+        <div className="space-y-6">
+          <div className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+            <div className="space-y-2 max-w-xl">
+              <div className="text-xs font-mono text-neutral-400 uppercase tracking-wider">
+                Role Alignment Match
               </div>
-
-              <div className="flex items-center justify-center p-4 rounded-2xl bg-black/40 border border-white/[0.06] shrink-0">
-                <ScoreRing score={analysis.match_percentage} label="Skill Match" size={120} />
-              </div>
+              <h2 className="text-xl font-bold text-neutral-100">
+                Match: {analysis.match_percentage}%
+              </h2>
+              <p className="text-xs text-neutral-400 leading-relaxed font-normal">
+                Target track:{" "}
+                <span className="font-mono text-amber-300">
+                  {TARGET_ROLES.find((r) => r.value === analysis.target_role)?.label}
+                </span>
+              </p>
             </div>
-          </Card>
+
+            <div className="flex items-center justify-center p-3 rounded-xl bg-neutral-950/60 border border-neutral-800 shrink-0">
+              <ScoreRing score={analysis.match_percentage} label="Skill Match" size={100} />
+            </div>
+          </div>
 
           {/* Roadmap */}
-          <div className="space-y-6">
-            <h3 className="text-sm font-mono font-semibold text-amber-400 uppercase tracking-widest">
-              4-Phase Structured Learning Roadmap
+          <div className="space-y-4">
+            <h3 className="text-xs font-mono text-neutral-400 uppercase tracking-wider">
+              Learning Roadmap
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {analysis.roadmap.map((phase) => (
-                <Card key={phase.phase} className="rounded-3xl border border-white/[0.08] bg-[#0d0e15]/80 p-6 space-y-4 shadow-lg">
-                  <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
-                    <span className="text-xs font-mono font-bold text-emerald-400">
+                <div key={phase.phase} className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-5 space-y-3">
+                  <div className="flex items-center justify-between border-b border-neutral-800/60 pb-2.5">
+                    <span className="text-xs font-mono font-bold text-amber-400">
                       Phase {phase.phase}: {phase.title}
                     </span>
-                    <span className="text-xs text-slate-400 font-mono">{phase.duration}</span>
+                    <span className="text-xs text-neutral-500 font-mono">{phase.duration}</span>
                   </div>
 
-                  <div className="space-y-3">
-                    <div className="flex flex-wrap gap-1.5">
+                  <div className="space-y-2 text-xs">
+                    <div className="flex flex-wrap gap-1.5 font-mono">
                       {phase.skills.map((sk) => (
-                        <span key={sk} className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 font-mono">
+                        <span key={sk} className="px-2 py-0.5 rounded bg-neutral-950 border border-neutral-800 text-neutral-300">
                           {sk}
                         </span>
                       ))}
                     </div>
 
                     {phase.projects.length > 0 && (
-                      <div className="p-3 rounded-2xl border border-white/[0.06] bg-black/40 text-xs text-slate-300">
-                        <strong className="text-amber-300 font-mono block mb-1">Project Idea to Build:</strong>
+                      <div className="p-3 rounded-lg border border-neutral-800 bg-neutral-950/60 text-xs text-neutral-400">
+                        <strong className="text-neutral-200 block mb-1">Project Idea:</strong>
                         <span>{phase.projects[0]}</span>
                       </div>
                     )}
                   </div>
-                </Card>
+                </div>
               ))}
             </div>
           </div>
         </div>
       )}
-    </motion.div>
+    </div>
   );
 }

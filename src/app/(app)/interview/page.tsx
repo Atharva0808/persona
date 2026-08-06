@@ -1,20 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import { toast } from "sonner";
 import {
-  MessageSquare,
   RefreshCw,
   ArrowRight,
-  Sparkles,
   CheckCircle2,
 } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Spinner } from "@/components/ui/spinner";
 import {
   Select,
@@ -127,22 +123,17 @@ export default function InterviewPage() {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      className="space-y-8"
-    >
+    <div className="space-y-8 text-neutral-100">
       <PageHeader
-        title="AI Interview Prep & Question Mock"
-        description="Generates 20 personalized mock interview questions across HR, Technical, System Design, and Behavioral domains based on your footprint."
+        title="AI Interview Prep"
+        description="Generates 20 personalized mock interview questions tailored to your profile."
         actions={
           session ? (
             <Button
               variant="outline"
               size="sm"
               onClick={() => setSession(null)}
-              className="rounded-xl border-white/10 text-slate-300 hover:bg-white/[0.06] hover:text-amber-300"
+              className="rounded-xl border-neutral-800 text-neutral-300 hover:bg-neutral-800 hover:text-white"
             >
               <RefreshCw className="h-3.5 w-3.5 mr-2" />
               New Session
@@ -152,41 +143,41 @@ export default function InterviewPage() {
       />
 
       {!session ? (
-        <Card className="rounded-3xl border border-white/[0.08] bg-[#0d0e15]/80 shadow-2xl p-6 sm:p-10">
-          <CardContent className="p-0 space-y-6">
-            <div className="p-4 rounded-2xl border border-white/[0.06] bg-black/40 space-y-2 text-xs">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-amber-400 font-semibold block">
-                Profile Context Ingestion Status
+        <Card className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-6 sm:p-8">
+          <CardContent className="p-0 space-y-5">
+            <div className="p-3.5 rounded-lg border border-neutral-800 bg-neutral-950/60 space-y-1.5 text-xs">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-neutral-500 block">
+                Linked Profile Context
               </span>
-              <div className="flex flex-wrap gap-4 font-mono text-slate-300">
+              <div className="flex flex-wrap gap-4 font-mono text-neutral-400">
                 <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className={`w-3.5 h-3.5 ${hasResume ? "text-emerald-400" : "text-slate-600"}`} />
-                  Resume Analysis {hasResume ? "(Linked)" : "(Not run)"}
+                  <CheckCircle2 className={`w-3.5 h-3.5 ${hasResume ? "text-emerald-400" : "text-neutral-600"}`} />
+                  Resume {hasResume ? "(Linked)" : "(Not run)"}
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className={`w-3.5 h-3.5 ${hasGithub ? "text-emerald-400" : "text-slate-600"}`} />
-                  GitHub Audit {hasGithub ? "(Linked)" : "(Not run)"}
+                  <CheckCircle2 className={`w-3.5 h-3.5 ${hasGithub ? "text-emerald-400" : "text-neutral-600"}`} />
+                  GitHub {hasGithub ? "(Linked)" : "(Not run)"}
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className={`w-3.5 h-3.5 ${hasSkills ? "text-emerald-400" : "text-slate-600"}`} />
-                  Skill Gap Matrix {hasSkills ? "(Linked)" : "(Not run)"}
+                  <CheckCircle2 className={`w-3.5 h-3.5 ${hasSkills ? "text-emerald-400" : "text-neutral-600"}`} />
+                  Skill Gap {hasSkills ? "(Linked)" : "(Not run)"}
                 </span>
               </div>
             </div>
 
-            <form onSubmit={handleGenerate} className="space-y-6 max-w-xl">
-              <div className="space-y-2">
-                <Label className="text-xs font-mono uppercase tracking-wider text-slate-300 font-semibold">
-                  Target Interview Track *
+            <form onSubmit={handleGenerate} className="space-y-5 max-w-xl">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-mono uppercase text-neutral-400 font-medium">
+                  Target Role Track *
                 </Label>
                 <Select
                   value={targetRole}
                   onValueChange={(v) => setTargetRole(v as TargetRole)}
                 >
-                  <SelectTrigger className="h-11 bg-black/40 border-white/10 text-slate-100 rounded-xl focus:border-amber-400 font-mono text-sm">
+                  <SelectTrigger className="h-10 bg-neutral-950/60 border-neutral-800 text-neutral-100 rounded-lg focus:border-amber-400 font-mono text-sm">
                     <SelectValue placeholder="Select target interview track" />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#0c0d12] border-white/10 text-slate-200">
+                  <SelectContent className="bg-neutral-950 border-neutral-800 text-neutral-200">
                     {TARGET_ROLES.map((role) => (
                       <SelectItem key={role.value} value={role.value}>
                         {role.label}
@@ -200,19 +191,19 @@ export default function InterviewPage() {
                 <ShimmerButton
                   shimmerColor="#f59e0b"
                   shimmerDuration="2.5s"
-                  borderRadius="16px"
+                  borderRadius="12px"
                   disabled={loading || !targetRole}
                   type="submit"
-                  className="h-12 px-8 text-sm font-semibold text-amber-100 disabled:opacity-50 shadow-xl shadow-amber-950/40"
+                  className="h-11 px-6 text-sm font-semibold text-amber-100 disabled:opacity-50"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">
                       <Spinner className="h-4 w-4 text-amber-300" />
-                      Generating 20 Tailored Questions...
+                      Generating Questions...
                     </span>
                   ) : (
                     <span className="flex items-center gap-2">
-                      Generate Mock Interview Session
+                      Generate Mock Questions
                       <ArrowRight className="h-4 w-4 text-amber-400" />
                     </span>
                   )}
@@ -222,60 +213,56 @@ export default function InterviewPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-6">
-          <Card className="rounded-3xl border border-white/[0.08] bg-[#0d0e15]/80 p-6 sm:p-8 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-white/[0.06] pb-4">
-              <div className="space-y-1">
-                <span className="text-xs font-mono uppercase tracking-widest text-amber-400 font-semibold">
-                  Mock Interview Session
-                </span>
-                <h2 className="text-xl font-bold text-slate-100">
-                  {TARGET_ROLES.find((r) => r.value === session.role)?.label} Track
-                </h2>
+        <div className="space-y-4">
+          <div className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-5 flex items-center justify-between">
+            <div className="space-y-0.5">
+              <div className="text-xs font-mono text-neutral-500 uppercase tracking-wider">
+                Mock Interview Questions
               </div>
-              <Badge variant="outline" className="text-xs text-amber-300 border-amber-400/30 bg-amber-400/10 font-mono">
-                20 Custom Questions
-              </Badge>
+              <h2 className="text-base font-bold text-neutral-100">
+                {TARGET_ROLES.find((r) => r.value === session.role)?.label} Track
+              </h2>
             </div>
+            <span className="text-xs font-mono text-neutral-400">20 Questions</span>
+          </div>
 
-            <Accordion type="single" collapsible className="w-full space-y-3 pt-4">
-              {session.questions.map((q, idx) => (
-                <AccordionItem
-                  key={q.id || idx}
-                  value={q.id || `q-${idx}`}
-                  className="rounded-2xl border border-white/[0.06] bg-black/40 px-5 py-1"
-                >
-                  <AccordionTrigger className="hover:no-underline text-left cursor-pointer">
-                    <div className="flex items-start gap-3">
-                      <span className="text-xs font-mono font-bold text-amber-400 shrink-0 mt-0.5">
-                        Q{idx + 1}
-                      </span>
-                      <span className="text-sm font-semibold text-slate-100 leading-snug">
-                        {q.question}
-                      </span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="pt-2 pb-4 space-y-3 text-xs text-slate-300">
-                    <div className="p-3.5 rounded-xl border border-amber-400/20 bg-amber-400/5">
-                      <strong className="text-amber-300 font-mono block mb-1">Expected Key Points:</strong>
-                      <p className="font-normal leading-relaxed">{q.expected_answer}</p>
-                    </div>
+          <Accordion type="single" collapsible className="w-full space-y-2">
+            {session.questions.map((q, idx) => (
+              <AccordionItem
+                key={q.id || idx}
+                value={q.id || `q-${idx}`}
+                className="rounded-xl border border-neutral-800 bg-neutral-900/40 px-4 py-1"
+              >
+                <AccordionTrigger className="hover:no-underline text-left cursor-pointer">
+                  <div className="flex items-start gap-3">
+                    <span className="text-xs font-mono font-bold text-amber-400 shrink-0 mt-0.5">
+                      Q{idx + 1}
+                    </span>
+                    <span className="text-xs sm:text-sm font-medium text-neutral-200 leading-snug">
+                      {q.question}
+                    </span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="pt-2 pb-3 space-y-2 text-xs text-neutral-400">
+                  <div className="p-3 rounded-lg border border-neutral-800 bg-neutral-950/60 space-y-1">
+                    <strong className="text-neutral-200 block mb-0.5 font-mono">Expected Answer Key Points:</strong>
+                    <p className="leading-relaxed">{q.expected_answer}</p>
+                  </div>
 
-                    {q.follow_ups && q.follow_ups.length > 0 && (
-                      <div className="p-3.5 rounded-xl border border-white/[0.06] bg-black/40 space-y-1 font-mono">
-                        <strong className="text-slate-400 block mb-1">Follow-up Questions:</strong>
-                        {q.follow_ups.map((f, i) => (
-                          <div key={i} className="text-slate-300">• {f}</div>
-                        ))}
-                      </div>
-                    )}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </Card>
+                  {q.follow_ups && q.follow_ups.length > 0 && (
+                    <div className="p-3 rounded-lg border border-neutral-800 bg-neutral-950/60 space-y-1 font-mono">
+                      <strong className="text-neutral-400 block mb-0.5">Follow-up Questions:</strong>
+                      {q.follow_ups.map((f, i) => (
+                        <div key={i} className="text-neutral-300">• {f}</div>
+                      ))}
+                    </div>
+                  )}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </div>
       )}
-    </motion.div>
+    </div>
   );
 }

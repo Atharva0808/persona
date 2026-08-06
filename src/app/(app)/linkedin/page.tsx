@@ -3,13 +3,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import {
-  CheckCircle2,
-  ArrowRight,
-  RefreshCw,
-  Sparkles,
-} from "lucide-react";
-import { LinkedinIcon as Linkedin } from "@/components/icons";
+import { CheckCircle2, ArrowRight, RefreshCw } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
@@ -78,23 +72,21 @@ export default function LinkedInPage() {
 
   const renderSectionAnalysis = (title: string, section: SectionAnalysis) => {
     return (
-      <Card className="rounded-3xl border border-white/[0.08] bg-[#0d0e15]/80 p-6 space-y-4 shadow-lg">
-        <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
-          <h3 className="text-base font-semibold text-slate-100">{title}</h3>
-          <span className="text-xs font-mono font-bold text-sky-400 px-2.5 py-0.5 rounded-full bg-sky-500/10 border border-sky-500/20">
-            {section.score} / 100
-          </span>
+      <div className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-5 space-y-3">
+        <div className="flex items-center justify-between border-b border-neutral-800/60 pb-2.5">
+          <h3 className="text-sm font-semibold text-neutral-200">{title}</h3>
+          <span className="text-xs font-mono text-neutral-400">{section.score} / 100</span>
         </div>
-        <div className="space-y-3">
-          <div className="p-3.5 rounded-2xl border border-white/[0.06] bg-black/40 text-xs">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 block mb-1">Current Section Content</span>
-            <p className="text-slate-300 line-clamp-3 font-normal">{section.current || "Not provided"}</p>
+        <div className="space-y-2">
+          <div className="p-3 rounded-lg border border-neutral-800 bg-neutral-950/60 text-xs">
+            <span className="text-[10px] font-mono uppercase text-neutral-500 block mb-1">Current Section Content</span>
+            <p className="text-neutral-300 line-clamp-3">{section.current || "Not provided"}</p>
           </div>
-          <p className="text-xs text-slate-400 font-normal leading-relaxed">{section.feedback}</p>
+          <p className="text-xs text-neutral-400 leading-relaxed">{section.feedback}</p>
           {section.suggestions.length > 0 && (
-            <div className="space-y-1.5 pt-2 border-t border-white/[0.06]">
+            <div className="space-y-1 pt-2 border-t border-neutral-800/60">
               {section.suggestions.map((sug, i) => (
-                <div key={i} className="text-[11px] text-slate-300 font-normal flex items-start gap-2">
+                <div key={i} className="text-xs text-neutral-300 flex items-start gap-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
                   <span>{sug}</span>
                 </div>
@@ -102,27 +94,22 @@ export default function LinkedInPage() {
             </div>
           )}
         </div>
-      </Card>
+      </div>
     );
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      className="space-y-8"
-    >
+    <div className="space-y-8 text-neutral-100">
       <PageHeader
-        title="LinkedIn Recruiter Inbound Magnet"
-        description="Optimize your headline, experience summaries, and skill tags for recruiter search visibility."
+        title="LinkedIn Profile Review"
+        description="Optimize headline, experience summaries, and skill keywords for recruiter search rank."
         actions={
           analysis ? (
             <Button
               variant="outline"
               size="sm"
               onClick={() => setAnalysis(null)}
-              className="rounded-xl border-white/10 text-slate-300 hover:bg-white/[0.06] hover:text-amber-300"
+              className="rounded-xl border-neutral-800 text-neutral-300 hover:bg-neutral-800 hover:text-white"
             >
               <RefreshCw className="h-3.5 w-3.5 mr-2" />
               New Review
@@ -132,11 +119,11 @@ export default function LinkedInPage() {
       />
 
       {!analysis ? (
-        <Card className="rounded-3xl border border-white/[0.08] bg-[#0d0e15]/80 shadow-2xl p-6 sm:p-10">
+        <Card className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-6 sm:p-8">
           <CardContent className="p-0">
-            <form onSubmit={handleAnalyze} className="space-y-6">
-              <div className="space-y-2">
-                <Label className="text-xs font-mono uppercase tracking-wider text-slate-300 font-semibold">
+            <form onSubmit={handleAnalyze} className="space-y-5 max-w-xl">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-mono uppercase text-neutral-400 font-medium">
                   LinkedIn Profile URL *
                 </Label>
                 <Input
@@ -144,27 +131,27 @@ export default function LinkedInPage() {
                   placeholder="https://linkedin.com/in/yourprofile"
                   value={formData.profileUrl}
                   onChange={handleChange}
-                  className="h-11 bg-black/40 border-white/10 text-slate-100 rounded-xl focus:border-amber-400 font-mono text-sm"
+                  className="h-10 bg-neutral-950/60 border-neutral-800 text-neutral-100 rounded-lg focus:border-amber-400 font-mono text-sm"
                   required
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label className="text-xs font-mono uppercase tracking-wider text-slate-300 font-semibold">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-mono uppercase text-neutral-400 font-medium">
                     Current Headline
                   </Label>
                   <Input
                     name="headline"
-                    placeholder="e.g. Senior Software Engineer @ TechCorp | React, Node.js"
+                    placeholder="e.g. Senior Software Engineer | React, Node.js"
                     value={formData.headline}
                     onChange={handleChange}
-                    className="h-11 bg-black/40 border-white/10 text-slate-100 rounded-xl focus:border-amber-400 text-sm"
+                    className="h-10 bg-neutral-950/60 border-neutral-800 text-neutral-100 rounded-lg focus:border-amber-400 text-sm"
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label className="text-xs font-mono uppercase tracking-wider text-slate-300 font-semibold">
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-mono uppercase text-neutral-400 font-medium">
                     Skill Keywords
                   </Label>
                   <Input
@@ -172,43 +159,43 @@ export default function LinkedInPage() {
                     placeholder="e.g. TypeScript, React, Next.js, Microservices"
                     value={formData.skills}
                     onChange={handleChange}
-                    className="h-11 bg-black/40 border-white/10 text-slate-100 rounded-xl focus:border-amber-400 text-sm"
+                    className="h-10 bg-neutral-950/60 border-neutral-800 text-neutral-100 rounded-lg focus:border-amber-400 text-sm"
                   />
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-xs font-mono uppercase tracking-wider text-slate-300 font-semibold">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-mono uppercase text-neutral-400 font-medium">
                   About Section Summary
                 </Label>
                 <Textarea
                   name="about"
-                  placeholder="Paste your LinkedIn About section text here..."
+                  placeholder="Paste your LinkedIn About section summary text..."
                   value={formData.about}
                   onChange={handleChange}
                   rows={4}
-                  className="bg-black/40 border-white/10 text-slate-100 rounded-xl focus:border-amber-400 text-sm resize-none"
+                  className="bg-neutral-950/60 border-neutral-800 text-neutral-100 rounded-lg focus:border-amber-400 text-sm resize-none"
                 />
               </div>
 
               <div className="pt-2 flex justify-end">
                 <ShimmerButton
-                  shimmerColor="#38bdf8"
+                  shimmerColor="#f59e0b"
                   shimmerDuration="2.5s"
-                  borderRadius="16px"
+                  borderRadius="12px"
                   disabled={loading}
                   type="submit"
-                  className="h-12 px-8 text-sm font-semibold text-slate-100 disabled:opacity-50 shadow-xl shadow-sky-950/40"
+                  className="h-11 px-6 text-sm font-semibold text-amber-100 disabled:opacity-50"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">
-                      <Spinner className="h-4 w-4 text-sky-300" />
+                      <Spinner className="h-4 w-4 text-amber-300" />
                       Evaluating Search Rank...
                     </span>
                   ) : (
                     <span className="flex items-center gap-2">
-                      Analyze LinkedIn Profile
-                      <ArrowRight className="h-4 w-4 text-sky-400" />
+                      Analyze Profile
+                      <ArrowRight className="h-4 w-4 text-amber-400" />
                     </span>
                   )}
                 </ShimmerButton>
@@ -217,29 +204,26 @@ export default function LinkedInPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-8">
-          <Card className="rounded-3xl border border-white/[0.08] bg-[#0d0e15]/80 p-6 sm:p-8 shadow-2xl">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div className="space-y-3 max-w-xl">
-                <div className="flex items-center gap-2 font-mono text-xs text-sky-400 font-semibold">
-                  <Linkedin className="w-4 h-4" />
-                  <span>Recruiter Search Visibility Report</span>
-                </div>
-                <h2 className="text-xl sm:text-2xl font-bold text-slate-100 tracking-tight">
-                  Recruiter Attractiveness Score
-                </h2>
-                <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-normal">
-                  Your profile ranks in the top percentile for technical recruiter inbound searches.
-                </p>
+        <div className="space-y-6">
+          <div className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+            <div className="space-y-2 max-w-xl">
+              <div className="text-xs font-mono text-neutral-400 uppercase tracking-wider">
+                Recruiter Search Attractiveness
               </div>
-
-              <div className="flex items-center justify-center p-4 rounded-2xl bg-black/40 border border-white/[0.06] shrink-0">
-                <ScoreRing score={analysis.recruiter_attractiveness} label="Recruiter Rank" size={120} />
-              </div>
+              <h2 className="text-xl font-bold text-neutral-100">
+                Recruiter Score: {analysis.recruiter_attractiveness} / 100
+              </h2>
+              <p className="text-xs text-neutral-400 leading-relaxed font-normal">
+                Your profile rank reflects inbound search matches for software engineering positions.
+              </p>
             </div>
-          </Card>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex items-center justify-center p-3 rounded-xl bg-neutral-950/60 border border-neutral-800 shrink-0">
+              <ScoreRing score={analysis.recruiter_attractiveness} label="Recruiter Rank" size={100} />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {renderSectionAnalysis("Headline Analysis", analysis.headline)}
             {renderSectionAnalysis("About Section Analysis", analysis.about)}
             {renderSectionAnalysis("Experience Section", analysis.experience)}
@@ -247,6 +231,6 @@ export default function LinkedInPage() {
           </div>
         </div>
       )}
-    </motion.div>
+    </div>
   );
 }
