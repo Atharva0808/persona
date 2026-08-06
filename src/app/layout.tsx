@@ -23,7 +23,7 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Persona — Candidate Readiness & Career Intelligence",
+  title: "Persona",
   description:
     "Evaluate your engineering footprint across Resume, GitHub, LinkedIn, and Skill Gap analysis to calculate your true interview readiness.",
   keywords: [
