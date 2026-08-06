@@ -2,12 +2,13 @@
 
 @layer base {
   * {
-    border-color: theme(colors.neutral.800);
+    border-color: rgba(255, 255, 255, 0.08);
   }
 
   body {
-    @apply bg-neutral-950 text-neutral-100;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    background-color: #07080b;
+    color: #f8fafc;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -23,23 +24,22 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: theme(colors.neutral.800);
+    background: rgba(255, 255, 255, 0.12);
     border-radius: 3px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: theme(colors.neutral.700);
+    background: rgba(255, 255, 255, 0.2);
   }
 
   /* Selection */
   ::selection {
-    background: theme(colors.amber.500/30);
-    color: theme(colors.amber.200);
+    background: rgba(245, 158, 11, 0.25);
+    color: #fef3c7;
   }
 }
 
 @layer components {
-  /* Page transitions */
   .page-enter {
     opacity: 0;
     transform: translateY(4px);
@@ -88,6 +88,10 @@
 }
 
 @theme {
+  --font-sans: var(--font-jakarta), system-ui, sans-serif;
+  --font-serif: var(--font-instrument), Georgia, serif;
+  --font-mono: var(--font-jetbrains), monospace;
+
   --animate-accordion-down: accordion-down 200ms ease-out;
   --animate-accordion-up: accordion-up 200ms ease-out;
   --animate-shimmer-slide: shimmer-slide var(--speed, 3s) ease-in-out infinite alternate;
