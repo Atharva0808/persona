@@ -2,12 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import {
-  ArrowRight,
-  ShieldCheck,
-  Lock,
-  Award,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { Logo } from "@/components/ui/logo";
@@ -58,23 +53,12 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <section className="relative z-10 max-w-6xl mx-auto px-6 pt-36 pb-20">
-        <div className="max-w-3xl mx-auto text-center space-y-7">
-          {/* Top Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-amber-400/20 bg-amber-400/[0.06] text-xs text-amber-300"
-          >
-            <Award className="w-3.5 h-3.5 text-amber-400" />
-            <span className="font-mono tracking-wide">Candidate Readiness & Intelligence</span>
-          </motion.div>
-
+        <div className="max-w-3xl mx-auto text-center space-y-6">
           {/* Headline with Instrument Serif Italic Accent */}
           <motion.h1
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            transition={{ duration: 0.6 }}
             className="text-4xl sm:text-5xl lg:text-6xl font-semibold text-slate-100 tracking-tight leading-[1.12]"
           >
             Know exactly where you stand <br className="hidden sm:block" />
@@ -87,7 +71,7 @@ export default function LandingPage() {
           <motion.p
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
             className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed font-normal"
           >
             Persona evaluates your resume, GitHub repositories, LinkedIn profile, and technical skills to deliver an overall interview readiness score and an actionable roadmap to improve.
@@ -97,8 +81,8 @@ export default function LandingPage() {
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-3"
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2"
           >
             <Link href="/signup" className="w-full sm:w-auto">
               <ShimmerButton
@@ -220,66 +204,44 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Enhanced CTA Section with Editorial Serif Accent */}
-      <section className="relative z-10 border-t border-white/[0.06] py-28">
-        <div className="max-w-4xl mx-auto px-6 text-center">
+      {/* Refined Compact CTA Section */}
+      <section className="relative z-10 border-t border-white/[0.06] py-24">
+        <div className="max-w-2xl mx-auto px-6 text-center">
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.7, ease: "easeOut" }}
-            className="relative rounded-3xl border border-amber-400/25 bg-gradient-to-b from-[#0f111a] via-[#0c0d13] to-[#07080b] p-10 sm:p-16 space-y-7 shadow-[0_25px_60px_-15px_rgba(245,158,11,0.08)] overflow-hidden"
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="relative rounded-3xl border border-amber-400/20 bg-gradient-to-b from-[#0f111a] via-[#0c0d13] to-[#07080b] p-8 sm:p-12 space-y-6 shadow-2xl shadow-black/80 overflow-hidden"
           >
-            {/* Ambient Background Warm Radial Glow */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-amber-500/[0.06] blur-[120px] pointer-events-none rounded-full" />
-
-            {/* Micro Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-amber-400/20 bg-amber-400/[0.08] text-xs text-amber-300">
-              <Award className="w-3.5 h-3.5 text-amber-400" />
-              <span className="font-mono tracking-wide">Instant Readiness Assessment</span>
-            </div>
+            {/* Ambient Warm Glow */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[220px] bg-amber-500/[0.05] blur-[100px] pointer-events-none rounded-full" />
 
             {/* Headline with Editorial Serif Italic Accent */}
-            <h2 className="text-3xl sm:text-5xl font-semibold text-slate-100 tracking-tight leading-tight">
+            <h2 className="text-3xl sm:text-4xl font-semibold text-slate-100 tracking-tight leading-tight">
               Ready to know where{" "}
               <em className="font-serif italic font-normal text-amber-200/95 tracking-normal">
                 you stand?
               </em>
             </h2>
 
-            <p className="text-sm sm:text-base text-slate-400 max-w-lg mx-auto leading-relaxed font-normal">
-              Create your account now and receive your complete interview readiness assessment and roadmap in under two minutes.
+            <p className="text-sm text-slate-400 max-w-md mx-auto leading-relaxed font-normal">
+              Create your account now and receive your complete interview readiness assessment and roadmap in minutes.
             </p>
 
             {/* Shimmer Button CTA */}
-            <div className="pt-2 flex justify-center">
+            <div className="pt-1 flex justify-center">
               <Link href="/signup">
                 <ShimmerButton
                   shimmerColor="#fde68a"
                   shimmerDuration="2.2s"
                   borderRadius="16px"
-                  className="h-13 px-9 text-base font-semibold text-amber-100 shadow-xl shadow-amber-950/40 group"
+                  className="h-12 px-8 text-sm font-semibold text-amber-100 shadow-xl shadow-amber-950/40 group"
                 >
                   Get Started Free
                   <ArrowRight className="w-4 h-4 ml-2 text-amber-300 group-hover:translate-x-1 transition-transform" />
                 </ShimmerButton>
               </Link>
-            </div>
-
-            {/* Value Proof Pills */}
-            <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400 font-mono pt-4 border-t border-white/[0.06] max-w-md mx-auto">
-              <span className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                No credit card required
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                Free initial audit
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                Takes &lt; 2 minutes
-              </span>
             </div>
           </motion.div>
         </div>
@@ -294,13 +256,8 @@ export default function LandingPage() {
               © {new Date().getFullYear()} Persona. All rights reserved.
             </span>
           </div>
-          <div className="flex items-center gap-6 text-xs text-slate-500">
-            <span className="flex items-center gap-1.5">
-              <Lock className="w-3.5 h-3.5 text-amber-400/80" /> Privacy First
-            </span>
-            <span className="flex items-center gap-1.5">
-              <ShieldCheck className="w-3.5 h-3.5 text-amber-400/80" /> RLS Protected
-            </span>
+          <div className="flex items-center gap-4 text-xs text-slate-500 font-mono">
+            <span>Built for software engineers.</span>
           </div>
         </div>
       </footer>
