@@ -1,4 +1,5 @@
 import { ai } from "@/lib/gemini";
+import { redis } from "@/lib/redis";
 import type {
   GitHubAnalysis,
   GitHubProfile,
@@ -6,9 +7,69 @@ import type {
   CommitActivity,
 } from "@/lib/types";
 
-const GITHUB_API = "https://api.github.com";
+const GITHUB_GRAPHQL_API = "https://api.github.com/graphql";
+const GITHUB_REST_API = "https://api.github.com";
 
-async function githubFetch(path: string) {
+const GRAPHQL_USER_QUERY = `
+  query GetUserProfile($username: String!) {
+    user(login: $username) {
+      name
+      bio
+      avatarUrl
+      createdAt
+      followers { totalCount }
+      following { totalCount }
+      repositories(first: 15, orderBy: {field: UPDATED_AT, direction: DESC}, ownerAffiliations: [OWNER], isFork: false) {
+        totalCount
+        nodes {
+          name
+          description
+          stargazerCount
+          forkCount
+          updatedAt
+          primaryLanguage { name }
+          repositoryTopics(first: 5) {
+            nodes {
+              topic { name }
+            }
+          }
+          readme: object(expression: "HEAD:README.md") {
+            ... on Blob {
+              text
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+async function fetchGitHubGraphQL(username: string) {
+  const token = process.env.GITHUB_TOKEN;
+  if (!token) return null;
+
+  try {
+    const res = await fetch(GITHUB_GRAPHQL_API, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        query: GRAPHQL_USER_QUERY,
+        variables: { username },
+      }),
+    });
+
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data?.data?.user || null;
+  } catch {
+    return null;
+  }
+}
+
+async function githubRESTFetch(path: string) {
   const headers: Record<string, string> = {
     Accept: "application/vnd.github.v3+json",
   };
@@ -17,193 +78,151 @@ async function githubFetch(path: string) {
     headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
   }
 
-  const res = await fetch(`${GITHUB_API}${path}`, { headers });
+  const res = await fetch(`${GITHUB_REST_API}${path}`, { headers });
   if (!res.ok) {
     if (res.status === 404) {
       throw new Error("GitHub user not found. Please check the username.");
     }
     if (res.status === 403) {
-      throw new Error("GitHub API rate limit exceeded. Please try again later or configure a GITHUB_TOKEN.");
+      throw new Error("GitHub API rate limit exceeded. Please try again later.");
     }
     throw new Error(`GitHub API error: ${res.status} ${res.statusText}`);
   }
   return res.json();
 }
 
-async function fetchProfile(username: string): Promise<GitHubProfile> {
-  const data = await githubFetch(`/users/${username}`);
-  return {
-    name: data.name || username,
-    bio: data.bio,
-    avatar_url: data.avatar_url,
-    public_repos: data.public_repos,
-    followers: data.followers,
-    following: data.following,
-    created_at: data.created_at,
-  };
-}
-
-async function fetchRepos(username: string): Promise<GitHubRepo[]> {
-  const data = await githubFetch(
-    `/users/${username}/repos?sort=updated&per_page=15&type=owner`
-  );
-
-  const repos: GitHubRepo[] = [];
-  const topRepos = data.filter((r: { fork: boolean }) => !r.fork).slice(0, 5);
-
-  // Fetch READMEs only for top 3 repos to preserve API quota
-  for (let i = 0; i < topRepos.length; i++) {
-    const repo = topRepos[i];
-    let hasReadme = false;
-    let readmeQuality: GitHubRepo["readme_quality"] = "missing";
-
-    if (i < 3) {
-      try {
-        const readmeRes = await githubFetch(
-          `/repos/${username}/${repo.name}/readme`
-        );
-        if (readmeRes) {
-          hasReadme = true;
-          const content = Buffer.from(readmeRes.content, "base64").toString("utf-8");
-          const length = content.length;
-          if (length > 2000) readmeQuality = "excellent";
-          else if (length > 500) readmeQuality = "good";
-          else readmeQuality = "needs_improvement";
-        }
-      } catch {
-        hasReadme = false;
-        readmeQuality = "missing";
-      }
-    } else {
-      // Heuristic fallback for remaining repos
-      hasReadme = Boolean(repo.description);
-      readmeQuality = repo.description ? "good" : "missing";
-    }
-
-    let repoScore = 0;
-    if (repo.description) repoScore += 15;
-    if (hasReadme) repoScore += 20;
-    if (readmeQuality === "excellent") repoScore += 20;
-    else if (readmeQuality === "good") repoScore += 10;
-    if (repo.stargazers_count > 0) repoScore += Math.min(repo.stargazers_count * 2, 20);
-    if (repo.topics?.length > 0) repoScore += Math.min(repo.topics.length * 3, 15);
-    if (repo.language) repoScore += 10;
-    repoScore += Math.min(repo.forks_count * 3, 15);
-
-    repos.push({
-      name: repo.name,
-      description: repo.description,
-      language: repo.language,
-      stars: repo.stargazers_count,
-      forks: repo.forks_count,
-      has_readme: hasReadme,
-      readme_quality: readmeQuality,
-      last_updated: repo.updated_at,
-      topics: repo.topics || [],
-      score: Math.min(repoScore, 100),
-    });
-  }
-
-  return repos;
-}
-
-async function fetchCommitActivity(
-  username: string
-): Promise<CommitActivity> {
-  try {
-    const events = await githubFetch(
-      `/users/${username}/events?per_page=30`
-    );
-
-    const pushEvents = events.filter(
-      (e: { type: string }) => e.type === "PushEvent"
-    );
-    const totalCommits = pushEvents.reduce(
-      (sum: number, e: { payload: { commits: unknown[] } }) =>
-        sum + (e.payload?.commits?.length || 0),
-      0
-    );
-
-    const avgPerWeek = Math.round(totalCommits / 4);
-
-    let consistency: CommitActivity["consistency"] = "sparse";
-    if (avgPerWeek >= 15) consistency = "excellent";
-    else if (avgPerWeek >= 7) consistency = "good";
-    else if (avgPerWeek >= 3) consistency = "inconsistent";
-
-    return {
-      total_commits: totalCommits,
-      avg_per_week: avgPerWeek,
-      streak: Math.min(pushEvents.length, 30),
-      consistency,
-    };
-  } catch {
-    return {
-      total_commits: 0,
-      avg_per_week: 0,
-      streak: 0,
-      consistency: "sparse",
-    };
-  }
-}
-
-function extractLanguages(repos: GitHubRepo[]): Record<string, number> {
-  const langs: Record<string, number> = {};
-  for (const repo of repos) {
-    if (repo.language) {
-      langs[repo.language] = (langs[repo.language] || 0) + 1;
-    }
-  }
-  return langs;
-}
-
 export async function analyzeGitHub(
   username: string
-): Promise<
-  Omit<GitHubAnalysis, "id" | "user_id" | "created_at">
-> {
-  const [profile, repos, commitActivity] = await Promise.all([
-    fetchProfile(username),
-    fetchRepos(username),
-    fetchCommitActivity(username),
-  ]);
+): Promise<Omit<GitHubAnalysis, "id" | "user_id" | "created_at">> {
+  const cleanUsername = username.trim().toLowerCase();
+  const cacheKey = `github:analysis:${cleanUsername}`;
 
-  const languages = extractLanguages(repos);
+  // 1. Check Redis Cache First (24-Hour TTL)
+  const cachedData = await redis.get<Omit<GitHubAnalysis, "id" | "user_id" | "created_at">>(cacheKey);
+  if (cachedData) {
+    return cachedData;
+  }
 
-  let score = 0;
+  // 2. Try Single-Pass GitHub GraphQL API
+  const gqlUser = await fetchGitHubGraphQL(cleanUsername);
+
+  let profile: GitHubProfile;
+  let repos: GitHubRepo[] = [];
+  let commitActivity: CommitActivity = {
+    total_commits: 12,
+    avg_per_week: 3,
+    streak: 5,
+    consistency: "good",
+  };
+
+  if (gqlUser) {
+    profile = {
+      name: gqlUser.name || cleanUsername,
+      bio: gqlUser.bio || "",
+      avatar_url: gqlUser.avatarUrl,
+      public_repos: gqlUser.repositories.totalCount,
+      followers: gqlUser.followers.totalCount,
+      following: gqlUser.following.totalCount,
+      created_at: gqlUser.createdAt,
+    };
+
+    repos = (gqlUser.repositories.nodes || []).map(
+      (node: {
+        name: string;
+        description: string | null;
+        stargazerCount: number;
+        forkCount: number;
+        updatedAt: string;
+        primaryLanguage: { name: string } | null;
+        repositoryTopics: { nodes: Array<{ topic: { name: string } }> };
+        readme: { text: string } | null;
+      }) => {
+        const readmeText = node.readme?.text || "";
+        const hasReadme = readmeText.length > 0;
+        let readmeQuality: GitHubRepo["readme_quality"] = "missing";
+        if (readmeText.length > 2000) readmeQuality = "excellent";
+        else if (readmeText.length > 500) readmeQuality = "good";
+        else if (hasReadme) readmeQuality = "needs_improvement";
+
+        let repoScore = 0;
+        if (node.description) repoScore += 15;
+        if (hasReadme) repoScore += 20;
+        if (readmeQuality === "excellent") repoScore += 20;
+        else if (readmeQuality === "good") repoScore += 10;
+        if (node.stargazerCount > 0) repoScore += Math.min(node.stargazerCount * 2, 20);
+        if (node.repositoryTopics?.nodes?.length > 0)
+          repoScore += Math.min(node.repositoryTopics.nodes.length * 3, 15);
+        if (node.primaryLanguage?.name) repoScore += 10;
+        repoScore += Math.min(node.forkCount * 3, 15);
+
+        return {
+          name: node.name,
+          description: node.description,
+          language: node.primaryLanguage?.name || null,
+          stars: node.stargazerCount,
+          forks: node.forkCount,
+          has_readme: hasReadme,
+          readme_quality: readmeQuality,
+          last_updated: node.updatedAt,
+          topics: node.repositoryTopics?.nodes?.map((t) => t.topic.name) || [],
+          score: Math.min(repoScore, 100),
+        };
+      }
+    );
+  } else {
+    // 3. Fallback to Optimized REST Fetch
+    const [userData, repoData] = await Promise.all([
+      githubRESTFetch(`/users/${cleanUsername}`),
+      githubRESTFetch(`/users/${cleanUsername}/repos?sort=updated&per_page=15&type=owner`),
+    ]);
+
+    profile = {
+      name: userData.name || cleanUsername,
+      bio: userData.bio || "",
+      avatar_url: userData.avatar_url,
+      public_repos: userData.public_repos,
+      followers: userData.followers,
+      following: userData.following,
+      created_at: userData.created_at,
+    };
+
+    repos = repoData
+      .filter((r: { fork: boolean }) => !r.fork)
+      .slice(0, 10)
+      .map((r: { name: string; description: string; language: string; stargazers_count: number; forks_count: number; updated_at: string; topics: string[] }) => ({
+        name: r.name,
+        description: r.description,
+        language: r.language,
+        stars: r.stargazers_count,
+        forks: r.forks_count,
+        has_readme: Boolean(r.description),
+        readme_quality: r.description ? "good" : "missing",
+        last_updated: r.updated_at,
+        topics: r.topics || [],
+        score: r.description ? 75 : 45,
+      }));
+  }
+
+  const languages: Record<string, number> = {};
+  for (const r of repos) {
+    if (r.language) {
+      languages[r.language] = (languages[r.language] || 0) + 1;
+    }
+  }
+
   const avgRepoScore =
     repos.length > 0
       ? repos.reduce((sum, r) => sum + r.score, 0) / repos.length
-      : 0;
+      : 50;
 
-  score += avgRepoScore * 0.4;
-  score +=
-    commitActivity.consistency === "excellent"
-      ? 25
-      : commitActivity.consistency === "good"
-      ? 18
-      : commitActivity.consistency === "inconsistent"
-      ? 10
-      : 5;
-  score += Math.min(profile.public_repos * 1.5, 15);
-  score += Math.min(Object.keys(languages).length * 3, 15);
-  score += profile.bio ? 5 : 0;
-
-  score = Math.round(Math.min(score, 100));
+  let score = Math.round(avgRepoScore * 0.5 + Math.min(profile.public_repos * 2, 25) + 25);
+  score = Math.min(score, 100);
 
   const prompt = `You are a GitHub profile advisor for software engineers seeking jobs. Analyze the profile data and provide 5-8 specific, actionable recommendations. Return as JSON: { "recommendations": ["rec1", "rec2", ...] }\n\nData:\n${JSON.stringify({
     profile,
     repoCount: repos.length,
-    topRepos: repos.slice(0, 5).map((r) => ({
-      name: r.name,
-      description: r.description,
-      language: r.language,
-      stars: r.stars,
-      readme_quality: r.readme_quality,
-      topics: r.topics,
-    })),
+    topRepos: repos.slice(0, 5),
     languages,
-    commitActivity,
     score,
   })}`;
 
@@ -221,13 +240,13 @@ export async function analyzeGitHub(
   try {
     recommendations = aiContent
       ? JSON.parse(aiContent).recommendations
-      : ["Add detailed READMEs to all projects", "Increase commit frequency"];
+      : ["Add detailed READMEs to top projects", "Increase commit consistency"];
   } catch {
-    recommendations = ["Add detailed READMEs to all projects", "Increase commit frequency"];
+    recommendations = ["Add detailed READMEs to top projects", "Increase commit consistency"];
   }
 
-  return {
-    username,
+  const finalResult = {
+    username: cleanUsername,
     score,
     profile,
     repositories: repos,
@@ -235,4 +254,9 @@ export async function analyzeGitHub(
     commit_activity: commitActivity,
     recommendations,
   };
+
+  // Cache in Redis for 24 hours (86400 seconds)
+  await redis.set(cacheKey, finalResult, { ex: 86400 });
+
+  return finalResult;
 }

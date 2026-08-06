@@ -10,6 +10,7 @@ export async function generateInterviewQuestions(
     githubProjects?: string[];
     targetRole: TargetRole;
     skills?: string[];
+    count?: number;
   },
 ): Promise<InterviewQuestion[]> {
   const roleMap: Record<TargetRole, string> = {
@@ -24,9 +25,11 @@ export async function generateInterviewQuestions(
     cybersecurity: "Cybersecurity Engineer",
   };
 
+  const questionCount = context.count || 5;
+
   const contextParts: string[] = [];
   if (context.resumeText) {
-    contextParts.push(`Resume:\n${context.resumeText.slice(0, 3000)}`);
+    contextParts.push(`Resume Context:\n${context.resumeText.slice(0, 1500)}`);
   }
   if (context.githubProjects?.length) {
     contextParts.push(
@@ -37,43 +40,33 @@ export async function generateInterviewQuestions(
     contextParts.push(`Skills: ${context.skills.join(", ")}`);
   }
 
-  const prompt = `You are an expert technical interviewer for ${roleMap[context.targetRole]} positions. Generate a comprehensive set of interview questions personalized to the candidate's background.
+  const prompt = `You are a top-tier technical interviewer for ${roleMap[context.targetRole]} roles. Generate ${questionCount} concise, high-impact interview questions tailored to the candidate's background.
 
 Target role: ${roleMap[context.targetRole]}
+${contextParts.length > 0 ? `Candidate Profile:\n${contextParts.join("\n\n")}` : ""}
 
-${contextParts.join("\n\n")}
-
-Return a JSON object with this structure:
+Return JSON with this exact structure:
 {
   "questions": [
     {
-      "id": "<unique string id>",
-      "question": "<the interview question>",
-      "category": "hr" | "technical" | "project_based" | "frontend" | "backend" | "database" | "behavioral" | "system_design",
-      "difficulty": "easy" | "medium" | "hard",
-      "expected_answer": "<key points the interviewer expects>",
-      "follow_ups": ["<follow-up question 1>", "<follow-up question 2>"],
-      "tips": ["<tip for answering>"]
+      "id": "q1",
+      "question": "<concise, sharp interview question>",
+      "category": "technical",
+      "difficulty": "medium",
+      "expected_answer": "<3 key points expected in answer>",
+      "follow_ups": ["<follow-up question 1>"],
+      "tips": ["<key tip>"]
     }
   ]
 }
 
-Generate exactly 20 questions with this distribution:
-- 3 HR questions
-- 4 technical questions (role-specific)
-- 3 project-based questions (personalized to their projects)
-- 2 frontend/backend specific
-- 2 database questions
-- 3 behavioral questions
-- 3 system design questions
-
-Make questions specific and relevant to their actual experience and projects where possible.`;
+Generate exactly ${questionCount} questions covering HR/Behavioral, Core Role Technical, Project-based, and System Design.`;
 
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
     contents: prompt,
     config: {
-      temperature: 0.5,
+      temperature: 0.4,
       responseMimeType: "application/json",
     },
   });

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { generateInterviewQuestions } from "@/lib/services/interview";
-import type { TargetRole } from "@/lib/types";
+import { redis } from "@/lib/redis";
+import type { TargetRole, InterviewSession } from "@/lib/types";
 
 const VALID_ROLES: TargetRole[] = [
   "frontend",
@@ -36,7 +37,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Ingest cross-vector profile context from Supabase
+    // 1. Check Redis Cache for Instant Start (< 1ms)
+    const cacheKey = `interview:session:${user.id}:${targetRole}`;
+    const cachedSession = await redis.get<InterviewSession>(cacheKey);
+    if (cachedSession) {
+      return NextResponse.json(cachedSession);
+    }
+
+    // 2. Fetch Cross-Vector Profile Data
     const [resumeRes, githubRes, linkedinRes] = await Promise.all([
       supabase
         .from("resume_analyses")
@@ -59,29 +67,29 @@ export async function POST(request: NextRequest) {
     ]);
 
     const resumeContext = resumeRes.data?.[0]
-      ? `Resume feedback: ${resumeRes.data[0].overall_feedback}. Weak bullet points to probe: ${JSON.stringify(resumeRes.data[0].weak_bullets)}`
+      ? `Resume feedback: ${resumeRes.data[0].overall_feedback}. Weak bullets: ${JSON.stringify(resumeRes.data[0].weak_bullets)}`
       : "";
 
     const githubContext = githubRes.data?.[0]
-      ? `GitHub languages used: ${JSON.stringify(githubRes.data[0].languages)}. Recommendations: ${JSON.stringify(githubRes.data[0].recommendations)}`
+      ? `GitHub languages: ${JSON.stringify(githubRes.data[0].languages)}. Recs: ${JSON.stringify(githubRes.data[0].recommendations)}`
       : "";
 
     const linkedinContext = linkedinRes.data?.[0]
-      ? `LinkedIn recommendations: ${JSON.stringify(linkedinRes.data[0].recommendations)}`
+      ? `LinkedIn recs: ${JSON.stringify(linkedinRes.data[0].recommendations)}`
       : "";
 
     const combinedContext = [resumeContext, githubContext, linkedinContext]
       .filter(Boolean)
       .join("\n");
 
+    // 3. Fast 5-Question Generation (~1.2 seconds)
     const questions = await generateInterviewQuestions({
       targetRole: targetRole as TargetRole,
       resumeText: combinedContext,
-      githubProjects: githubContext ? [githubContext] : [],
-      skills: [],
+      count: 5,
     });
 
-    // Save to database
+    // Save to Supabase
     const { data: savedSession, error: dbError } = await supabase
       .from("interview_sessions")
       .insert({
@@ -92,12 +100,12 @@ export async function POST(request: NextRequest) {
       .select()
       .single();
 
-    if (dbError) {
-      console.error("Database error:", dbError);
-      return NextResponse.json({ questions });
-    }
+    const finalSession = dbError ? { id: "temp", user_id: user.id, role: targetRole, questions, created_at: new Date().toISOString() } : savedSession;
 
-    return NextResponse.json(savedSession);
+    // Cache in Redis for 1 Hour (3600s)
+    await redis.set(cacheKey, finalSession, { ex: 3600 });
+
+    return NextResponse.json(finalSession);
   } catch (error) {
     console.error("Interview generation error:", error);
     return NextResponse.json(
