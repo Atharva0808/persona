@@ -10,50 +10,64 @@ import {
   Target,
   MessageSquare,
   LogOut,
-  ChevronLeft,
+  Settings,
+  HelpCircle,
+  Sparkles,
 } from "lucide-react";
 import { GithubIcon as Github, LinkedinIcon as Linkedin } from "@/components/icons";
 import { Logo } from "@/components/ui/logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { getInitials } from "@/lib/utils";
 
-const navigation = [
+const menuItems = [
   {
     label: "Dashboard",
     href: "/dashboard",
     icon: LayoutDashboard,
+    badge: undefined,
   },
   {
-    label: "Resume Analysis",
+    label: "Resume Audit",
     href: "/resume",
     icon: FileText,
+    badge: undefined,
   },
   {
-    label: "GitHub Audit",
+    label: "GitHub Analysis",
     href: "/github",
     icon: Github,
+    badge: undefined,
   },
   {
     label: "LinkedIn Review",
     href: "/linkedin",
     icon: Linkedin,
+    badge: undefined,
   },
   {
     label: "Skill Gap Matrix",
     href: "/skills",
     icon: Target,
+    badge: undefined,
   },
   {
-    label: "AI Interview Prep",
+    label: "Mock Interview",
     href: "/interview",
     icon: MessageSquare,
+    badge: "20 Qs",
+  },
+];
+
+const generalItems = [
+  {
+    label: "Settings",
+    href: "/settings",
+    icon: Settings,
+  },
+  {
+    label: "Help & Docs",
+    href: "#",
+    icon: HelpCircle,
   },
 ];
 
@@ -71,137 +85,159 @@ interface SidebarProps {
 export function Sidebar({
   user,
   collapsed = false,
-  onCollapse,
   onSignOut,
 }: SidebarProps) {
   const pathname = usePathname();
 
   return (
-    <TooltipProvider delayDuration={0}>
-      <aside
-        className={cn(
-          "flex flex-col h-full border-r border-white/[0.06] bg-[#08090d] transition-all duration-300 z-20",
-          collapsed ? "w-16" : "w-64"
+    <aside
+      className={cn(
+        "flex flex-col h-full bg-white border-r border-[#E5EBE5] transition-all duration-300 z-20 select-none",
+        collapsed ? "w-20" : "w-64"
+      )}
+    >
+      {/* Brand Header */}
+      <div className="flex items-center gap-3 px-6 h-20">
+        <Logo size={32} />
+        {!collapsed && (
+          <span className="text-xl font-bold text-[#111827] tracking-tight font-[family-name:var(--font-display)]">
+            persona
+          </span>
         )}
-      >
-        {/* Logo */}
-        <div className="flex items-center gap-3 px-4 h-16 border-b border-white/[0.06]">
-          <Logo size={26} />
-          {!collapsed && (
-            <span className="text-base font-bold text-slate-100 tracking-tight font-mono">
-              persona
-            </span>
-          )}
-          <button
-            onClick={onCollapse}
-            className={cn(
-              "ml-auto p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer",
-              collapsed && "ml-0"
-            )}
-          >
-            <ChevronLeft
-              className={cn(
-                "h-4 w-4 transition-transform duration-300",
-                collapsed && "rotate-180"
-              )}
-            />
-          </button>
-        </div>
+      </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 px-3 py-4 space-y-1">
-          {navigation.map((item) => {
-            const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
-            const link = (
+      {/* Main Navigation */}
+      <div className="flex-1 px-4 py-2 space-y-6 overflow-y-auto">
+        {/* Section: MENU */}
+        <div className="space-y-1">
+          {!collapsed && (
+            <div className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider px-3 mb-2">
+              Menu
+            </div>
+          )}
+          {menuItems.map((item) => {
+            const isActive =
+              pathname === item.href ||
+              (item.href !== "/dashboard" && pathname.startsWith(item.href));
+            return (
               <Link
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all duration-200",
+                  "flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group",
                   isActive
-                    ? "bg-white/[0.07] text-amber-300 font-semibold border-l-2 border-amber-400 shadow-sm"
-                    : "text-slate-400 hover:text-slate-200 hover:bg-white/[0.03]"
+                    ? "bg-[#EAF5EE] text-[#113D2B] font-semibold"
+                    : "text-[#6B7280] hover:text-[#111827] hover:bg-[#F4F7F4]"
                 )}
               >
-                <item.icon className={cn("h-4 w-4 shrink-0", isActive ? "text-amber-400" : "text-slate-400")} />
+                <div className="flex items-center gap-3 min-w-0">
+                  <item.icon
+                    className={cn(
+                      "w-4 h-4 shrink-0 transition-colors",
+                      isActive
+                        ? "text-[#113D2B]"
+                        : "text-[#9CA3AF] group-hover:text-[#111827]"
+                    )}
+                  />
+                  {!collapsed && <span className="truncate">{item.label}</span>}
+                </div>
+                {!collapsed && item.badge && (
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#113D2B] text-white">
+                    {item.badge}
+                  </span>
+                )}
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* Section: GENERAL */}
+        <div className="space-y-1">
+          {!collapsed && (
+            <div className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider px-3 mb-2">
+              General
+            </div>
+          )}
+          {generalItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.label}
+                href={item.href}
+                className={cn(
+                  "flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group",
+                  isActive
+                    ? "bg-[#EAF5EE] text-[#113D2B] font-semibold"
+                    : "text-[#6B7280] hover:text-[#111827] hover:bg-[#F4F7F4]"
+                )}
+              >
+                <item.icon
+                  className={cn(
+                    "w-4 h-4 shrink-0 transition-colors",
+                    isActive
+                      ? "text-[#113D2B]"
+                      : "text-[#9CA3AF] group-hover:text-[#111827]"
+                  )}
+                />
                 {!collapsed && <span>{item.label}</span>}
               </Link>
             );
-
-            if (collapsed) {
-              return (
-                <Tooltip key={item.href}>
-                  <TooltipTrigger asChild>{link}</TooltipTrigger>
-                  <TooltipContent side="right" className="bg-[#0c0d12] border-white/10 text-slate-200 text-xs">
-                    {item.label}
-                  </TooltipContent>
-                </Tooltip>
-              );
-            }
-
-            return link;
           })}
-        </nav>
 
-        <div className="px-4">
-          <Separator className="bg-white/[0.06]" />
+          {/* Logout Button */}
+          <button
+            onClick={onSignOut}
+            className="flex items-center gap-3 w-full px-3.5 py-2.5 rounded-xl text-sm font-medium text-[#6B7280] hover:text-rose-600 hover:bg-rose-50 transition-all duration-200 group cursor-pointer"
+          >
+            <LogOut className="w-4 h-4 shrink-0 text-[#9CA3AF] group-hover:text-rose-600 transition-colors" />
+            {!collapsed && <span>Logout</span>}
+          </button>
         </div>
+      </div>
 
-        {/* User Signout Action */}
-        <div className="px-3 py-3 space-y-1">
-          {collapsed ? (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={onSignOut}
-                  className="flex items-center justify-center w-full px-3 py-2.5 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
-                >
-                  <LogOut className="h-4 w-4" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="right" className="bg-[#0c0d12] border-white/10 text-slate-200 text-xs">
-                Sign out
-              </TooltipContent>
-            </Tooltip>
-          ) : (
-            <button
-              onClick={onSignOut}
-              className="flex items-center gap-3 w-full px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
-            >
-              <LogOut className="h-4 w-4" />
-              <span>Sign out</span>
-            </button>
-          )}
-        </div>
-
-        <div className="px-4">
-          <Separator className="bg-white/[0.06]" />
-        </div>
-
-        {/* User avatar */}
-        {user && (
-          <div className={cn("px-4 py-4", collapsed && "flex justify-center px-2")}>
-            <div className="flex items-center gap-3">
-              <Avatar className="h-9 w-9 border border-amber-500/30">
-                {user.avatar_url && <AvatarImage src={user.avatar_url} />}
-                <AvatarFallback className="text-xs bg-amber-500/10 text-amber-300 font-bold font-mono">
-                  {getInitials(user.full_name || user.email)}
-                </AvatarFallback>
-              </Avatar>
-              {!collapsed && (
-                <div className="flex flex-col min-w-0">
-                  <span className="text-xs font-semibold text-slate-200 truncate">
-                    {user.full_name || "Engineer"}
-                  </span>
-                  <span className="text-[11px] text-slate-400 truncate font-mono">
-                    {user.email}
-                  </span>
-                </div>
-              )}
+      {/* Bottom Promo / Feature Card (Donezo Style) */}
+      {!collapsed && (
+        <div className="p-4">
+          <div className="rounded-2xl bg-gradient-to-b from-[#164E35] to-[#0E3323] p-4 text-white relative overflow-hidden shadow-lg shadow-[#113D2B]/15">
+            <div className="relative z-10 space-y-2">
+              <div className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center text-[#4ADE80]">
+                <Sparkles className="w-4 h-4" />
+              </div>
+              <div className="text-xs font-bold leading-tight">
+                Unlock Full AI Prep
+              </div>
+              <p className="text-[11px] text-white/70 leading-relaxed">
+                Get unlimited mock interviews & resume rewrites.
+              </p>
+              <button className="w-full mt-2 py-2 rounded-xl bg-[#22C55E] hover:bg-[#16A34A] text-[#0A261A] text-xs font-bold transition-colors cursor-pointer shadow-sm">
+                Upgrade Pro
+              </button>
             </div>
           </div>
-        )}
-      </aside>
-    </TooltipProvider>
+        </div>
+      )}
+
+      {/* User Footer Profile */}
+      {user && (
+        <div className="p-4 border-t border-[#E5EBE5] flex items-center gap-3">
+          <Avatar className="h-9 w-9 border border-[#E5EBE5]">
+            {user.avatar_url && <AvatarImage src={user.avatar_url} />}
+            <AvatarFallback className="text-xs bg-[#EAF5EE] text-[#113D2B] font-bold font-mono">
+              {getInitials(user.full_name || user.email)}
+            </AvatarFallback>
+          </Avatar>
+          {!collapsed && (
+            <div className="flex flex-col min-w-0">
+              <span className="text-xs font-bold text-[#111827] truncate">
+                {user.full_name || "Engineer"}
+              </span>
+              <span className="text-[11px] text-[#6B7280] truncate font-mono">
+                {user.email}
+              </span>
+            </div>
+          )}
+        </div>
+      )}
+    </aside>
   );
 }
