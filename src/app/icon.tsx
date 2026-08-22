@@ -10,27 +10,79 @@ export const size = {
 };
 export const contentType = "image/png";
 
-// Image generation
+// Image generation for favicon / app icon
 export default function Icon() {
   return new ImageResponse(
     (
-      <svg
-        width="32"
-        height="32"
-        viewBox="0 0 120 120"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "transparent",
+        }}
       >
-        <polygon points="15,10 5,60 35,45" fill="#52525b" />
-        <polygon points="105,10 115,60 85,45" fill="#3f3f46" />
-        <polygon points="15,10 35,45 60,25" fill="#a1a1aa" />
-        <polygon points="105,10 85,45 60,25" fill="#71717a" />
-        <polygon points="5,60 35,45 60,110" fill="#f4f4f5" />
-        <polygon points="115,60 85,45 60,110" fill="#e4e4e7" />
-        <polygon points="35,45 60,25 60,110" fill="#52525b" />
-        <polygon points="85,45 60,25 60,110" fill="#3f3f46" />
-        <polygon points="50,84 70,84 60,110" fill="#09090b" />
-      </svg>
+        <svg
+          width="32"
+          height="32"
+          viewBox="0 0 100 100"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          {/* Soft rounded squircle badge */}
+          <rect
+            x="5"
+            y="5"
+            width="90"
+            height="90"
+            rx="26"
+            fill="#FFFDF7"
+            stroke="#121316"
+            strokeWidth="7"
+          />
+
+          {/* Eyebrows */}
+          <path
+            d="M28 30 C32 26, 38 26, 42 30"
+            stroke="#121316"
+            strokeWidth="5"
+            strokeLinecap="round"
+            fill="none"
+          />
+          <path
+            d="M58 30 C62 26, 68 26, 72 30"
+            stroke="#121316"
+            strokeWidth="5"
+            strokeLinecap="round"
+            fill="none"
+          />
+
+          {/* Left glossy eye */}
+          <ellipse cx="35" cy="46" rx="9" ry="11" fill="#121316" />
+          <circle cx="32" cy="42" r="3.5" fill="#FFFFFF" />
+          <circle cx="38" cy="49" r="1.8" fill="#FFFFFF" />
+
+          {/* Right glossy eye */}
+          <ellipse cx="65" cy="46" rx="9" ry="11" fill="#121316" />
+          <circle cx="62" cy="42" r="3.5" fill="#FFFFFF" />
+          <circle cx="68" cy="49" r="1.8" fill="#FFFFFF" />
+
+          {/* Pink blush cheeks */}
+          <ellipse cx="22" cy="58" rx="8.5" ry="5" fill="#FF7E70" />
+          <ellipse cx="78" cy="58" rx="8.5" ry="5" fill="#FF7E70" />
+
+          {/* Happy smile */}
+          <path
+            d="M37 56 C37 73, 63 73, 63 56"
+            fill="#FF6B6B"
+            stroke="#121316"
+            strokeWidth="6"
+            strokeLinecap="round"
+          />
+        </svg>
+      </div>
     ),
     { ...size }
   );
