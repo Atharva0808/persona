@@ -175,14 +175,14 @@ export default function LandingPage() {
           </div>
         </motion.div>
 
-        {/* Right block — green, serif accent + CTA */}
+        {/* Right block — lighter vibrant green, serif accent + CTA */}
         <motion.div
           {...fadeUp(0.5)}
-          className="bg-[#0D6B4F] text-[#FAFAF8] p-8 sm:p-12 flex flex-col justify-between min-h-[50vh] md:min-h-0"
+          className="bg-[#20B277] text-[#FAFAF8] p-8 sm:p-12 flex flex-col justify-between min-h-[50vh] md:min-h-0"
         >
           <motion.div
             {...fadeUp(0.7)}
-            className="text-xs uppercase tracking-[0.2em] text-[#FAFAF8]/50 font-[family-name:var(--font-display)]"
+            className="text-xs uppercase tracking-[0.2em] text-[#FAFAF8]/70 font-[family-name:var(--font-display)]"
           >
             For Software Engineers
           </motion.div>
@@ -190,7 +190,7 @@ export default function LandingPage() {
             <div className="overflow-hidden">
               <motion.p
                 {...slideUp(0.8)}
-                className="font-serif italic text-[clamp(2.5rem,6vw,5rem)] leading-[1] text-[#FAFAF8]/95 tracking-[-0.01em]"
+                className="font-serif italic text-[clamp(2.5rem,6vw,5rem)] leading-[1] text-[#FAFAF8] tracking-[-0.01em]"
               >
                 before
                 <br />
@@ -200,7 +200,7 @@ export default function LandingPage() {
             <motion.div {...fadeUp(1.1)}>
               <Link
                 href="/signup"
-                className="inline-block mt-8 text-sm font-semibold text-[#FAFAF8] border-b-2 border-[#FAFAF8]/60 pb-1 hover:border-[#FAFAF8] transition-colors font-[family-name:var(--font-display)]"
+                className="inline-block mt-8 text-sm font-semibold text-[#FAFAF8] border-b-2 border-[#FAFAF8]/70 pb-1 hover:border-[#FAFAF8] hover:text-white transition-colors font-[family-name:var(--font-display)]"
               >
                 Get Started →
               </Link>
