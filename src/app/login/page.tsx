@@ -67,8 +67,8 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="flex items-center gap-3 mb-8">
-          <Logo size={24} />
-          <span className="text-sm font-semibold text-neutral-100 tracking-tight">
+          <Logo size={32} />
+          <span className="text-base font-bold text-neutral-100 tracking-tight">
             persona
           </span>
         </div>

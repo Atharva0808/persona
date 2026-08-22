@@ -103,9 +103,9 @@ export default function LandingPage() {
         transition={{ duration: 0.5 }}
         className="w-full px-6 sm:px-10 py-5 flex items-center justify-between bg-[#0A0A0A] text-[#FAFAF8]"
       >
-        <Link href="/" className="flex items-center gap-2.5">
-          <Logo size={28} />
-          <span className="text-lg font-bold tracking-tight font-[family-name:var(--font-display)]">
+        <Link href="/" className="flex items-center gap-3">
+          <Logo size={36} />
+          <span className="text-xl font-bold tracking-tight font-[family-name:var(--font-display)]">
             persona
           </span>
         </Link>
@@ -390,7 +390,7 @@ export default function LandingPage() {
       {/* ─── Footer ─── */}
       <footer className="bg-[#0A0A0A] text-[#FAFAF8]/40 px-6 sm:px-10 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-[#FAFAF8]/8">
         <span className="flex items-center gap-2 text-xs font-[family-name:var(--font-display)]">
-          <Logo size={18} />
+          <Logo size={20} />
           persona
         </span>
         <span className="text-xs">
