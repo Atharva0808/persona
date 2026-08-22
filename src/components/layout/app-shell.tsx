@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { LogOut } from "lucide-react";
 import { Sidebar } from "./sidebar";
 import { createClient } from "@/lib/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -87,16 +88,16 @@ export function AppShell({ children, user }: AppShellProps) {
             <span className="font-semibold text-[#111827]">{currentInfo.title}</span>
           </div>
 
-          {/* Right User Profile Pill */}
+          {/* Right User Profile Pill with integrated Logout */}
           {user && (
-            <div className="flex items-center gap-3 pl-2 pr-4 py-1 rounded-full bg-white border border-[#E5EBE5] shadow-2xs">
+            <div className="flex items-center gap-3 pl-2 pr-2 py-1 rounded-full bg-white border border-[#E5EBE5] shadow-2xs">
               <Avatar className="h-7 w-7 border border-[#E5EBE5]">
                 {user.avatar_url && <AvatarImage src={user.avatar_url} />}
                 <AvatarFallback className="text-[11px] bg-[#EAF5EE] text-[#113D2B] font-bold font-mono">
                   {getInitials(user.full_name || user.email)}
                 </AvatarFallback>
               </Avatar>
-              <div className="flex flex-col text-left">
+              <div className="flex flex-col text-left pr-1">
                 <span className="text-xs font-bold text-[#111827] leading-tight">
                   {user.full_name || user.email.split("@")[0]}
                 </span>
@@ -104,6 +105,13 @@ export function AppShell({ children, user }: AppShellProps) {
                   {user.email}
                 </span>
               </div>
+              <button
+                onClick={handleSignOut}
+                title="Sign out"
+                className="p-1.5 rounded-full hover:bg-rose-50 text-[#9CA3AF] hover:text-rose-600 transition-colors cursor-pointer"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
             </div>
           )}
         </header>

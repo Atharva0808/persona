@@ -190,32 +190,14 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-7 pb-10 text-[#111827]">
-      {/* ─── Page Title & Action Header (Donezo Style) ─── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#111827] tracking-tight">
-            Dashboard
-          </h1>
-          <p className="text-xs sm:text-sm text-[#6B7280] font-normal mt-1">
-            Candidate interview readiness overview and assessment engines.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-3 shrink-0">
-          <Link
-            href="/resume"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#113D2B] hover:bg-[#0D3122] text-white text-xs font-bold transition-all shadow-sm cursor-pointer"
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Start Analysis</span>
-          </Link>
-          <Link
-            href="/interview"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white hover:bg-[#F0F5F0] border border-[#113D2B] text-[#113D2B] text-xs font-bold transition-all cursor-pointer shadow-2xs"
-          >
-            Practice Mock
-          </Link>
-        </div>
+      {/* ─── Page Title Header (Donezo Style) ─── */}
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#111827] tracking-tight">
+          Dashboard
+        </h1>
+        <p className="text-xs sm:text-sm text-[#6B7280] font-normal mt-1">
+          Candidate interview readiness overview and assessment engines.
+        </p>
       </div>
 
       {/* ─── Top 4 Metric Cards Grid (Donezo Style) ─── */}
