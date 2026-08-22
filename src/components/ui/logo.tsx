@@ -1,25 +1,39 @@
 import React from "react";
 
-export function Logo({ className = "", size = 32 }: { className?: string, size?: number }) {
+/**
+ * Emoji-style logo for Persona.
+ * A simple, warm face — round head with two dot eyes and a subtle smile.
+ * Inspired by Notion's emoji-as-logo approach.
+ * Works at any size from 16px favicon to large display.
+ */
+export function Logo({ className = "", size = 32, color = "currentColor" }: { className?: string; size?: number; color?: string }) {
   return (
-      <svg
-        width={size}
-        height={size}
-        viewBox="0 0 120 120"
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 120 120"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      aria-label="Persona logo"
+    >
+      {/* Face — rounded square, like an app icon / emoji container */}
+      <rect x="6" y="6" width="108" height="108" rx="30" fill={color} />
+
+      {/* Left eye */}
+      <ellipse cx="43" cy="52" rx="9" ry="10" fill="white" />
+
+      {/* Right eye */}
+      <ellipse cx="77" cy="52" rx="9" ry="10" fill="white" />
+
+      {/* Smile — a subtle, friendly curve */}
+      <path
+        d="M44 78 Q60 92 76 78"
+        stroke="white"
+        strokeWidth="6"
         fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className={className}
-      >
-        {/* Geometric Low-Poly Fox mascot - Graphite & Silver */}
-        <polygon points="15,10 5,60 35,45" fill="#52525b" />
-        <polygon points="105,10 115,60 85,45" fill="#3f3f46" />
-        <polygon points="15,10 35,45 60,25" fill="#a1a1aa" />
-        <polygon points="105,10 85,45 60,25" fill="#71717a" />
-        <polygon points="5,60 35,45 60,110" fill="#f4f4f5" />
-        <polygon points="115,60 85,45 60,110" fill="#e4e4e7" />
-        <polygon points="35,45 60,25 60,110" fill="#52525b" />
-        <polygon points="85,45 60,25 60,110" fill="#3f3f46" />
-        <polygon points="50,84 70,84 60,110" fill="#09090b" />
-      </svg>
+        strokeLinecap="round"
+      />
+    </svg>
   );
 }
