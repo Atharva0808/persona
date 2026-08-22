@@ -2,12 +2,12 @@
 
 @layer base {
   * {
-    border-color: rgba(255, 255, 255, 0.08);
+    border-color: #E5EBE5;
   }
 
   body {
-    background-color: #07080b;
-    color: #f8fafc;
+    background-color: #F4F7F4;
+    color: #111827;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -43,8 +43,8 @@
 
   /* Selection */
   ::selection {
-    background: rgba(245, 158, 11, 0.25);
-    color: #fef3c7;
+    background: #EAF5EE;
+    color: #113D2B;
   }
 }
 

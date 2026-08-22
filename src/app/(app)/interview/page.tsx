@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import {
   MessageSquare,
@@ -14,7 +13,6 @@ import {
 } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
-import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Spinner } from "@/components/ui/spinner";
@@ -168,7 +166,7 @@ export default function InterviewPage() {
   };
 
   return (
-    <div className="space-y-8 text-neutral-100">
+    <div className="space-y-7 pb-10 text-[#111827]">
       <PageHeader
         title="Interactive AI Technical Mock Interview"
         description="Type your response to live questions and receive instant AI answer scoring, model answers, and follow-ups."
@@ -181,7 +179,7 @@ export default function InterviewPage() {
                 setSession(null);
                 setEvaluation(null);
               }}
-              className="rounded-xl border-neutral-800 text-neutral-300 hover:bg-neutral-800 hover:text-white"
+              className="rounded-full border-[#E5EBE5] text-[#111827] hover:bg-[#F4F7F4] font-medium"
             >
               <RefreshCw className="h-3.5 w-3.5 mr-2" />
               New Session
@@ -191,23 +189,35 @@ export default function InterviewPage() {
       />
 
       {!session ? (
-        <Card className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-6 sm:p-8">
+        <Card className="rounded-3xl border border-[#E5EBE5] bg-white p-6 sm:p-8 shadow-2xs">
           <CardContent className="p-0 space-y-5">
-            <div className="p-3.5 rounded-lg border border-neutral-800 bg-neutral-950/60 space-y-1.5 text-xs">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-neutral-500 block">
-                Linked Cross-Vector Context
+            <div className="p-4 rounded-2xl border border-[#E5EBE5] bg-[#FAFBF9] space-y-2 text-xs">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#113D2B] block">
+                Linked Profile Context
               </span>
-              <div className="flex flex-wrap gap-4 font-mono text-neutral-400">
+              <div className="flex flex-wrap gap-4 text-[#6B7280]">
                 <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className={`w-3.5 h-3.5 ${hasResume ? "text-emerald-400" : "text-neutral-600"}`} />
+                  <CheckCircle2
+                    className={`w-3.5 h-3.5 ${
+                      hasResume ? "text-[#113D2B]" : "text-[#D1DCD1]"
+                    }`}
+                  />
                   Resume {hasResume ? "(Linked)" : "(Not run)"}
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className={`w-3.5 h-3.5 ${hasGithub ? "text-emerald-400" : "text-neutral-600"}`} />
+                  <CheckCircle2
+                    className={`w-3.5 h-3.5 ${
+                      hasGithub ? "text-[#113D2B]" : "text-[#D1DCD1]"
+                    }`}
+                  />
                   GitHub {hasGithub ? "(Linked)" : "(Not run)"}
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className={`w-3.5 h-3.5 ${hasSkills ? "text-emerald-400" : "text-neutral-600"}`} />
+                  <CheckCircle2
+                    className={`w-3.5 h-3.5 ${
+                      hasSkills ? "text-[#113D2B]" : "text-[#D1DCD1]"
+                    }`}
+                  />
                   Skill Gap {hasSkills ? "(Linked)" : "(Not run)"}
                 </span>
               </div>
@@ -215,17 +225,17 @@ export default function InterviewPage() {
 
             <form onSubmit={handleGenerate} className="space-y-5 max-w-xl">
               <div className="space-y-1.5">
-                <Label className="text-xs font-mono uppercase text-neutral-400 font-medium">
+                <Label className="text-xs font-bold text-[#111827]">
                   Target Role Track *
                 </Label>
                 <Select
                   value={targetRole}
                   onValueChange={(v) => setTargetRole(v as TargetRole)}
                 >
-                  <SelectTrigger className="h-10 bg-neutral-950/60 border-neutral-800 text-neutral-100 rounded-lg focus:border-amber-400 font-mono text-sm">
+                  <SelectTrigger className="h-10 bg-[#FAFBF9] border-[#E5EBE5] text-[#111827] rounded-xl focus:border-[#113D2B] text-sm">
                     <SelectValue placeholder="Select target interview track" />
                   </SelectTrigger>
-                  <SelectContent className="bg-neutral-950 border-neutral-800 text-neutral-200">
+                  <SelectContent className="bg-white border-[#E5EBE5] text-[#111827] shadow-lg">
                     {TARGET_ROLES.map((role) => (
                       <SelectItem key={role.value} value={role.value}>
                         {role.label}
@@ -236,26 +246,23 @@ export default function InterviewPage() {
               </div>
 
               <div className="pt-2 flex justify-end">
-                <ShimmerButton
-                  shimmerColor="#f59e0b"
-                  shimmerDuration="2.5s"
-                  borderRadius="12px"
+                <button
                   disabled={loading || !targetRole}
                   type="submit"
-                  className="h-11 px-6 text-sm font-semibold text-amber-100 disabled:opacity-50"
+                  className="h-11 px-7 rounded-full bg-[#113D2B] hover:bg-[#0D3122] disabled:opacity-50 text-white text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shadow-sm"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">
-                      <Spinner className="h-4 w-4 text-amber-300" />
+                      <Spinner className="h-4 w-4 text-white" />
                       Generating 20 Tailored Questions...
                     </span>
                   ) : (
                     <span className="flex items-center gap-2">
                       Start Interactive Mock Session
-                      <ArrowRight className="h-4 w-4 text-amber-400" />
+                      <ArrowRight className="h-4 w-4" />
                     </span>
                   )}
-                </ShimmerButton>
+                </button>
               </div>
             </form>
           </CardContent>
@@ -263,19 +270,19 @@ export default function InterviewPage() {
       ) : (
         <div className="space-y-6">
           {/* Progress Header */}
-          <div className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-5 flex items-center justify-between">
+          <div className="rounded-3xl border border-[#E5EBE5] bg-white p-6 flex items-center justify-between shadow-2xs">
             <div className="space-y-1">
-              <span className="text-xs font-mono text-neutral-400 uppercase tracking-wider">
+              <span className="text-xs font-mono font-bold text-[#113D2B] uppercase tracking-wider">
                 Question {currentIndex + 1} of {session.questions.length}
               </span>
-              <h2 className="text-base font-bold text-neutral-100">
+              <h2 className="text-base font-bold text-[#111827]">
                 {TARGET_ROLES.find((r) => r.value === session.role)?.label} Track
               </h2>
             </div>
 
-            <div className="w-32 bg-neutral-800 h-2 rounded-full overflow-hidden">
+            <div className="w-36 bg-[#E5EBE5] h-2.5 rounded-full overflow-hidden">
               <div
-                className="bg-amber-400 h-full transition-all duration-300"
+                className="bg-[#113D2B] h-full transition-all duration-300 rounded-full"
                 style={{
                   width: `${((currentIndex + 1) / session.questions.length) * 100}%`,
                 }}
@@ -284,19 +291,19 @@ export default function InterviewPage() {
           </div>
 
           {/* Current Question Card */}
-          <Card className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-6 sm:p-8 space-y-6">
+          <Card className="rounded-3xl border border-[#E5EBE5] bg-white p-6 sm:p-8 space-y-6 shadow-2xs">
             <div className="space-y-2">
-              <span className="text-xs font-mono text-amber-400 font-bold uppercase">
-                Q{currentIndex + 1}:
+              <span className="text-xs font-bold text-[#113D2B] bg-[#EAF5EE] px-3 py-1 rounded-full uppercase">
+                Question {currentIndex + 1}
               </span>
-              <h3 className="text-base sm:text-lg font-semibold text-neutral-100 leading-snug">
+              <h3 className="text-base sm:text-lg font-bold text-[#111827] leading-snug pt-2">
                 {session.questions[currentIndex].question}
               </h3>
             </div>
 
             {/* Response Form */}
             <div className="space-y-3 pt-2">
-              <Label className="text-xs font-mono uppercase text-neutral-400 font-medium">
+              <Label className="text-xs font-bold text-[#111827]">
                 Your Answer Response:
               </Label>
               <Textarea
@@ -305,56 +312,49 @@ export default function InterviewPage() {
                 onChange={(e) => setCandidateAnswer(e.target.value)}
                 rows={5}
                 disabled={evaluating || Boolean(evaluation)}
-                className="bg-neutral-950/60 border-neutral-800 text-neutral-100 rounded-lg focus:border-amber-400 text-sm resize-none"
+                className="bg-[#FAFBF9] border-[#E5EBE5] text-[#111827] rounded-xl focus:border-[#113D2B] text-sm resize-none"
               />
 
               {!evaluation && (
                 <div className="flex justify-end">
-                  <ShimmerButton
-                    shimmerColor="#f59e0b"
-                    shimmerDuration="2.2s"
-                    borderRadius="12px"
+                  <button
                     disabled={!candidateAnswer.trim() || evaluating}
                     onClick={handleEvaluateAnswer}
-                    className="h-11 px-6 text-sm font-semibold text-amber-100 disabled:opacity-50"
+                    className="h-11 px-7 rounded-full bg-[#113D2B] hover:bg-[#0D3122] disabled:opacity-50 text-white text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shadow-sm"
                   >
                     {evaluating ? (
                       <span className="flex items-center gap-2">
-                        <Spinner className="h-4 w-4 text-amber-300" />
+                        <Spinner className="h-4 w-4 text-white" />
                         Evaluating Answer...
                       </span>
                     ) : (
                       <span className="flex items-center gap-2">
                         Submit Answer for AI Evaluation
-                        <Send className="h-3.5 w-3.5 text-amber-400 ml-1" />
+                        <Send className="h-3.5 w-3.5 ml-1" />
                       </span>
                     )}
-                  </ShimmerButton>
+                  </button>
                 </div>
               )}
             </div>
 
             {/* AI Real-Time Feedback */}
             {evaluation && (
-              <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="space-y-4 pt-4 border-t border-neutral-800"
-              >
+              <div className="space-y-4 pt-4 border-t border-[#E5EBE5]">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono uppercase tracking-wider text-amber-400 font-bold">
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#113D2B]">
                     AI Evaluation Score
                   </span>
-                  <span className="text-base font-bold font-mono text-amber-300">
+                  <span className="text-base font-bold font-mono text-[#113D2B] bg-[#EAF5EE] px-3 py-1 rounded-full">
                     {evaluation.score} / 100
                   </span>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
                   {evaluation.strengths.length > 0 && (
-                    <div className="p-3.5 rounded-lg border border-emerald-500/20 bg-emerald-500/5 space-y-1">
-                      <strong className="text-emerald-400 block font-mono">Strengths:</strong>
-                      <ul className="space-y-1 text-neutral-300">
+                    <div className="p-4 rounded-2xl border border-[#E5EBE5] bg-[#EAF5EE] space-y-1">
+                      <strong className="text-[#113D2B] block">Strengths:</strong>
+                      <ul className="space-y-1 text-[#374151]">
                         {evaluation.strengths.map((s, i) => (
                           <li key={i}>• {s}</li>
                         ))}
@@ -363,9 +363,9 @@ export default function InterviewPage() {
                   )}
 
                   {evaluation.missing_points.length > 0 && (
-                    <div className="p-3.5 rounded-lg border border-amber-500/20 bg-amber-500/5 space-y-1">
-                      <strong className="text-amber-300 block font-mono">Missing Points:</strong>
-                      <ul className="space-y-1 text-neutral-300">
+                    <div className="p-4 rounded-2xl border border-[#E5EBE5] bg-[#FEF3C7] space-y-1">
+                      <strong className="text-[#92400E] block">Missing Points:</strong>
+                      <ul className="space-y-1 text-[#78350F]">
                         {evaluation.missing_points.map((m, i) => (
                           <li key={i}>• {m}</li>
                         ))}
@@ -374,28 +374,28 @@ export default function InterviewPage() {
                   )}
                 </div>
 
-                <div className="p-4 rounded-lg border border-neutral-800 bg-neutral-950/80 space-y-1 text-xs">
-                  <strong className="text-neutral-200 font-mono block">Ideal Model Answer:</strong>
-                  <p className="text-neutral-300 font-mono leading-relaxed">{evaluation.model_answer}</p>
+                <div className="p-4 rounded-2xl border border-[#E5EBE5] bg-[#FAFBF9] space-y-1 text-xs">
+                  <strong className="text-[#111827] block">Ideal Model Answer:</strong>
+                  <p className="text-[#374151] leading-relaxed">{evaluation.model_answer}</p>
                 </div>
 
                 {evaluation.follow_up && (
-                  <div className="p-4 rounded-lg border border-neutral-800 bg-neutral-950/80 text-xs">
-                    <strong className="text-amber-400 font-mono block mb-1">Follow-Up Probe Question:</strong>
-                    <p className="text-neutral-200 font-mono">{evaluation.follow_up}</p>
+                  <div className="p-4 rounded-2xl border border-[#E5EBE5] bg-[#FAFBF9] text-xs">
+                    <strong className="text-[#113D2B] block mb-1">Follow-Up Probe Question:</strong>
+                    <p className="text-[#374151]">{evaluation.follow_up}</p>
                   </div>
                 )}
 
                 <div className="flex justify-end pt-2">
                   <Button
                     onClick={handleNextQuestion}
-                    className="h-11 px-6 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-100 font-medium text-xs border border-neutral-700"
+                    className="h-11 px-7 rounded-full bg-[#113D2B] hover:bg-[#0D3122] text-white font-bold text-xs shadow-sm"
                   >
                     Next Question
-                    <ArrowRight className="w-3.5 h-3.5 ml-2 text-amber-400" />
+                    <ArrowRight className="w-3.5 h-3.5 ml-2" />
                   </Button>
                 </div>
-              </motion.div>
+              </div>
             )}
           </Card>
         </div>
