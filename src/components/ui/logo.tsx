@@ -1,10 +1,12 @@
 import React from "react";
 
 /**
- * Cute Notion-style emoji mascot logo for Persona.
- * High-contrast, expressive doodle face with glossy catchlight eyes,
- * rosy blush cheeks, and a warm friendly smile.
- * Crisp and clearly visible at any size on both light and dark backgrounds.
+ * Notion-style side-profile character logo for Persona.
+ * An iconic, cute hand-drawn doodle facing to the right (looking ahead),
+ * featuring side-profile nose, hair tuft, expressive side-glance eye,
+ * rosy blush cheek, and a friendly smirk.
+ *
+ * Clearly visible on dark & light backgrounds and in browser favicon tabs.
  */
 export function Logo({
   className = "",
@@ -24,7 +26,7 @@ export function Logo({
       className={className}
       aria-label="Persona logo"
     >
-      {/* Soft rounded squircle sticker base with crisp dark border */}
+      {/* Warm cream rounded squircle sticker base with crisp dark border */}
       <rect
         x="5"
         y="5"
@@ -36,53 +38,64 @@ export function Logo({
         strokeWidth="6"
       />
 
-      {/* Tiny playful eyebrows */}
+      {/* Cute hairstyle / head silhouette facing right */}
       <path
-        d="M28 30 C32 26, 38 26, 42 30"
+        d="M 27 46 C 25 30, 35 21, 52 21 C 66 21, 72 29, 68 39 C 64 41, 62 43, 62 46 C 56 46, 52 40, 44 40 C 36 40, 32 46, 27 46 Z"
+        fill="#121316"
+      />
+
+      {/* Playful hair curl / tuft at back */}
+      <path
+        d="M 36 21 C 32 14, 23 16, 26 25"
         stroke="#121316"
-        strokeWidth="4"
+        strokeWidth="4.5"
         strokeLinecap="round"
         fill="none"
       />
+
+      {/* Face side-profile contour (forehead -> cute nose pointing right -> lips -> chin -> jaw) */}
       <path
-        d="M58 30 C62 26, 68 26, 72 30"
-        stroke="#121316"
-        strokeWidth="4"
-        strokeLinecap="round"
-        fill="none"
-      />
-
-      {/* Left big glossy eye */}
-      <ellipse cx="35" cy="46" rx="8" ry="9.5" fill="#121316" />
-      {/* Primary catchlight */}
-      <circle cx="32" cy="42.5" r="3.2" fill="#FFFFFF" />
-      {/* Secondary micro sparkle */}
-      <circle cx="37.5" cy="49" r="1.6" fill="#FFFFFF" />
-
-      {/* Right big glossy eye */}
-      <ellipse cx="65" cy="46" rx="8" ry="9.5" fill="#121316" />
-      {/* Primary catchlight */}
-      <circle cx="62" cy="42.5" r="3.2" fill="#FFFFFF" />
-      {/* Secondary micro sparkle */}
-      <circle cx="67.5" cy="49" r="1.6" fill="#FFFFFF" />
-
-      {/* Cute rosy pink blushing cheeks */}
-      <ellipse cx="23" cy="58" rx="7.5" ry="4.5" fill="#FF7E70" opacity="0.9" />
-      <ellipse cx="77" cy="58" rx="7.5" ry="4.5" fill="#FF7E70" opacity="0.9" />
-
-      {/* Cute happy open smile */}
-      <path
-        d="M38 57 C38 72, 62 72, 62 57"
-        fill="#FF6B6B"
+        d="M 62 42 C 64 45, 74 47, 74 51 C 72 53, 64 54, 64 58 C 64 64, 60 69, 54 71 C 45 73, 36 70, 32 61"
         stroke="#121316"
         strokeWidth="5"
         strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
       />
-      {/* Little tongue highlight */}
+
+      {/* Cute eye looking to the right (side-glance) */}
+      <ellipse cx="53" cy="46" rx="5.5" ry="7" fill="#121316" />
+      {/* Primary forward catchlight */}
+      <circle cx="55.5" cy="43.5" r="2.2" fill="#FFFFFF" />
+      {/* Micro catchlight */}
+      <circle cx="52" cy="48" r="1.1" fill="#FFFFFF" />
+
+      {/* Eyebrow tilted slightly up */}
       <path
-        d="M44 64 C47 61, 53 61, 56 64"
-        stroke="#FFB3B3"
-        strokeWidth="2.5"
+        d="M 48 35 Q 55 33 59 37"
+        stroke="#121316"
+        strokeWidth="3.5"
+        strokeLinecap="round"
+        fill="none"
+      />
+
+      {/* Cute side smile */}
+      <path
+        d="M 57 58 Q 64 60 67 55"
+        stroke="#121316"
+        strokeWidth="4"
+        strokeLinecap="round"
+        fill="none"
+      />
+
+      {/* Soft pink blush cheek on side */}
+      <ellipse cx="46" cy="56" rx="6.5" ry="4" fill="#FF7E70" opacity="0.85" />
+
+      {/* Cute ear on left */}
+      <path
+        d="M 33 49 C 27 49, 27 59, 34 59"
+        stroke="#121316"
+        strokeWidth="4.5"
         strokeLinecap="round"
         fill="none"
       />
