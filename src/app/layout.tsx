@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Instrument_Serif, JetBrains_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, Instrument_Serif, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 
@@ -20,6 +20,13 @@ const jetbrains = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-jetbrains",
   display: "swap",
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-display",
+  display: "swap",
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -45,7 +52,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${jakarta.variable} ${instrument.variable} ${jetbrains.variable} h-full`}
+      className={`${jakarta.variable} ${instrument.variable} ${jetbrains.variable} ${spaceGrotesk.variable} h-full`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col font-sans bg-[#07080B] text-slate-100 antialiased selection:bg-amber-500/20 selection:text-amber-200" suppressHydrationWarning>

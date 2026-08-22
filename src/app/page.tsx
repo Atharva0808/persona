@@ -1,265 +1,207 @@
-"use client";
-
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { ShimmerButton } from "@/components/ui/shimmer-button";
-import { Logo } from "@/components/ui/logo";
-import { HeroPreview } from "@/components/landing/hero-preview";
-import { FeatureBento } from "@/components/landing/feature-bento";
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[#07080b] text-slate-100 font-sans selection:bg-amber-500/25 selection:text-amber-200 overflow-x-hidden">
-      {/* Background Ambient Lighting */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[550px] bg-amber-500/[0.04] blur-[150px] rounded-full" />
-      </div>
-
-      {/* Floating Navbar */}
-      <header className="fixed top-5 left-1/2 -translate-x-1/2 w-full max-w-5xl z-50 px-4">
-        <div className="h-14 flex items-center justify-between px-6 bg-[#0c0d12]/80 backdrop-blur-xl border border-white/[0.08] rounded-2xl shadow-2xl shadow-black/60">
-          <div className="flex items-center gap-3">
-            <Logo size={24} />
-            <span className="text-base font-bold text-slate-100 tracking-tight font-mono">
-              persona
-            </span>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <Link href="/login">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="hidden sm:inline-flex text-slate-400 hover:text-amber-300 hover:bg-white/[0.05]"
-              >
-                Sign in
-              </Button>
-            </Link>
-            <Link href="/signup">
-              <ShimmerButton
-                shimmerColor="#fde68a"
-                shimmerDuration="2.5s"
-                className="h-9 px-4 text-xs font-semibold text-amber-100 rounded-xl"
-              >
-                Get Started
-                <ArrowRight className="w-3.5 h-3.5 ml-1 text-amber-300" />
-              </ShimmerButton>
-            </Link>
-          </div>
+    <div className="min-h-screen bg-[#FAFAF8] text-[#0A0A0A] font-sans overflow-x-hidden selection:bg-[#E84B2B]/20 selection:text-[#E84B2B]">
+      {/* ─── Navigation ─── */}
+      <nav className="w-full px-6 sm:px-10 py-5 flex items-center justify-between bg-[#0A0A0A] text-[#FAFAF8]">
+        <Link href="/" className="text-lg font-bold tracking-tight font-[family-name:var(--font-display)]">
+          persona
+        </Link>
+        <div className="flex items-center gap-6 text-sm">
+          <Link href="/login" className="text-[#FAFAF8]/70 hover:text-[#FAFAF8] transition-colors">
+            Sign in
+          </Link>
+          <Link
+            href="/signup"
+            className="bg-[#FAFAF8] text-[#0A0A0A] px-5 py-2.5 text-sm font-semibold hover:bg-[#FAFAF8]/90 transition-colors"
+          >
+            Get Started
+          </Link>
         </div>
-      </header>
+      </nav>
 
-      {/* Hero Section */}
-      <section className="relative z-10 max-w-6xl mx-auto px-6 pt-36 pb-20">
-        <div className="max-w-3xl mx-auto text-center space-y-6">
-          {/* Headline with Instrument Serif Italic Accent */}
-          <motion.h1
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-4xl sm:text-5xl lg:text-6xl font-semibold text-slate-100 tracking-tight leading-[1.12]"
-          >
-            Know exactly where you stand <br className="hidden sm:block" />
-            <em className="font-serif italic font-normal text-amber-200/95 tracking-normal">
-              before you apply.
-            </em>
-          </motion.h1>
-
-          {/* Subtitle */}
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed font-normal"
-          >
-            Persona evaluates your resume, GitHub repositories, LinkedIn profile, and technical skills to deliver an overall interview readiness score and an actionable roadmap to improve.
-          </motion.p>
-
-          {/* Shimmer Button Primary Actions */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2"
-          >
-            <Link href="/signup" className="w-full sm:w-auto">
-              <ShimmerButton
-                shimmerColor="#f59e0b"
-                shimmerDuration="2.5s"
-                borderRadius="16px"
-                className="w-full sm:w-auto h-12 px-8 text-sm font-semibold text-amber-100 shadow-xl shadow-amber-950/40"
-              >
-                Start Free Analysis
-                <ArrowRight className="w-4 h-4 ml-2 text-amber-400" />
-              </ShimmerButton>
-            </Link>
-            <Link href="/login" className="w-full sm:w-auto">
-              <Button
-                variant="outline"
-                size="lg"
-                className="w-full sm:w-auto rounded-2xl border-white/[0.08] text-slate-300 hover:bg-white/[0.04] hover:text-amber-200 h-12 px-7"
-              >
-                Sign in to Dashboard
-              </Button>
-            </Link>
-          </motion.div>
+      {/* ─── Hero: Color Block Grid ─── */}
+      <section className="grid grid-cols-1 md:grid-cols-3 min-h-[80vh] md:min-h-[85vh]">
+        {/* Left block — warm red, massive type */}
+        <div className="bg-[#E84B2B] text-[#0A0A0A] p-8 sm:p-12 flex flex-col justify-end relative overflow-hidden min-h-[50vh] md:min-h-0">
+          <h1 className="font-[family-name:var(--font-display)] text-[clamp(3.5rem,12vw,9rem)] font-bold leading-[0.85] tracking-[-0.04em] uppercase">
+            Know
+            <br />
+            where
+            <br />
+            you
+            <br />
+            stand
+          </h1>
         </div>
 
-        {/* Hero Interactive Component */}
-        <div className="mt-16">
-          <HeroPreview />
+        {/* Center block — black, value proposition */}
+        <div className="bg-[#0A0A0A] text-[#FAFAF8] p-8 sm:p-12 flex flex-col justify-between min-h-[40vh] md:min-h-0">
+          <div className="text-xs uppercase tracking-[0.2em] text-[#FAFAF8]/40 font-[family-name:var(--font-display)]">
+            Interview Readiness Tool
+          </div>
+          <div className="mt-auto">
+            <p className="text-lg sm:text-xl leading-relaxed text-[#FAFAF8]/80 max-w-sm">
+              Persona evaluates your resume, GitHub, LinkedIn profile, and technical skills — then tells you
+              exactly what to fix.
+            </p>
+            <p className="text-sm text-[#FAFAF8]/40 mt-6 leading-relaxed max-w-xs">
+              No vanity metrics. No inflated scores.
+              <br />
+              Just an honest assessment and a roadmap.
+            </p>
+          </div>
         </div>
-      </section>
 
-      {/* Metric Proof Strip */}
-      <section className="relative z-10 border-y border-white/[0.06] bg-[#090a0f]/80 py-12">
-        <div className="max-w-5xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          <div>
-            <div className="text-2xl sm:text-3xl font-bold text-amber-300 font-mono">5 Engines</div>
-            <div className="text-xs text-slate-400 mt-1 font-mono">Multi-Vector Assessment</div>
+        {/* Right block — green, serif accent + CTA */}
+        <div className="bg-[#0D6B4F] text-[#FAFAF8] p-8 sm:p-12 flex flex-col justify-between min-h-[50vh] md:min-h-0">
+          <div className="text-xs uppercase tracking-[0.2em] text-[#FAFAF8]/50 font-[family-name:var(--font-display)]">
+            For Software Engineers
           </div>
-          <div>
-            <div className="text-2xl sm:text-3xl font-bold text-blue-400 font-mono">100% ATS</div>
-            <div className="text-xs text-slate-400 mt-1 font-mono">Keyword Optimization</div>
-          </div>
-          <div>
-            <div className="text-2xl sm:text-3xl font-bold text-emerald-400 font-mono">20 Qs</div>
-            <div className="text-xs text-slate-400 mt-1 font-mono">Personalized Mock Interview</div>
-          </div>
-          <div>
-            <div className="text-2xl sm:text-3xl font-bold text-amber-300 font-mono">9 Tracks</div>
-            <div className="text-xs text-slate-400 mt-1 font-mono">Software Track Benchmarks</div>
+          <div className="mt-auto">
+            <p className="font-serif italic text-[clamp(2.5rem,6vw,5rem)] leading-[1] text-[#FAFAF8]/95 tracking-[-0.01em]">
+              before
+              <br />
+              you apply.
+            </p>
+            <Link
+              href="/signup"
+              className="inline-block mt-8 text-sm font-semibold text-[#FAFAF8] border-b-2 border-[#FAFAF8]/60 pb-1 hover:border-[#FAFAF8] transition-colors font-[family-name:var(--font-display)]"
+            >
+              Get Started →
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* Feature Bento Section */}
-      <section className="relative z-10 max-w-6xl mx-auto px-6 py-28">
-        <div className="max-w-2xl mb-16">
-          <div className="text-xs font-mono uppercase tracking-widest text-amber-400 mb-3 font-semibold">
-            Comprehensive Assessment
+      {/* ─── What It Does: Typography Feature Stack ─── */}
+      <section className="bg-[#0A0A0A] text-[#FAFAF8] py-20 sm:py-28 px-6 sm:px-10">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-xs uppercase tracking-[0.25em] text-[#FAFAF8]/30 mb-16 font-[family-name:var(--font-display)]">
+            What Persona Does
           </div>
-          <h2 className="text-2xl sm:text-4xl font-semibold text-slate-100 tracking-tight">
-            Designed Specifically for Software Engineers
+
+          {/* Feature list — massive type with descriptions */}
+          <div className="space-y-0">
+            {[
+              {
+                word: "Resume",
+                desc: "Upload your PDF. Get ATS compatibility scoring, weak bullet detection, and quantified action rewrites.",
+              },
+              {
+                word: "GitHub",
+                desc: "Paste your handle. Commit consistency, README quality, repository depth — all evaluated.",
+              },
+              {
+                word: "LinkedIn",
+                desc: "Share your profile details. Headline keyword analysis and recruiter search optimization tips.",
+              },
+              {
+                word: "Skills",
+                desc: "Select your target role. Gap analysis across engineering tracks with a phased learning roadmap.",
+              },
+              {
+                word: "Interview",
+                desc: "Get tailored mock questions generated from your actual resume, projects, and target position.",
+              },
+            ].map((feature, i) => (
+              <div
+                key={feature.word}
+                className="border-t border-[#FAFAF8]/10 py-8 sm:py-10 grid grid-cols-1 md:grid-cols-[1fr_1fr] gap-4 md:gap-12 items-end group"
+              >
+                <h2 className="font-[family-name:var(--font-display)] text-[clamp(3rem,8vw,7rem)] font-bold leading-[0.9] tracking-[-0.04em] uppercase text-[#FAFAF8]/90 group-hover:text-[#E84B2B] transition-colors duration-300">
+                  {feature.word}
+                </h2>
+                <p className="text-sm sm:text-base text-[#FAFAF8]/50 leading-relaxed max-w-md pb-1">
+                  {feature.desc}
+                </p>
+              </div>
+            ))}
+            <div className="border-t border-[#FAFAF8]/10" />
+          </div>
+        </div>
+      </section>
+
+      {/* ─── How It Works: Color Block Grid ─── */}
+      <section className="grid grid-cols-1 md:grid-cols-3">
+        {/* Connect — navy */}
+        <div className="bg-[#1A1F5C] text-[#FAFAF8] p-8 sm:p-12 flex flex-col justify-between min-h-[50vh]">
+          <div className="text-xs uppercase tracking-[0.2em] text-[#FAFAF8]/40 font-[family-name:var(--font-display)]">
+            Step 01
+          </div>
+          <div className="mt-auto">
+            <h3 className="font-[family-name:var(--font-display)] text-[clamp(3rem,7vw,5.5rem)] font-bold leading-[0.85] tracking-[-0.04em] uppercase mb-6">
+              Connect
+            </h3>
+            <p className="text-sm text-[#FAFAF8]/60 leading-relaxed max-w-xs">
+              Upload your resume PDF, paste your GitHub username, and fill in your LinkedIn profile details.
+            </p>
+          </div>
+        </div>
+
+        {/* Analyze — cream */}
+        <div className="bg-[#F5DDD5] text-[#0A0A0A] p-8 sm:p-12 flex flex-col justify-between min-h-[50vh]">
+          <div className="text-xs uppercase tracking-[0.2em] text-[#0A0A0A]/40 font-[family-name:var(--font-display)]">
+            Step 02
+          </div>
+          <div className="mt-auto">
+            <h3 className="font-[family-name:var(--font-display)] text-[clamp(3rem,7vw,5.5rem)] font-bold leading-[0.85] tracking-[-0.04em] uppercase mb-6">
+              Analyze
+            </h3>
+            <p className="text-sm text-[#0A0A0A]/60 leading-relaxed max-w-xs">
+              AI evaluates ATS keyword matching, repository quality, profile optimization, and skill alignment against your target role.
+            </p>
+          </div>
+        </div>
+
+        {/* Improve — yellow */}
+        <div className="bg-[#F2C94C] text-[#0A0A0A] p-8 sm:p-12 flex flex-col justify-between min-h-[50vh]">
+          <div className="text-xs uppercase tracking-[0.2em] text-[#0A0A0A]/40 font-[family-name:var(--font-display)]">
+            Step 03
+          </div>
+          <div className="mt-auto">
+            <h3 className="font-[family-name:var(--font-display)] text-[clamp(3rem,7vw,5.5rem)] font-bold leading-[0.85] tracking-[-0.04em] uppercase mb-6">
+              Improve
+            </h3>
+            <p className="text-sm text-[#0A0A0A]/60 leading-relaxed max-w-xs">
+              Get your readiness score, rewritten bullet points, skill gap roadmap, and mock interview questions — all personalized.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── CTA: Split Block ─── */}
+      <section className="grid grid-cols-1 md:grid-cols-2">
+        {/* Left — red, massive question */}
+        <div className="bg-[#E84B2B] text-[#0A0A0A] p-8 sm:p-14 flex flex-col justify-end min-h-[45vh]">
+          <h2 className="font-[family-name:var(--font-display)] text-[clamp(4rem,10vw,9rem)] font-bold leading-[0.82] tracking-[-0.05em] uppercase">
+            Ready?
           </h2>
-          <p className="text-sm text-slate-400 mt-3 leading-relaxed font-normal">
-            Stop guessing why recruiters aren't responding. Persona audits your entire professional footprint and delivers actionable steps to fix weak points.
+        </div>
+
+        {/* Right — black, CTA copy */}
+        <div className="bg-[#0A0A0A] text-[#FAFAF8] p-8 sm:p-14 flex flex-col justify-end min-h-[45vh]">
+          <p className="text-lg sm:text-xl text-[#FAFAF8]/70 leading-relaxed max-w-sm mb-8">
+            Create your account. Upload your resume. Get your honest assessment in minutes — not marketing promises.
           </p>
-        </div>
-
-        <FeatureBento />
-      </section>
-
-      {/* 3-Step Process Section */}
-      <section className="relative z-10 border-t border-white/[0.06] bg-[#090a0f]/40 py-28">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="text-center max-w-xl mx-auto mb-16">
-            <h2 className="text-2xl sm:text-3xl font-semibold text-slate-100 tracking-tight">
-              Three steps to interview readiness
-            </h2>
-            <p className="text-sm text-slate-400 mt-2 font-normal">
-              From raw resume PDF to tailored interview questions in under 2 minutes.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="rounded-3xl border border-white/[0.08] bg-[#0d0e15]/70 p-8 relative hover:border-amber-400/30 transition-all duration-500">
-              <div className="w-10 h-10 rounded-2xl bg-amber-400/10 border border-amber-400/20 text-amber-300 font-mono font-bold flex items-center justify-center text-sm mb-5">
-                01
-              </div>
-              <h3 className="text-base font-semibold text-slate-100 mb-2">
-                Connect Footprint
-              </h3>
-              <p className="text-sm text-slate-400 leading-relaxed font-normal">
-                Upload your PDF resume, paste your GitHub handle, and share your LinkedIn profile details.
-              </p>
-            </div>
-
-            <div className="rounded-3xl border border-white/[0.08] bg-[#0d0e15]/70 p-8 relative hover:border-amber-400/30 transition-all duration-500">
-              <div className="w-10 h-10 rounded-2xl bg-amber-400/10 border border-amber-400/20 text-amber-300 font-mono font-bold flex items-center justify-center text-sm mb-5">
-                02
-              </div>
-              <h3 className="text-base font-semibold text-slate-100 mb-2">
-                AI Multi-Vector Audit
-              </h3>
-              <p className="text-sm text-slate-400 leading-relaxed font-normal">
-                Gemini 2.5 Flash evaluates ATS scores, repository depth, recruiter rank, and skill gaps.
-              </p>
-            </div>
-
-            <div className="rounded-3xl border border-white/[0.08] bg-[#0d0e15]/70 p-8 relative hover:border-amber-400/30 transition-all duration-500">
-              <div className="w-10 h-10 rounded-2xl bg-amber-400/10 border border-amber-400/20 text-amber-300 font-mono font-bold flex items-center justify-center text-sm mb-5">
-                03
-              </div>
-              <h3 className="text-base font-semibold text-slate-100 mb-2">
-                Execute & Practice
-              </h3>
-              <p className="text-sm text-slate-400 leading-relaxed font-normal">
-                Follow your phase-by-phase learning roadmap and practice tailored mock interview questions.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Refined Compact CTA Section */}
-      <section className="relative z-10 border-t border-white/[0.06] py-24">
-        <div className="max-w-2xl mx-auto px-6 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="relative rounded-3xl border border-amber-400/20 bg-gradient-to-b from-[#0f111a] via-[#0c0d13] to-[#07080b] p-8 sm:p-12 space-y-6 shadow-2xl shadow-black/80 overflow-hidden"
+          <Link
+            href="/signup"
+            className="inline-flex items-center self-start bg-[#FAFAF8] text-[#0A0A0A] px-8 py-4 text-sm font-bold tracking-wide uppercase hover:bg-[#FAFAF8]/90 transition-colors font-[family-name:var(--font-display)]"
           >
-            {/* Ambient Warm Glow */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[220px] bg-amber-500/[0.05] blur-[100px] pointer-events-none rounded-full" />
-
-            {/* Headline with Editorial Serif Italic Accent */}
-            <h2 className="text-3xl sm:text-4xl font-semibold text-slate-100 tracking-tight leading-tight">
-              Ready to know where{" "}
-              <em className="font-serif italic font-normal text-amber-200/95 tracking-normal">
-                you stand?
-              </em>
-            </h2>
-
-            <p className="text-sm text-slate-400 max-w-md mx-auto leading-relaxed font-normal">
-              Create your account now and receive your complete interview readiness assessment and roadmap in minutes.
-            </p>
-
-            {/* Shimmer Button CTA */}
-            <div className="pt-1 flex justify-center">
-              <Link href="/signup">
-                <ShimmerButton
-                  shimmerColor="#fde68a"
-                  shimmerDuration="2.2s"
-                  borderRadius="16px"
-                  className="h-12 px-8 text-sm font-semibold text-amber-100 shadow-xl shadow-amber-950/40 group"
-                >
-                  Get Started Free
-                  <ArrowRight className="w-4 h-4 ml-2 text-amber-300 group-hover:translate-x-1 transition-transform" />
-                </ShimmerButton>
-              </Link>
-            </div>
-          </motion.div>
+            Get Started
+          </Link>
         </div>
       </section>
 
-      {/* Minimal Footer */}
-      <footer className="relative z-10 border-t border-white/[0.06] bg-[#07080b] py-8">
-        <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <Logo size={20} className="grayscale opacity-50" />
-            <span className="text-xs text-slate-500 font-mono">
-              © {new Date().getFullYear()} Persona. All rights reserved.
-            </span>
-          </div>
-          <div className="flex items-center gap-4 text-xs text-slate-500 font-mono">
-            <span>Built for software engineers.</span>
-          </div>
-        </div>
+      {/* ─── Footer ─── */}
+      <footer className="bg-[#0A0A0A] text-[#FAFAF8]/40 px-6 sm:px-10 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-[#FAFAF8]/8">
+        <span className="text-xs font-[family-name:var(--font-display)]">
+          persona
+        </span>
+        <span className="text-xs">
+          © {new Date().getFullYear()} Persona. Built for software engineers.
+        </span>
       </footer>
     </div>
   );
