@@ -82,7 +82,7 @@ const HERO_WORDS = ["Know", "where", "you", "stand"];
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[#F4F7F4] text-[#111827] font-sans overflow-x-hidden selection:bg-[#113D2B]/15 selection:text-[#113D2B]">
+    <div className="min-h-screen bg-[#EBF0EB] text-[#111827] font-sans overflow-x-hidden selection:bg-[#113D2B]/15 selection:text-[#113D2B]">
       {/* ─── Floating Rectangular Navbar ─── */}
       <div className="sticky top-4 z-50 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
         <motion.nav
@@ -185,55 +185,64 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ─── What Persona Does: Feature Cards Stack ─── */}
-      <section className="px-4 sm:px-6 lg:px-8 py-16">
-        <div className="max-w-7xl mx-auto space-y-6">
+      {/* ─── What Persona Does: Deep Forest Contrast Section ─── */}
+      <section className="px-4 sm:px-6 lg:px-8 py-20 bg-[#0E271C] text-white my-8">
+        <div className="max-w-7xl mx-auto space-y-10">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 px-2">
             <div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-[#111827] tracking-tight">
+              <span className="text-xs font-mono font-bold text-white/50 uppercase tracking-widest block mb-2">
+                Diagnostic Capabilities
+              </span>
+              <h2 className="text-2xl sm:text-4xl font-bold text-white tracking-tight font-[family-name:var(--font-display)]">
                 Five pillars of candidate readiness
               </h2>
             </div>
+            <p className="text-xs sm:text-sm text-white/60 max-w-md leading-relaxed">
+              Every vector is parsed using Gemini 2.5 Flash with direct visual and codebase inspection.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {FEATURES.map((feature, i) => (
               <motion.div
                 key={feature.word}
                 {...scrollFadeUp(i * 0.08)}
-                className="rounded-3xl bg-white border border-[#E5EBE5] p-7 flex flex-col justify-between shadow-2xs space-y-4 hover:border-[#113D2B]/30 transition-colors"
+                className="rounded-3xl bg-white/[0.05] border border-white/10 p-7 flex flex-col justify-between space-y-5 hover:bg-white/[0.08] hover:border-white/20 transition-all shadow-xs"
               >
-                <div className="w-11 h-11 rounded-2xl bg-[#EAF5EE] flex items-center justify-center text-[#113D2B]">
+                <div className="w-11 h-11 rounded-2xl bg-white/10 flex items-center justify-center text-white">
                   <feature.icon className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-[#111827]">
+                  <h3 className="text-lg font-bold text-white">
                     {feature.word}
                   </h3>
-                  <p className="text-xs text-[#6B7280] mt-2 leading-relaxed">
+                  <p className="text-xs text-white/70 mt-2 leading-relaxed">
                     {feature.desc}
                   </p>
                 </div>
               </motion.div>
             ))}
 
-            {/* Final Highlight Card */}
+            {/* Final Highlight Card in Warm Butter Yellow */}
             <motion.div
               {...scrollFadeUp(0.4)}
-              className="rounded-3xl bg-[#113D2B] text-white p-7 flex flex-col justify-between shadow-sm space-y-4"
+              className="rounded-3xl bg-[#F2C94C] text-[#111827] p-7 flex flex-col justify-between shadow-sm space-y-5"
             >
               <div>
-                <h3 className="text-lg font-bold text-white mt-1">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#111827]/70 block mb-2">
+                  Unified Result
+                </span>
+                <h3 className="text-xl font-bold text-[#111827] tracking-tight">
                   Honest Readiness Score
                 </h3>
-                <p className="text-xs text-white/80 mt-2 leading-relaxed">
+                <p className="text-xs text-[#111827]/80 mt-2 leading-relaxed">
                   Calculated from your genuine code, resume ATS parse, and live interview responses. No fake scores.
                 </p>
               </div>
               <div>
                 <Link
                   href="/signup"
-                  className="inline-flex items-center gap-2 bg-white text-[#113D2B] px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-[#F4F7F4] transition-colors"
+                  className="inline-flex items-center gap-2 bg-[#113D2B] text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-[#0D3122] transition-colors"
                 >
                   <span>Start Evaluation</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -245,9 +254,12 @@ export default function LandingPage() {
       </section>
 
       {/* ─── How It Works: 3 Step Cards ─── */}
-      <section className="px-4 sm:px-6 lg:px-8 py-16 bg-white border-y border-[#E5EBE5]">
+      <section className="px-4 sm:px-6 lg:px-8 py-16">
         <div className="max-w-7xl mx-auto space-y-10">
           <div className="text-center max-w-xl mx-auto space-y-2">
+            <span className="text-xs font-mono font-bold text-[#113D2B] uppercase tracking-wider">
+              Workflow
+            </span>
             <h2 className="text-2xl sm:text-3xl font-bold text-[#111827] tracking-tight">
               Three steps to complete clarity
             </h2>
@@ -255,7 +267,7 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {/* Step 1 */}
-            <div className="rounded-3xl bg-[#FAFBF9] border border-[#E5EBE5] p-8 space-y-3">
+            <div className="rounded-3xl bg-white border border-[#E5EBE5] p-8 space-y-3 shadow-2xs">
               <span className="text-xs font-mono font-bold text-[#113D2B]">
                 01
               </span>
@@ -268,7 +280,7 @@ export default function LandingPage() {
             </div>
 
             {/* Step 2 */}
-            <div className="rounded-3xl bg-[#FAFBF9] border border-[#E5EBE5] p-8 space-y-3">
+            <div className="rounded-3xl bg-white border border-[#E5EBE5] p-8 space-y-3 shadow-2xs">
               <span className="text-xs font-mono font-bold text-[#113D2B]">
                 02
               </span>
@@ -281,7 +293,7 @@ export default function LandingPage() {
             </div>
 
             {/* Step 3 */}
-            <div className="rounded-3xl bg-[#FAFBF9] border border-[#E5EBE5] p-8 space-y-3">
+            <div className="rounded-3xl bg-white border border-[#E5EBE5] p-8 space-y-3 shadow-2xs">
               <span className="text-xs font-mono font-bold text-[#113D2B]">
                 03
               </span>

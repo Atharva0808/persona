@@ -81,15 +81,15 @@ export function Sidebar({
     <>
       <aside
         className={cn(
-          "flex flex-col h-full bg-white border-r border-[#E5EBE5] transition-all duration-300 z-20 select-none",
+          "flex flex-col h-full bg-[#113D2B] border-r border-[#1B4634] text-white transition-all duration-300 z-20 select-none",
           collapsed ? "w-20" : "w-64"
         )}
       >
         {/* Brand Header */}
-        <div className="flex items-center gap-3 px-6 h-20 border-b border-[#E5EBE5]/60">
+        <div className="flex items-center gap-3 px-6 h-20 border-b border-[#1B4634]">
           <Logo size={32} />
           {!collapsed && (
-            <span className="text-xl font-bold text-[#111827] tracking-tight font-[family-name:var(--font-display)]">
+            <span className="text-xl font-bold text-white tracking-tight font-[family-name:var(--font-display)]">
               persona
             </span>
           )}
@@ -100,7 +100,7 @@ export function Sidebar({
           {/* Section: MENU */}
           <div className="space-y-1">
             {!collapsed && (
-              <div className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider px-3 mb-2">
+              <div className="text-[11px] font-bold text-white/40 uppercase tracking-wider px-3 mb-2 font-mono">
                 Menu
               </div>
             )}
@@ -115,8 +115,8 @@ export function Sidebar({
                   className={cn(
                     "flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group",
                     isActive
-                      ? "bg-[#EAF5EE] text-[#113D2B] font-semibold"
-                      : "text-[#6B7280] hover:text-[#111827] hover:bg-[#F4F7F4]"
+                      ? "bg-white text-[#113D2B] font-bold shadow-xs"
+                      : "text-white/70 hover:text-white hover:bg-white/10"
                   )}
                 >
                   <item.icon
@@ -124,7 +124,7 @@ export function Sidebar({
                       "w-4 h-4 shrink-0 transition-colors",
                       isActive
                         ? "text-[#113D2B]"
-                        : "text-[#9CA3AF] group-hover:text-[#111827]"
+                        : "text-white/60 group-hover:text-white"
                     )}
                   />
                   {!collapsed && <span className="truncate">{item.label}</span>}
@@ -136,20 +136,20 @@ export function Sidebar({
 
         {/* User Footer Profile with Logout Trigger */}
         {user && (
-          <div className="p-4 border-t border-[#E5EBE5] flex items-center justify-between gap-2">
+          <div className="p-4 border-t border-[#1B4634] flex items-center justify-between gap-2 bg-[#0E2E20]/50">
             <div className="flex items-center gap-3 min-w-0">
-              <Avatar className="h-9 w-9 border border-[#E5EBE5] shrink-0">
+              <Avatar className="h-9 w-9 border border-white/20 shrink-0">
                 {user.avatar_url && <AvatarImage src={user.avatar_url} />}
-                <AvatarFallback className="text-xs bg-[#EAF5EE] text-[#113D2B] font-bold font-mono">
+                <AvatarFallback className="text-xs bg-white/10 text-white font-bold font-mono">
                   {getInitials(user.full_name || user.email)}
                 </AvatarFallback>
               </Avatar>
               {!collapsed && (
                 <div className="flex flex-col min-w-0">
-                  <span className="text-xs font-bold text-[#111827] truncate">
+                  <span className="text-xs font-bold text-white truncate">
                     {user.full_name || "Engineer"}
                   </span>
-                  <span className="text-[11px] text-[#6B7280] truncate font-mono">
+                  <span className="text-[11px] text-white/60 truncate font-mono">
                     {user.email}
                   </span>
                 </div>
@@ -158,7 +158,7 @@ export function Sidebar({
             <button
               onClick={() => setLogoutDialogOpen(true)}
               title="Sign out"
-              className="p-2 rounded-xl text-[#9CA3AF] hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer shrink-0"
+              className="p-2 rounded-xl text-white/60 hover:text-white hover:bg-white/10 transition-colors cursor-pointer shrink-0"
             >
               <LogOut className="w-4 h-4" />
             </button>
