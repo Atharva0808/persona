@@ -7,6 +7,7 @@ import {
   RefreshCw,
   CheckCircle2,
   Send,
+  Sparkles,
 } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
@@ -159,7 +160,7 @@ export default function InterviewPage() {
       return;
     }
 
-    const currentQ = session.questions[currentIndex];
+    const currentQuestion = session.questions[currentIndex];
     setEvaluating(true);
 
     try {
@@ -167,22 +168,26 @@ export default function InterviewPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          question: currentQ.question,
+          question: currentQuestion.question,
+          category: currentQuestion.category,
+          expectedKeypoints: currentQuestion.expected_answer,
           candidateAnswer: candidateAnswer.trim(),
-          expectedAnswer: currentQ.expected_answer,
-          targetRole: session.role,
+          role: session.role,
         }),
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Evaluation failed");
+
+      if (!res.ok) {
+        throw new Error(data.error || "Evaluation failed");
+      }
 
       setEvaluation(data);
-      toast.success("Answer evaluated!");
+      toast.success("Answer evaluated by AI");
     } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : "Failed to evaluate answer"
-      );
+      const message =
+        err instanceof Error ? err.message : "Failed to evaluate answer";
+      toast.error(message);
     } finally {
       setEvaluating(false);
     }
@@ -195,17 +200,15 @@ export default function InterviewPage() {
       setCandidateAnswer("");
       setEvaluation(null);
     } else {
-      toast.success("Mock interview session completed!");
-      setSession(null);
-      setEvaluation(null);
+      toast.success("You have completed all 20 mock questions!");
     }
   };
 
   return (
     <div className="space-y-7 pb-10 text-[#111827]">
       <PageHeader
-        title="Interactive AI Technical Mock Interview"
-        description="Type your response to live questions and receive instant AI answer scoring, model answers, and follow-ups."
+        title="AI Mock Interview Practice"
+        description="20 tailored questions generated directly from your actual background, projects, and target role."
         actions={
           session ? (
             <Button
@@ -213,9 +216,10 @@ export default function InterviewPage() {
               size="sm"
               onClick={() => {
                 setSession(null);
+                setCandidateAnswer("");
                 setEvaluation(null);
               }}
-              className="rounded-xl border-[#E5EBE5] text-[#111827] hover:bg-[#F4F7F4] font-medium"
+              className="rounded-xl border-[#113D2B] text-[#113D2B] hover:bg-[#EAF5EE] font-bold text-xs"
             >
               <RefreshCw className="h-3.5 w-3.5 mr-2" />
               New Session
@@ -226,19 +230,22 @@ export default function InterviewPage() {
 
       {!session ? (
         <Card className="rounded-3xl border border-[#E5EBE5] bg-white p-6 sm:p-8 shadow-2xs">
-          <CardContent className="p-0 space-y-5">
-            <div className="p-4 rounded-2xl border border-[#E5EBE5] bg-[#FAFBF9] space-y-2 text-xs">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#113D2B] block">
-                Linked Profile Context
+          <CardContent className="p-0 space-y-6">
+            <div className="space-y-2">
+              <span className="text-xs font-mono font-bold text-[#113D2B] uppercase tracking-wider">
+                Context Signals
               </span>
-              <div className="flex flex-wrap gap-4 text-[#6B7280]">
+              <p className="text-xs text-[#6B7280]">
+                Questions are synthesized across your uploaded signals:
+              </p>
+              <div className="flex flex-wrap gap-4 pt-1 text-xs text-[#111827] font-mono">
                 <span className="flex items-center gap-1.5">
                   <CheckCircle2
                     className={`w-3.5 h-3.5 ${
                       hasResume ? "text-[#113D2B]" : "text-[#D1DCD1]"
                     }`}
                   />
-                  Resume {hasResume ? "(Linked)" : "(Not run)"}
+                  Resume {hasResume ? "(Linked)" : "(Not uploaded)"}
                 </span>
                 <span className="flex items-center gap-1.5">
                   <CheckCircle2
@@ -246,7 +253,7 @@ export default function InterviewPage() {
                       hasGithub ? "text-[#113D2B]" : "text-[#D1DCD1]"
                     }`}
                   />
-                  GitHub {hasGithub ? "(Linked)" : "(Not run)"}
+                  GitHub {hasGithub ? "(Linked)" : "(Not linked)"}
                 </span>
                 <span className="flex items-center gap-1.5">
                   <CheckCircle2
@@ -305,32 +312,41 @@ export default function InterviewPage() {
         </Card>
       ) : (
         <div className="space-y-6">
-          {/* Progress Header */}
-          <div className="rounded-3xl border border-[#E5EBE5] bg-white p-6 flex items-center justify-between shadow-2xs">
-            <div className="space-y-1">
-              <span className="text-xs font-mono font-bold text-[#113D2B] uppercase tracking-wider">
-                Question {currentIndex + 1} of {session.questions.length}
-              </span>
-              <h2 className="text-base font-bold text-[#111827]">
+          {/* Forest Pine Session Header Card */}
+          <div className="rounded-3xl bg-[#113D2B] text-white p-7 sm:p-9 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-sm">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-[#F2C94C]" />
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-white/80">
+                  Question {currentIndex + 1} of {session.questions.length}
+                </span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
                 {TARGET_ROLES.find((r) => r.value === session.role)?.label} Track
               </h2>
             </div>
 
-            <div className="w-36 bg-[#E5EBE5] h-2.5 rounded-full overflow-hidden">
-              <div
-                className="bg-[#113D2B] h-full transition-all duration-300 rounded-full"
-                style={{
-                  width: `${((currentIndex + 1) / session.questions.length) * 100}%`,
-                }}
-              />
+            <div className="space-y-1.5 min-w-[180px]">
+              <div className="flex justify-between text-xs font-mono text-white/80">
+                <span>Progress</span>
+                <span>{Math.round(((currentIndex + 1) / session.questions.length) * 100)}%</span>
+              </div>
+              <div className="w-full bg-white/20 h-2 rounded-full overflow-hidden">
+                <div
+                  className="bg-[#F2C94C] h-full transition-all duration-300 rounded-full"
+                  style={{
+                    width: `${((currentIndex + 1) / session.questions.length) * 100}%`,
+                  }}
+                />
+              </div>
             </div>
           </div>
 
           {/* Current Question Card */}
           <Card className="rounded-3xl border border-[#E5EBE5] bg-white p-6 sm:p-8 space-y-6 shadow-2xs">
             <div className="space-y-2">
-              <span className="text-xs font-bold text-[#113D2B] bg-[#EAF5EE] px-3 py-1 rounded-lg uppercase">
-                Question {currentIndex + 1}
+              <span className="text-xs font-bold text-[#113D2B] bg-[#EAF5EE] px-3 py-1 rounded-lg uppercase font-mono">
+                {session.questions[currentIndex].category || "Technical Architecture"}
               </span>
               <h3 className="text-base sm:text-lg font-bold text-[#111827] leading-snug pt-2">
                 {session.questions[currentIndex].question}
@@ -378,7 +394,7 @@ export default function InterviewPage() {
             {evaluation && (
               <div className="space-y-4 pt-4 border-t border-[#E5EBE5]">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold uppercase tracking-wider text-[#113D2B]">
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#113D2B] font-mono">
                     AI Evaluation Score
                   </span>
                   <span className="text-base font-bold font-mono text-[#113D2B] bg-[#EAF5EE] px-3 py-1 rounded-lg">
@@ -411,13 +427,13 @@ export default function InterviewPage() {
                 </div>
 
                 <div className="p-4 rounded-2xl border border-[#E5EBE5] bg-[#FAFBF9] space-y-1 text-xs">
-                  <strong className="text-[#111827] block">Ideal Model Answer:</strong>
+                  <strong className="text-[#111827] block font-mono">Ideal Model Answer:</strong>
                   <p className="text-[#374151] leading-relaxed">{evaluation.model_answer}</p>
                 </div>
 
                 {evaluation.follow_up && (
                   <div className="p-4 rounded-2xl border border-[#E5EBE5] bg-[#FAFBF9] text-xs">
-                    <strong className="text-[#113D2B] block mb-1">Follow-Up Probe Question:</strong>
+                    <strong className="text-[#113D2B] block mb-1 font-mono">Follow-Up Probe Question:</strong>
                     <p className="text-[#374151]">{evaluation.follow_up}</p>
                   </div>
                 )}

@@ -10,6 +10,7 @@ import {
   ArrowRight,
   X,
   RefreshCw,
+  Sparkles,
 } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
@@ -102,7 +103,7 @@ export default function ResumePage() {
               variant="outline"
               size="sm"
               onClick={resetAnalysis}
-              className="rounded-xl border-[#E5EBE5] text-[#111827] hover:bg-[#F4F7F4] font-medium"
+              className="rounded-xl border-[#113D2B] text-[#113D2B] hover:bg-[#EAF5EE] font-bold text-xs"
             >
               <RefreshCw className="h-3.5 w-3.5 mr-2" />
               New Audit
@@ -144,7 +145,7 @@ export default function ResumePage() {
                     variant="ghost"
                     size="sm"
                     onClick={() => setFile(null)}
-                    className="text-xs text-rose-600 hover:bg-rose-50 rounded-xl"
+                    className="text-xs text-rose-600 hover:bg-rose-50 rounded-xl font-bold"
                   >
                     <X className="h-3.5 w-3.5 mr-1" />
                     Remove file
@@ -152,7 +153,7 @@ export default function ResumePage() {
                 </div>
               ) : (
                 <div className="flex flex-col items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-[#F4F7F4] border border-[#E5EBE5] flex items-center justify-center text-[#6B7280]">
+                  <div className="w-12 h-12 rounded-2xl bg-[#EAF5EE] flex items-center justify-center text-[#113D2B]">
                     <Upload className="h-6 w-6" />
                   </div>
                   <div className="space-y-1">
@@ -199,22 +200,25 @@ export default function ResumePage() {
         </Card>
       ) : (
         <div className="space-y-6">
-          {/* Overview Score Box */}
-          <div className="rounded-3xl border border-[#E5EBE5] bg-white p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-2xs">
-            <div className="space-y-2 max-w-xl">
-              <div className="text-xs font-bold text-[#113D2B] uppercase tracking-wider">
-                ATS Compatibility Report
+          {/* Forest Pine Hero Summary Card */}
+          <div className="rounded-3xl bg-[#113D2B] text-white p-7 sm:p-9 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-sm">
+            <div className="space-y-3 max-w-xl">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-[#F2C94C]" />
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-white/80">
+                  ATS Compatibility Report
+                </span>
               </div>
-              <h2 className="text-2xl font-bold text-[#111827]">
-                Score: {analysis.ats_score} / 100
+              <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
+                {analysis.ats_score}% Match
               </h2>
-              <p className="text-xs text-[#6B7280] leading-relaxed">
+              <p className="text-xs sm:text-sm text-white/80 leading-relaxed">
                 {analysis.overall_feedback}
               </p>
             </div>
 
-            <div className="flex items-center justify-center p-3 rounded-2xl bg-[#F4F7F4] border border-[#E5EBE5] shrink-0">
-              <ScoreRing score={analysis.ats_score} label="ATS Rating" size={100} />
+            <div className="flex items-center justify-center p-4 rounded-2xl bg-white/10 border border-white/15 shrink-0">
+              <ScoreRing score={analysis.ats_score} label="ATS Rating" size={105} />
             </div>
           </div>
 
@@ -223,7 +227,7 @@ export default function ResumePage() {
             {analysis.sections.map((section) => (
               <div
                 key={section.name}
-                className="rounded-3xl border border-[#E5EBE5] bg-white p-6 space-y-3 shadow-2xs"
+                className="rounded-3xl border border-[#E5EBE5] bg-white p-6 space-y-3 shadow-2xs hover:border-[#113D2B]/30 transition-colors"
               >
                 <div className="flex items-center justify-between border-b border-[#E5EBE5] pb-3">
                   <h3 className="text-sm font-bold text-[#111827]">
@@ -257,7 +261,7 @@ export default function ResumePage() {
           {analysis.weak_bullets.length > 0 && (
             <div className="rounded-3xl border border-[#E5EBE5] bg-white p-6 sm:p-8 space-y-4 shadow-2xs">
               <div className="flex items-center justify-between border-b border-[#E5EBE5] pb-3">
-                <h3 className="text-xs font-bold text-[#111827] uppercase tracking-wider">
+                <h3 className="text-xs font-bold text-[#111827] uppercase tracking-wider font-mono">
                   Bullet Point Rewrites ({analysis.weak_bullets.length})
                 </h3>
               </div>
@@ -266,7 +270,7 @@ export default function ResumePage() {
                 {analysis.weak_bullets.map((bullet, idx) => (
                   <div
                     key={idx}
-                    className="space-y-2 rounded-2xl border border-[#E5EBE5] bg-[#FAFBF9] p-4 text-xs"
+                    className="space-y-2.5 rounded-2xl border border-[#E5EBE5] bg-[#FAFBF9] p-4 text-xs"
                   >
                     <div className="text-rose-600 flex items-start gap-2">
                       <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
