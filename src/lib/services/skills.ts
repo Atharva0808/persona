@@ -18,70 +18,104 @@ const ROLE_DESCRIPTIONS: Record<TargetRole, string> = {
   cybersecurity: "Cybersecurity Engineer - Network security, penetration testing, cryptography, compliance, incident response",
 };
 
+const skillGapResponseSchema = {
+  type: "OBJECT" as const,
+  properties: {
+    match_percentage: {
+      type: "INTEGER" as const,
+      description: "Match percentage between 0 and 100",
+    },
+    required_skills: {
+      type: "ARRAY" as const,
+      items: {
+        type: "OBJECT" as const,
+        properties: {
+          skill: { type: "STRING" as const },
+          level: {
+            type: "STRING" as const,
+            enum: ["beginner", "intermediate", "advanced", "expert"],
+          },
+          has_skill: { type: "BOOLEAN" as const },
+          current_level: {
+            type: "STRING" as const,
+            enum: ["none", "beginner", "intermediate", "advanced", "expert"],
+          },
+          priority: {
+            type: "STRING" as const,
+            enum: ["critical", "important", "nice_to_have"],
+          },
+        },
+        required: ["skill", "level", "has_skill", "current_level", "priority"],
+      },
+    },
+    roadmap: {
+      type: "ARRAY" as const,
+      items: {
+        type: "OBJECT" as const,
+        properties: {
+          phase: { type: "INTEGER" as const },
+          title: { type: "STRING" as const },
+          duration: { type: "STRING" as const },
+          skills: {
+            type: "ARRAY" as const,
+            items: { type: "STRING" as const },
+          },
+          resources: {
+            type: "ARRAY" as const,
+            items: {
+              type: "OBJECT" as const,
+              properties: {
+                title: { type: "STRING" as const },
+                url: { type: "STRING" as const },
+                type: {
+                  type: "STRING" as const,
+                  enum: ["course", "documentation", "video", "article", "book"],
+                },
+              },
+              required: ["title", "url", "type"],
+            },
+          },
+          projects: {
+            type: "ARRAY" as const,
+            items: { type: "STRING" as const },
+          },
+        },
+        required: ["phase", "title", "duration", "skills", "resources", "projects"],
+      },
+    },
+  },
+  required: ["match_percentage", "required_skills", "roadmap"],
+};
+
 export async function analyzeSkillGap(
   currentSkills: string[],
   targetRole: TargetRole
 ): Promise<Omit<SkillGapAnalysis, "id" | "user_id" | "created_at">> {
   const roleDescription = ROLE_DESCRIPTIONS[targetRole];
 
-  const prompt = `You are a career advisor specializing in software engineering roles. Analyze the skill gap between a candidate's current skills and their target role.
+  const prompt = `You are a principal tech career advisor and engineering mentor.
+Analyze the skill gap between a candidate's current skills and their target role.
 
 Target role: ${roleDescription}
 Current skills: ${currentSkills.join(", ")}
-Analyze the gap and provide a learning roadmap.
-
-Return a JSON object with this exact structure:
-{
-  "match_percentage": <number 0-100>,
-  "required_skills": [
-    {
-      "skill": "<skill name>",
-      "level": "beginner" | "intermediate" | "advanced" | "expert",
-      "has_skill": <boolean>,
-      "current_level": "none" | "beginner" | "intermediate" | "advanced" | "expert",
-      "priority": "critical" | "important" | "nice_to_have"
-    }
-  ],
-  "roadmap": [
-    {
-      "phase": <number 1-4>,
-      "title": "<phase title>",
-      "duration": "<e.g., 2-3 weeks>",
-      "skills": ["<skill to learn>"],
-      "resources": [
-        {
-          "title": "<resource name>",
-          "url": "<url>",
-          "type": "course" | "documentation" | "video" | "article" | "book"
-        }
-      ],
-      "projects": ["<project idea to build>"]
-    }
-  ]
-}
-
-Provide 12-15 required skills and a 4-phase roadmap. Be specific and actionable.`;
+Analyze the gap and provide a 4-phase structured learning roadmap with 10-15 specific required skill benchmarks.`;
 
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
     contents: prompt,
     config: {
-      temperature: 0.3,
+      temperature: 0.2,
       responseMimeType: "application/json",
+      responseSchema: skillGapResponseSchema,
     },
   });
 
   const content = response.text;
   if (!content) {
-    throw new Error("No response from AI");
+    throw new Error("No response from Gemini");
   }
 
-  let result;
-  try {
-    result = JSON.parse(content);
-  } catch {
-    throw new Error("Failed to parse AI response. Please try again.");
-  }
+  const result = JSON.parse(content);
 
   return {
     target_role: targetRole,

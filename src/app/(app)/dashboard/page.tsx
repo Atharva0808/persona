@@ -8,9 +8,15 @@ import {
   FileText,
   Target,
   MessageSquare,
+  RefreshCw,
+  ShieldCheck,
+  AlertTriangle,
+  Lightbulb,
+  CheckCircle2,
 } from "lucide-react";
 import { GithubIcon as Github, LinkedinIcon as Linkedin } from "@/components/icons";
 import { createClient } from "@/lib/supabase/client";
+import type { PersonaCrossVectorSynthesis } from "@/lib/types";
 
 interface EngineItem {
   id: string;
@@ -77,57 +83,95 @@ export default function DashboardPage() {
     skills: null,
   });
 
+  const [synthesis, setSynthesis] = useState<PersonaCrossVectorSynthesis | null>(null);
   const [loading, setLoading] = useState(true);
+  const [synthesisLoading, setSynthesisLoading] = useState(false);
 
   useEffect(() => {
-    async function fetchScores() {
-      const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+    let isMounted = true;
 
-      if (!user) {
-        setLoading(false);
-        return;
+    async function fetchDashboardData() {
+      try {
+        const supabase = createClient();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user || !isMounted) {
+          setLoading(false);
+          return;
+        }
+
+        const [resumeRes, githubRes, linkedinRes, skillsRes] = await Promise.all([
+          supabase
+            .from("resume_analyses")
+            .select("ats_score")
+            .eq("user_id", user.id)
+            .order("created_at", { ascending: false })
+            .limit(1),
+          supabase
+            .from("github_analyses")
+            .select("score")
+            .eq("user_id", user.id)
+            .order("created_at", { ascending: false })
+            .limit(1),
+          supabase
+            .from("linkedin_analyses")
+            .select("score")
+            .eq("user_id", user.id)
+            .order("created_at", { ascending: false })
+            .limit(1),
+          supabase
+            .from("skill_gap_analyses")
+            .select("match_percentage")
+            .eq("user_id", user.id)
+            .order("created_at", { ascending: false })
+            .limit(1),
+        ]);
+
+        if (isMounted) {
+          setScores({
+            resume: resumeRes.data?.[0]?.ats_score ?? null,
+            github: githubRes.data?.[0]?.score ?? null,
+            linkedin: linkedinRes.data?.[0]?.score ?? null,
+            skills: skillsRes.data?.[0]?.match_percentage ?? null,
+          });
+          setLoading(false);
+        }
+
+        // Fetch Cross-Vector Persona Synthesis
+        const synRes = await fetch("/api/synthesis");
+        if (synRes.ok && isMounted) {
+          const synData = await synRes.json();
+          setSynthesis(synData);
+        }
+      } catch (error) {
+        console.error("Failed to load dashboard data:", error);
+        if (isMounted) setLoading(false);
       }
-
-      const [resumeRes, githubRes, linkedinRes, skillsRes] = await Promise.all([
-        supabase
-          .from("resume_analyses")
-          .select("ats_score")
-          .eq("user_id", user.id)
-          .order("created_at", { ascending: false })
-          .limit(1),
-        supabase
-          .from("github_analyses")
-          .select("score")
-          .eq("user_id", user.id)
-          .order("created_at", { ascending: false })
-          .limit(1),
-        supabase
-          .from("linkedin_analyses")
-          .select("score")
-          .eq("user_id", user.id)
-          .order("created_at", { ascending: false })
-          .limit(1),
-        supabase
-          .from("skill_gap_analyses")
-          .select("match_percentage")
-          .eq("user_id", user.id)
-          .order("created_at", { ascending: false })
-          .limit(1),
-      ]);
-
-      setScores({
-        resume: resumeRes.data?.[0]?.ats_score ?? null,
-        github: githubRes.data?.[0]?.score ?? null,
-        linkedin: linkedinRes.data?.[0]?.score ?? null,
-        skills: skillsRes.data?.[0]?.match_percentage ?? null,
-      });
-      setLoading(false);
     }
-    fetchScores();
+
+    fetchDashboardData();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
+
+  const refreshSynthesis = async () => {
+    setSynthesisLoading(true);
+    try {
+      const res = await fetch("/api/synthesis?refresh=true");
+      if (res.ok) {
+        const data = await res.json();
+        setSynthesis(data);
+      }
+    } catch (err) {
+      console.error("Failed to refresh synthesis:", err);
+    } finally {
+      setSynthesisLoading(false);
+    }
+  };
 
   const completedScores = Object.values(scores).filter(
     (s): s is number => s !== null
@@ -192,7 +236,7 @@ export default function DashboardPage() {
           Dashboard
         </h1>
         <p className="text-xs sm:text-sm text-[#6B7280] font-normal mt-1">
-          Candidate interview readiness overview and assessment engines.
+          Candidate interview readiness overview, cross-vector synthesis, and assessment engines.
         </p>
       </div>
 
@@ -370,7 +414,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* ═══ Right Column (Span 5): Next Action Card + Readiness Semi-Donut Gauge ═══ */}
+        {/* ═══ Right Column (Span 5): Next Action Card + Readiness Gauge ═══ */}
         <div className="lg:col-span-5 space-y-5">
           {/* Next Priority Step Card */}
           <div className="rounded-3xl bg-white border border-[#E5EBE5] p-6 shadow-2xs space-y-4">
@@ -471,6 +515,127 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* ─── Cross-Vector Persona Synthesis & Discrepancy Matrix (New Upgrade) ─── */}
+      {synthesis && synthesis.completed_vectors_count > 0 && (
+        <div className="rounded-3xl bg-white border border-[#E5EBE5] p-6 sm:p-8 shadow-2xs space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E5EBE5] pb-5">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-[#113D2B] uppercase tracking-wider">
+                  Persona Intelligence
+                </span>
+                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#EAF5EE] text-[#113D2B]">
+                  {synthesis.completed_vectors_count} Vectors Synthesized
+                </span>
+              </div>
+              <h2 className="text-xl font-bold text-[#111827]">
+                Cross-Vector Discrepancy &amp; Verification Matrix
+              </h2>
+              <p className="text-xs text-[#6B7280] max-w-2xl leading-relaxed">
+                {synthesis.executive_summary}
+              </p>
+            </div>
+
+            <button
+              onClick={refreshSynthesis}
+              disabled={synthesisLoading}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#E5EBE5] hover:bg-[#F4F7F4] text-[#111827] text-xs font-medium transition-colors cursor-pointer shrink-0 disabled:opacity-50"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${synthesisLoading ? "animate-spin text-[#113D2B]" : ""}`} />
+              <span>Re-analyze Persona</span>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {/* Verified Strengths Across Vectors */}
+            <div className="p-5 rounded-2xl border border-[#E5EBE5] bg-[#FAFBF9] space-y-3">
+              <div className="flex items-center gap-2 text-xs font-bold text-[#113D2B]">
+                <ShieldCheck className="w-4 h-4 text-[#113D2B]" />
+                <span>Verified Multi-Vector Strengths</span>
+              </div>
+              {synthesis.verified_strengths.length > 0 ? (
+                <div className="space-y-2.5 pt-1">
+                  {synthesis.verified_strengths.map((str, i) => (
+                    <div key={i} className="p-3 rounded-xl bg-white border border-[#E5EBE5] space-y-1 text-xs">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-[#111827]">{str.skill_or_trait}</span>
+                        <div className="flex gap-1">
+                          {str.verified_across.map((v, vi) => (
+                            <span key={vi} className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-[#EAF5EE] text-[#113D2B] font-bold">
+                              {v}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <p className="text-[#6B7280] text-[11px] leading-relaxed">{str.proof_summary}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs text-[#6B7280]">Complete more assessments to cross-verify key engineering competencies.</p>
+              )}
+            </div>
+
+            {/* Cross-Vector Discrepancies & Contradictions */}
+            <div className="p-5 rounded-2xl border border-[#E5EBE5] bg-[#FAFBF9] space-y-3">
+              <div className="flex items-center gap-2 text-xs font-bold text-[#B45309]">
+                <AlertTriangle className="w-4 h-4 text-[#B45309]" />
+                <span>Detected Discrepancies &amp; Inconsistencies</span>
+              </div>
+              {synthesis.discrepancies.length > 0 ? (
+                <div className="space-y-2.5 pt-1">
+                  {synthesis.discrepancies.map((disc, i) => (
+                    <div key={i} className="p-3 rounded-xl bg-white border border-[#E5EBE5] space-y-1.5 text-xs">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-[#111827]">{disc.title}</span>
+                        <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase ${
+                          disc.severity === "critical"
+                            ? "bg-rose-50 text-rose-600 border border-rose-200"
+                            : "bg-amber-50 text-amber-700 border border-amber-200"
+                        }`}>
+                          {disc.severity}
+                        </span>
+                      </div>
+                      <p className="text-[#6B7280] text-[11px] leading-relaxed">{disc.description}</p>
+                      <div className="pt-1 text-[11px] text-[#113D2B] font-medium flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3 text-[#113D2B] shrink-0" />
+                        <span>Fix: {disc.fix_action}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs text-[#6B7280]">No major contradictions detected between your submitted profiles.</p>
+              )}
+            </div>
+          </div>
+
+          {/* Strategic Next Steps Roadmap */}
+          {synthesis.strategic_action_plan.length > 0 && (
+            <div className="pt-2">
+              <div className="flex items-center gap-2 text-xs font-bold text-[#111827] mb-3">
+                <Lightbulb className="w-4 h-4 text-[#113D2B]" />
+                <span>Executive Strategic Action Plan</span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {synthesis.strategic_action_plan.map((act) => (
+                  <div key={act.step} className="p-4 rounded-2xl border border-[#E5EBE5] bg-[#FAFBF9] space-y-1.5 text-xs">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold text-[#113D2B] uppercase tracking-wider">
+                        Step {act.step}
+                      </span>
+                      <span className="text-[10px] text-[#6B7280] font-mono">{act.timeline}</span>
+                    </div>
+                    <h4 className="font-bold text-[#111827] text-xs">{act.focus}</h4>
+                    <p className="text-[#6B7280] text-[11px] leading-relaxed">{act.impact}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

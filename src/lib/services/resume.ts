@@ -5,72 +5,114 @@ import type {
   WeakBullet,
 } from "@/lib/types";
 
+const resumeResponseSchema = {
+  type: "OBJECT" as const,
+  properties: {
+    ats_score: {
+      type: "INTEGER" as const,
+      description: "ATS compatibility score between 0 and 100",
+    },
+    overall_feedback: {
+      type: "STRING" as const,
+      description: "2-3 sentences of overall executive resume feedback",
+    },
+    sections: {
+      type: "ARRAY" as const,
+      items: {
+        type: "OBJECT" as const,
+        properties: {
+          name: { type: "STRING" as const },
+          score: { type: "INTEGER" as const },
+          feedback: { type: "STRING" as const },
+          suggestions: {
+            type: "ARRAY" as const,
+            items: { type: "STRING" as const },
+          },
+        },
+        required: ["name", "score", "feedback", "suggestions"],
+      },
+    },
+    weak_bullets: {
+      type: "ARRAY" as const,
+      items: {
+        type: "OBJECT" as const,
+        properties: {
+          original: { type: "STRING" as const },
+          issue: { type: "STRING" as const },
+          suggestion: { type: "STRING" as const },
+          section: { type: "STRING" as const },
+        },
+        required: ["original", "issue", "suggestion", "section"],
+      },
+    },
+    improvements: {
+      type: "ARRAY" as const,
+      items: { type: "STRING" as const },
+    },
+    missing_skills: {
+      type: "ARRAY" as const,
+      items: { type: "STRING" as const },
+    },
+  },
+  required: [
+    "ats_score",
+    "overall_feedback",
+    "sections",
+    "weak_bullets",
+    "improvements",
+    "missing_skills",
+  ],
+};
+
 export async function analyzeResume(
-  resumeText: string
+  input: { buffer?: Buffer; text?: string }
 ): Promise<Omit<ResumeAnalysis, "id" | "user_id" | "file_name" | "file_url" | "created_at">> {
-  const prompt = `You are an expert resume analyst and ATS (Applicant Tracking System) specialist for software engineering roles. Analyze the given resume text thoroughly and provide a detailed analysis.
+  const prompt = `You are a world-class resume auditor and ATS (Applicant Tracking System) engineer for top software engineering companies (Google, Meta, Apple, high-growth startups).
 
-Analyze this resume:\n\n${resumeText}
+Perform a thorough, fine-grained audit of this resume:
+1. ATS Score (0-100): Evaluate keyword density, standard header detection, column clarity, and formatting parseability.
+2. Section Breakdowns: Evaluate Contact Info, Executive Summary, Experience, Projects, Skills, and Education.
+3. Weak Bullet Rewrites: Identify weak bullets (vague verbs, lack of numbers/metrics/impact) and provide production-ready XYZ formula rewrites ("Accomplished [X], as measured by [Y], by doing [Z]").
+4. Identify critical missing industry skills and actionable improvements.`;
 
-Return a JSON object with exactly this structure:
-{
-  "ats_score": <number 0-100>,
-  "overall_feedback": "<string with 2-3 sentences of overall feedback>",
-  "sections": [
-    {
-      "name": "<section name e.g. Contact Info, Summary, Experience, Education, Skills, Projects>",
-      "score": <number 0-100>,
-      "feedback": "<specific feedback for this section>",
-      "suggestions": ["<improvement suggestion 1>", "<improvement suggestion 2>"]
-    }
-  ],
-  "weak_bullets": [
-    {
-      "original": "<the weak bullet point text>",
-      "issue": "<what's wrong with it>",
-      "suggestion": "<improved version>",
-      "section": "<which section it's from>"
-    }
-  ],
-  "improvements": ["<general improvement 1>", "<general improvement 2>"],
-  "missing_skills": ["<missing skill 1>", "<missing skill 2>"]
-}
-
-Evaluation criteria:
-- ATS compatibility (keyword optimization, formatting)
-- Quantified achievements (numbers, metrics, percentages)
-- Action verbs usage
-- Technical skills relevance
-- Project descriptions quality
-- Education section completeness
-- Contact information completeness
-- Section organization
-- Overall clarity and conciseness
-- Missing standard sections`;
+  // Multimodal Gemini 2.5 Input: Provide direct PDF inline bytes if available
+  const contents = input.buffer
+    ? [
+        {
+          inlineData: {
+            data: input.buffer.toString("base64"),
+            mimeType: "application/pdf",
+          },
+        },
+        {
+          text: prompt,
+        },
+      ]
+    : [
+        {
+          text: `${prompt}\n\nResume Content:\n${input.text || ""}`,
+        },
+      ];
 
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
-    contents: prompt,
+    contents,
     config: {
-      temperature: 0.3,
+      temperature: 0.2,
       responseMimeType: "application/json",
+      responseSchema: resumeResponseSchema,
     },
   });
 
   const content = response.text;
   if (!content) {
-    throw new Error("No response from AI");
+    throw new Error("No response from Gemini");
   }
 
-  let result;
-  try {
-    result = JSON.parse(content);
-  } catch {
-    throw new Error("Failed to parse AI response. Please try again.");
-  }
+  const result = JSON.parse(content);
 
   return {
-    raw_text: resumeText,
+    raw_text: input.text || "Direct PDF Multimodal Analysis",
     ats_score: result.ats_score,
     overall_feedback: result.overall_feedback,
     sections: result.sections as ResumeSection[],

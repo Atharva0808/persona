@@ -48,8 +48,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Analyze with AI
-    const analysis = await analyzeResume(resumeText);
+    // Analyze directly with Gemini Multimodal PDF Engine (with raw text fallback)
+    const analysis = await analyzeResume({ buffer, text: resumeText });
 
     // Optionally store the file in Supabase Storage
     const fileName = `${user.id}/${Date.now()}_${file.name}`;

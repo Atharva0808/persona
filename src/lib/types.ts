@@ -186,6 +186,46 @@ export interface InterviewSession {
   created_at: string;
 }
 
+// ─── Cross-Vector Persona Synthesis ─────────────────────────────────────────
+
+export interface CrossVectorDiscrepancy {
+  title: string;
+  severity: "critical" | "moderate" | "minor";
+  description: string;
+  vectors_involved: string[];
+  fix_action: string;
+}
+
+export interface VerifiedStrength {
+  skill_or_trait: string;
+  proof_summary: string;
+  verified_across: string[];
+}
+
+export interface Blindspot {
+  area: string;
+  consequence: string;
+  recommendation: string;
+}
+
+export interface StrategicActionItem {
+  step: number;
+  focus: string;
+  timeline: string;
+  impact: string;
+}
+
+export interface PersonaCrossVectorSynthesis {
+  overall_synthesis_score: number;
+  readiness_verdict: string;
+  executive_summary: string;
+  discrepancies: CrossVectorDiscrepancy[];
+  verified_strengths: VerifiedStrength[];
+  blindspots: Blindspot[];
+  strategic_action_plan: StrategicActionItem[];
+  completed_vectors_count: number;
+}
+
 // ─── Dashboard ───────────────────────────────────────────────────────────────
 
 export interface DashboardData {

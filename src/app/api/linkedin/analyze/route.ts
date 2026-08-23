@@ -15,13 +15,14 @@ export async function POST(request: NextRequest) {
 
     const contentType = request.headers.get("content-type") || "";
 
-    let profileData = {
-      headline: "",
-      about: "",
-      experience: "",
-      skills: "",
-      featured: "",
-      profileUrl: "https://linkedin.com/in/profile",
+    let analysisInput: {
+      pdfBuffer?: Buffer;
+      headline?: string;
+      about?: string;
+      experience?: string;
+      skills?: string;
+      featured?: string;
+      profileUrl: string;
     };
 
     if (contentType.includes("multipart/form-data")) {
@@ -35,35 +36,17 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      // Parse PDF using pdf-parse
       const arrayBuffer = await file.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
 
-      // @ts-expect-error - Internal path
-      const pdfParseModule = await import("pdf-parse/lib/pdf-parse.js");
-      const pdfParse = pdfParseModule.default || pdfParseModule;
-      const pdfData = await pdfParse(buffer);
-      const extractedText = pdfData.text;
-
-      if (!extractedText || extractedText.trim().length < 30) {
-        return NextResponse.json(
-          { error: "Could not extract text from the LinkedIn PDF." },
-          { status: 400 }
-        );
-      }
-
-      profileData = {
-        headline: extractedText.slice(0, 300),
-        about: extractedText.slice(0, 2000),
-        experience: extractedText,
-        skills: "Extracted from LinkedIn PDF",
-        featured: "Extracted from LinkedIn PDF",
+      analysisInput = {
+        pdfBuffer: buffer,
         profileUrl: "LinkedIn PDF Export",
       };
     } else {
       const body = await request.json();
       const { headline, about, experience, skills, featured, profileUrl } = body;
-      profileData = {
+      analysisInput = {
         headline: headline || "",
         about: about || "",
         experience: experience || "",
@@ -73,7 +56,7 @@ export async function POST(request: NextRequest) {
       };
     }
 
-    const analysis = await analyzeLinkedIn(profileData);
+    const analysis = await analyzeLinkedIn(analysisInput);
 
     // Save to database
     const { data: savedAnalysis, error: dbError } = await supabase

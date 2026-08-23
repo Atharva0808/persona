@@ -2,6 +2,33 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { ai } from "@/lib/gemini";
 
+const evaluationResponseSchema = {
+  type: "OBJECT" as const,
+  properties: {
+    score: {
+      type: "INTEGER" as const,
+      description: "Answer evaluation score between 0 and 100",
+    },
+    strengths: {
+      type: "ARRAY" as const,
+      items: { type: "STRING" as const },
+    },
+    missing_points: {
+      type: "ARRAY" as const,
+      items: { type: "STRING" as const },
+    },
+    model_answer: {
+      type: "STRING" as const,
+      description: "A concise, high-scoring ideal response",
+    },
+    follow_up: {
+      type: "STRING" as const,
+      description: "One sharp follow-up probe question",
+    },
+  },
+  required: ["score", "strengths", "missing_points", "model_answer", "follow_up"],
+};
+
 export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient();
@@ -29,28 +56,21 @@ Question asked: "${question}"
 Expected key points: "${expectedAnswer || "Not specified"}"
 Candidate's answer: "${candidateAnswer}"
 
-Evaluate the candidate's answer thoroughly and provide constructive feedback.
-Return a JSON object with this exact structure:
-{
-  "score": <number 0-100>,
-  "strengths": ["<strength 1>", "<strength 2>"],
-  "missing_points": ["<missing point 1>", "<missing point 2>"],
-  "model_answer": "<a concise, high-scoring ideal response>",
-  "follow_up": "<one sharp follow-up question to probe deeper>"
-}`;
+Evaluate the candidate's answer thoroughly for technical accuracy, clarity, and depth.`;
 
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
       contents: prompt,
       config: {
-        temperature: 0.3,
+        temperature: 0.2,
         responseMimeType: "application/json",
+        responseSchema: evaluationResponseSchema,
       },
     });
 
     const content = response.text;
     if (!content) {
-      throw new Error("No response from AI");
+      throw new Error("No response from Gemini");
     }
 
     const result = JSON.parse(content);

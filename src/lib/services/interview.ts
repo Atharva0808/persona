@@ -4,6 +4,49 @@ import type {
   InterviewQuestion,
 } from "@/lib/types";
 
+const questionsResponseSchema = {
+  type: "OBJECT" as const,
+  properties: {
+    questions: {
+      type: "ARRAY" as const,
+      items: {
+        type: "OBJECT" as const,
+        properties: {
+          id: { type: "STRING" as const },
+          question: { type: "STRING" as const },
+          category: {
+            type: "STRING" as const,
+            enum: ["technical", "behavioral", "system_design", "project_deep_dive"],
+          },
+          difficulty: {
+            type: "STRING" as const,
+            enum: ["easy", "medium", "hard"],
+          },
+          expected_answer: { type: "STRING" as const },
+          follow_ups: {
+            type: "ARRAY" as const,
+            items: { type: "STRING" as const },
+          },
+          tips: {
+            type: "ARRAY" as const,
+            items: { type: "STRING" as const },
+          },
+        },
+        required: [
+          "id",
+          "question",
+          "category",
+          "difficulty",
+          "expected_answer",
+          "follow_ups",
+          "tips",
+        ],
+      },
+    },
+  },
+  required: ["questions"],
+};
+
 export async function generateInterviewQuestions(
   context: {
     resumeText?: string;
@@ -40,47 +83,29 @@ export async function generateInterviewQuestions(
     contextParts.push(`Skills: ${context.skills.join(", ")}`);
   }
 
-  const prompt = `You are a top-tier technical interviewer for ${roleMap[context.targetRole]} roles. Generate ${questionCount} concise, high-impact interview questions tailored to the candidate's background.
+  const prompt = `You are a principal engineering hiring manager conducting technical interviews for ${roleMap[context.targetRole]} roles.
+Generate ${questionCount} tailored, challenging interview questions based on the candidate's cross-vector profile.
 
 Target role: ${roleMap[context.targetRole]}
-${contextParts.length > 0 ? `Candidate Profile:\n${contextParts.join("\n\n")}` : ""}
+${contextParts.length > 0 ? `Candidate Profile Context:\n${contextParts.join("\n\n")}` : ""}
 
-Return JSON with this exact structure:
-{
-  "questions": [
-    {
-      "id": "q1",
-      "question": "<concise, sharp interview question>",
-      "category": "technical",
-      "difficulty": "medium",
-      "expected_answer": "<3 key points expected in answer>",
-      "follow_ups": ["<follow-up question 1>"],
-      "tips": ["<key tip>"]
-    }
-  ]
-}
-
-Generate exactly ${questionCount} questions covering HR/Behavioral, Core Role Technical, Project-based, and System Design.`;
+Generate exactly ${questionCount} questions covering core architecture, specific project decisions, algorithmic trade-offs, and behavioral ownership.`;
 
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
     contents: prompt,
     config: {
-      temperature: 0.4,
+      temperature: 0.3,
       responseMimeType: "application/json",
+      responseSchema: questionsResponseSchema,
     },
   });
 
   const content = response.text;
   if (!content) {
-    throw new Error("No response from AI");
+    throw new Error("No response from Gemini");
   }
 
-  let result;
-  try {
-    result = JSON.parse(content);
-  } catch {
-    throw new Error("Failed to parse AI response. Please try again.");
-  }
+  const result = JSON.parse(content);
   return result.questions as InterviewQuestion[];
 }

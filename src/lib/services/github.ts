@@ -218,7 +218,11 @@ export async function analyzeGitHub(
   let score = Math.round(avgRepoScore * 0.5 + Math.min(profile.public_repos * 2, 25) + 25);
   score = Math.min(score, 100);
 
-  const prompt = `You are a GitHub profile advisor for software engineers seeking jobs. Analyze the profile data and provide 5-8 specific, actionable recommendations. Return as JSON: { "recommendations": ["rec1", "rec2", ...] }\n\nData:\n${JSON.stringify({
+  const prompt = `You are a GitHub profile auditor for software engineers seeking jobs at top tier tech companies.
+Analyze this GitHub activity profile and provide 5-8 specific, high-leverage recommendations regarding repository architecture, README depth, code quality, and consistency.
+
+Candidate GitHub Profile Data:
+${JSON.stringify({
     profile,
     repoCount: repos.length,
     topRepos: repos.slice(0, 5),
@@ -230,20 +234,29 @@ export async function analyzeGitHub(
     model: "gemini-2.5-flash",
     contents: prompt,
     config: {
-      temperature: 0.3,
+      temperature: 0.2,
       responseMimeType: "application/json",
+      responseSchema: {
+        type: "OBJECT" as const,
+        properties: {
+          recommendations: {
+            type: "ARRAY" as const,
+            items: { type: "STRING" as const },
+          },
+        },
+        required: ["recommendations"],
+      },
     },
   });
 
   const aiContent = aiResponse.text;
-  let recommendations: string[];
-  try {
-    recommendations = aiContent
-      ? JSON.parse(aiContent).recommendations
-      : ["Add detailed READMEs to top projects", "Increase commit consistency"];
-  } catch {
-    recommendations = ["Add detailed READMEs to top projects", "Increase commit consistency"];
-  }
+  const recommendations: string[] = aiContent
+    ? JSON.parse(aiContent).recommendations
+    : [
+        "Add comprehensive README architectures with system diagrams",
+        "Document setup instructions and live deployment demo links",
+        "Increase multi-file testing coverage across primary repositories",
+      ];
 
   const finalResult = {
     username: cleanUsername,
