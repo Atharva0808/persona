@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, FileText, Target, MessageSquare } from "lucide-react";
+import { FileText, Target, MessageSquare } from "lucide-react";
 import { GithubIcon as Github, LinkedinIcon as Linkedin } from "@/components/icons";
 import { Logo } from "@/components/ui/logo";
 
@@ -84,7 +84,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[#F4F7F4] text-[#111827] font-sans overflow-x-hidden selection:bg-[#113D2B]/15 selection:text-[#113D2B]">
       {/* ─── Floating Rectangular Navbar ─── */}
-      <header className="sticky top-0 z-50 px-4 sm:px-6 lg:px-8 pt-4">
+      <header className="sticky top-0 z-50 px-4 sm:px-8 pt-4">
         <motion.nav
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -114,112 +114,95 @@ export default function LandingPage() {
         </motion.nav>
       </header>
 
-      {/* ─── Hero: High-Impact 3-Card Grid ─── */}
-      <section className="px-4 sm:px-6 lg:px-8 pt-4 pb-8">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 min-h-[75vh]">
-          {/* Card 1 — Deep Forest Pine, Bold Type with Staggered Word Reveal */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="bg-[#113D2B] text-white p-8 sm:p-12 rounded-3xl flex flex-col justify-end relative overflow-hidden min-h-[48vh] md:min-h-0 shadow-sm"
+      {/* ─── Hero: Original Full-Bleed Grid Size ─── */}
+      <section className="grid grid-cols-1 md:grid-cols-3 min-h-[80vh] md:min-h-[85vh] mt-4 border-b border-[#E5EBE5]">
+        {/* Left Block — Deep Forest Pine, Massive Staggered Type */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="bg-[#113D2B] text-white p-8 sm:p-14 flex flex-col justify-end relative overflow-hidden min-h-[50vh] md:min-h-0"
+        >
+          <motion.h1
+            {...staggerContainer(0.08)}
+            className="font-[family-name:var(--font-display)] text-[clamp(3.5rem,11vw,8.5rem)] font-bold leading-[0.85] tracking-[-0.04em] uppercase text-white"
           >
-            <motion.h1
-              {...staggerContainer(0.08)}
-              className="font-[family-name:var(--font-display)] text-[clamp(3.5rem,10vw,7.5rem)] font-bold leading-[0.88] tracking-[-0.04em] uppercase text-white"
+            {HERO_WORDS.map((word) => (
+              <span key={word} className="block overflow-hidden">
+                <motion.span className="block" variants={staggerChild}>
+                  {word}
+                </motion.span>
+              </span>
+            ))}
+          </motion.h1>
+        </motion.div>
+
+        {/* Center Block — Crisp White, Value Proposition */}
+        <motion.div
+          {...fadeUp(0.2)}
+          className="bg-white border-y md:border-y-0 md:border-x border-[#E5EBE5] text-[#111827] p-8 sm:p-14 flex flex-col justify-end min-h-[40vh] md:min-h-0"
+        >
+          <div className="mt-auto">
+            <motion.p
+              {...fadeUp(0.3)}
+              className="text-xl sm:text-2xl font-bold leading-relaxed text-[#111827]"
             >
-              {HERO_WORDS.map((word) => (
-                <span key={word} className="block overflow-hidden">
-                  <motion.span className="block" variants={staggerChild}>
-                    {word}
-                  </motion.span>
-                </span>
-              ))}
-            </motion.h1>
-          </motion.div>
+              Persona evaluates your resume, GitHub, LinkedIn profile, and technical skills — then tells you exactly what to fix.
+            </motion.p>
+            <motion.p
+              {...fadeUp(0.4)}
+              className="text-sm text-[#6B7280] mt-6 leading-relaxed"
+            >
+              No vanity metrics. No inflated scores.
+              <br />
+              Just an honest assessment and an engineering roadmap.
+            </motion.p>
+          </div>
+        </motion.div>
 
-          {/* Card 2 — Crisp White, Massive Type & Real Engineering Truth */}
-          <motion.div
-            {...fadeUp(0.2)}
-            className="bg-white border border-[#E5EBE5] text-[#111827] p-8 sm:p-12 rounded-3xl flex flex-col justify-between min-h-[48vh] md:min-h-0 shadow-2xs"
-          >
-            <div>
-              <h2 className="font-[family-name:var(--font-display)] text-[clamp(2.8rem,6.5vw,5.2rem)] font-bold leading-[0.88] tracking-[-0.03em] uppercase text-[#111827]">
-                Honest
+        {/* Right Block — Warm Golden Butter Yellow, Serif Display + Original CTA */}
+        <motion.div
+          {...fadeUp(0.3)}
+          className="bg-[#F2C94C] text-[#111827] p-8 sm:p-14 flex flex-col justify-end min-h-[50vh] md:min-h-0"
+        >
+          <div className="mt-auto">
+            <div className="overflow-hidden">
+              <motion.p
+                {...slideUp(0.4)}
+                className="font-serif italic text-[clamp(3.5rem,7.5vw,6rem)] leading-[0.95] text-[#111827] tracking-tight"
+              >
+                before
                 <br />
-                Audit.
-                <br />
-                Real Fixes.
-              </h2>
+                you apply.
+              </motion.p>
             </div>
-            <div className="pt-8 mt-auto">
-              <p className="text-base sm:text-lg font-bold text-[#111827] leading-snug">
-                Persona evaluates your resume, GitHub, LinkedIn profile, and technical skills — then tells you exactly what to fix.
-              </p>
-              <p className="text-xs sm:text-sm text-[#6B7280] mt-4 leading-relaxed">
-                No vanity metrics. No inflated scores. An actionable engineering diagnostic.
-              </p>
-            </div>
-          </motion.div>
-
-          {/* Card 3 — Warm Golden Butter Yellow, Massive Serif Type + CTA */}
-          <motion.div
-            {...fadeUp(0.3)}
-            className="bg-[#F2C94C] text-[#111827] p-8 sm:p-12 rounded-3xl flex flex-col justify-between min-h-[48vh] md:min-h-0 shadow-sm"
-          >
-            <div>
-              <h2 className="font-[family-name:var(--font-display)] text-sm font-bold uppercase tracking-wider text-[#111827]/80">
-                Engineering Readiness
-              </h2>
-            </div>
-            <div className="pt-8 mt-auto">
-              <div className="overflow-hidden">
-                <motion.p
-                  {...slideUp(0.4)}
-                  className="font-serif italic text-[clamp(3.5rem,7.5vw,6rem)] leading-[0.88] text-[#111827] tracking-tight"
-                >
-                  before
-                  <br />
-                  you apply.
-                </motion.p>
-              </div>
-              <motion.div {...fadeUp(0.5)} className="pt-8">
-                <Link
-                  href="/signup"
-                  className="inline-flex items-center gap-2 bg-[#113D2B] text-white px-7 py-4 rounded-xl text-xs font-bold hover:bg-[#0D3122] transition-colors shadow-sm cursor-pointer"
-                >
-                  <span>Get Started Free</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              </motion.div>
-            </div>
-          </motion.div>
-        </div>
+            <motion.div {...fadeUp(0.5)} className="pt-6">
+              <Link
+                href="/signup"
+                className="inline-block text-sm font-semibold text-[#111827] border-b-2 border-[#111827]/60 pb-1 hover:border-[#113D2B] transition-colors font-[family-name:var(--font-display)] cursor-pointer"
+              >
+                Get Started →
+              </Link>
+            </motion.div>
+          </div>
+        </motion.div>
       </section>
 
       {/* ─── What Persona Does: Feature Cards Stack ─── */}
-      <section className="px-4 sm:px-6 lg:px-8 py-16">
-        <div className="max-w-7xl mx-auto space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 px-2">
-            <div>
-              <span className="text-xs font-bold text-[#113D2B] uppercase tracking-wider font-mono">
-                Evaluation Engines
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-bold text-[#111827] tracking-tight mt-1">
-                Five pillars of candidate readiness
-              </h2>
-            </div>
-            <p className="text-xs sm:text-sm text-[#6B7280] max-w-md">
-              Every vector is parsed using Gemini 2.5 Flash with multimodal document ingestion.
-            </p>
+      <section className="px-6 sm:px-12 py-20">
+        <div className="max-w-7xl mx-auto space-y-10">
+          <div>
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#111827] tracking-tight">
+              Five pillars of candidate readiness
+            </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {FEATURES.map((feature, i) => (
               <motion.div
                 key={feature.word}
                 {...scrollFadeUp(i * 0.08)}
-                className="rounded-3xl bg-white border border-[#E5EBE5] p-7 flex flex-col justify-between shadow-2xs space-y-4 hover:border-[#113D2B]/30 transition-colors"
+                className="rounded-3xl bg-white border border-[#E5EBE5] p-8 flex flex-col justify-between shadow-2xs space-y-4 hover:border-[#113D2B]/30 transition-colors"
               >
                 <div className="w-11 h-11 rounded-2xl bg-[#EAF5EE] flex items-center justify-center text-[#113D2B]">
                   <feature.icon className="w-5 h-5" />
@@ -238,10 +221,10 @@ export default function LandingPage() {
             {/* Final Highlight Card */}
             <motion.div
               {...scrollFadeUp(0.4)}
-              className="rounded-3xl bg-[#113D2B] text-white p-7 flex flex-col justify-between shadow-sm space-y-4"
+              className="rounded-3xl bg-[#113D2B] text-white p-8 flex flex-col justify-between shadow-sm space-y-6"
             >
               <div>
-                <h3 className="text-lg font-bold text-white mt-2">
+                <h3 className="text-lg font-bold text-white">
                   Honest Readiness Score
                 </h3>
                 <p className="text-xs text-white/80 mt-2 leading-relaxed">
@@ -251,10 +234,9 @@ export default function LandingPage() {
               <div>
                 <Link
                   href="/signup"
-                  className="inline-flex items-center gap-2 bg-white text-[#113D2B] px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-[#F4F7F4] transition-colors"
+                  className="inline-block text-xs font-bold text-white border-b-2 border-white/60 pb-1 hover:border-white transition-colors"
                 >
-                  <span>Start Evaluation</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  Start Evaluation →
                 </Link>
               </div>
             </motion.div>
@@ -263,18 +245,15 @@ export default function LandingPage() {
       </section>
 
       {/* ─── How It Works: 3 Step Cards ─── */}
-      <section className="px-4 sm:px-6 lg:px-8 py-16 bg-white border-y border-[#E5EBE5]">
-        <div className="max-w-7xl mx-auto space-y-10">
+      <section className="px-6 sm:px-12 py-20 bg-white border-y border-[#E5EBE5]">
+        <div className="max-w-7xl mx-auto space-y-12">
           <div className="text-center max-w-xl mx-auto space-y-2">
-            <span className="text-xs font-bold text-[#113D2B] uppercase tracking-wider font-mono">
-              Simple Workflow
-            </span>
             <h2 className="text-2xl sm:text-3xl font-bold text-[#111827] tracking-tight">
               Three steps to complete clarity
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Step 1 */}
             <div className="rounded-3xl bg-[#FAFBF9] border border-[#E5EBE5] p-8 space-y-4">
               <span className="text-xs font-bold text-[#113D2B] font-mono">
@@ -318,7 +297,7 @@ export default function LandingPage() {
       </section>
 
       {/* ─── Bottom CTA Banner ─── */}
-      <section className="p-4 sm:px-6 lg:px-8 py-10">
+      <section className="px-6 sm:px-12 py-16">
         <div className="max-w-7xl mx-auto rounded-3xl bg-[#113D2B] text-white p-8 sm:p-14 flex flex-col md:flex-row items-center justify-between gap-8 shadow-sm">
           <div className="space-y-2 max-w-xl text-center md:text-left">
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight font-[family-name:var(--font-display)]">
@@ -331,10 +310,9 @@ export default function LandingPage() {
 
           <Link
             href="/signup"
-            className="inline-flex items-center gap-2 bg-white text-[#113D2B] px-7 py-3.5 rounded-xl text-xs font-bold hover:bg-[#F4F7F4] transition-colors shadow-sm shrink-0 cursor-pointer"
+            className="inline-block text-sm font-semibold text-white border-b-2 border-white/60 pb-1 hover:border-white transition-colors shrink-0"
           >
-            <span>Get Started Free</span>
-            <ArrowRight className="w-4 h-4" />
+            Get Started Free →
           </Link>
         </div>
       </section>
