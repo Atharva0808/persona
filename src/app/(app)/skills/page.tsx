@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { toast } from "sonner";
-import { ArrowRight, RefreshCw, Sparkles, BookOpen } from "lucide-react";
+import { ArrowRight, RefreshCw } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -92,7 +92,7 @@ export default function SkillsPage() {
               variant="outline"
               size="sm"
               onClick={() => setAnalysis(null)}
-              className="rounded-xl border-[#113D2B] text-[#113D2B] hover:bg-[#EAF5EE] font-bold text-xs"
+              className="rounded-xl border-[#E5EBE5] text-[#111827] hover:bg-[#F4F7F4] font-medium"
             >
               <RefreshCw className="h-3.5 w-3.5 mr-2" />
               New Audit
@@ -163,49 +163,42 @@ export default function SkillsPage() {
         </Card>
       ) : (
         <div className="space-y-6">
-          {/* Donezo Forest Pine Hero Card */}
-          <div className="rounded-3xl bg-[#113D2B] text-white p-7 sm:p-9 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-sm">
-            <div className="space-y-3 max-w-xl">
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-[#F2C94C]" />
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-white/80">
-                  Role Alignment Match
-                </span>
+          <div className="rounded-3xl border border-[#E5EBE5] bg-white p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-2xs">
+            <div className="space-y-2 max-w-xl">
+              <div className="text-xs font-bold text-[#113D2B] uppercase tracking-wider">
+                Role Alignment Match
               </div>
-              <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
-                {analysis.match_percentage}% Match
+              <h2 className="text-2xl font-bold text-[#111827]">
+                Match: {analysis.match_percentage}%
               </h2>
-              <div className="flex items-center gap-2 text-xs text-white/80">
-                <span>Target Track:</span>
-                <span className="font-bold text-white bg-white/10 px-2.5 py-0.5 rounded-lg">
+              <p className="text-xs text-[#6B7280]">
+                Target track:{" "}
+                <span className="font-bold text-[#113D2B]">
                   {TARGET_ROLES.find((r) => r.value === analysis.target_role)?.label}
                 </span>
-              </div>
+              </p>
             </div>
 
-            <div className="flex items-center justify-center p-4 rounded-2xl bg-white/10 border border-white/15 shrink-0">
-              <ScoreRing score={analysis.match_percentage} label="Skill Match" size={105} />
+            <div className="flex items-center justify-center p-3 rounded-2xl bg-[#F4F7F4] border border-[#E5EBE5] shrink-0">
+              <ScoreRing score={analysis.match_percentage} label="Skill Match" size={100} />
             </div>
           </div>
 
           {/* Roadmap */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-[#113D2B]" />
-              <h3 className="text-sm font-bold text-[#111827] uppercase tracking-wider font-mono">
-                4-Phase Learning Roadmap
-              </h3>
-            </div>
+            <h3 className="text-sm font-bold text-[#111827] uppercase tracking-wider">
+              Learning Roadmap
+            </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {analysis.roadmap.map((phase) => (
                 <div
                   key={phase.phase}
-                  className="rounded-3xl border border-[#E5EBE5] bg-white p-6 space-y-4 shadow-2xs hover:border-[#113D2B]/30 transition-colors"
+                  className="rounded-3xl border border-[#E5EBE5] bg-white p-6 space-y-3 shadow-2xs"
                 >
                   <div className="flex items-center justify-between border-b border-[#E5EBE5] pb-3">
-                    <span className="text-xs font-bold text-[#113D2B] bg-[#EAF5EE] px-3 py-1 rounded-xl font-mono">
-                      Phase 0{phase.phase}: {phase.title}
+                    <span className="text-xs font-bold text-[#113D2B] bg-[#EAF5EE] px-3 py-1 rounded-lg">
+                      Phase {phase.phase}: {phase.title}
                     </span>
                     <span className="text-xs text-[#6B7280] font-mono">{phase.duration}</span>
                   </div>
@@ -224,7 +217,7 @@ export default function SkillsPage() {
 
                     {phase.projects.length > 0 && (
                       <div className="p-3.5 rounded-2xl border border-[#E5EBE5] bg-[#FAFBF9] text-xs text-[#6B7280]">
-                        <strong className="text-[#111827] block mb-1">Project Milestone:</strong>
+                        <strong className="text-[#111827] block mb-1">Project Target:</strong>
                         <span>{phase.projects[0]}</span>
                       </div>
                     )}

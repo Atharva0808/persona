@@ -10,8 +10,6 @@ import {
   Target,
   MessageSquare,
   LogOut,
-  Sparkles,
-  ArrowRight,
 } from "lucide-react";
 import { GithubIcon as Github, LinkedinIcon as Linkedin } from "@/components/icons";
 import { Logo } from "@/components/ui/logo";
@@ -83,15 +81,15 @@ export function Sidebar({
     <>
       <aside
         className={cn(
-          "flex flex-col h-full bg-white border-r border-[#E5EBE5] transition-all duration-300 z-20 select-none",
+          "flex flex-col h-full bg-[#113D2B] border-r border-[#1B4634] text-white transition-all duration-300 z-20 select-none",
           collapsed ? "w-20" : "w-64"
         )}
       >
         {/* Brand Header */}
-        <div className="flex items-center gap-3 px-6 h-20 border-b border-[#E5EBE5]/60">
+        <div className="flex items-center gap-3 px-6 h-20 border-b border-[#1B4634]">
           <Logo size={32} />
           {!collapsed && (
-            <span className="text-xl font-bold text-[#111827] tracking-tight font-[family-name:var(--font-display)]">
+            <span className="text-xl font-bold text-white tracking-tight font-[family-name:var(--font-display)]">
               persona
             </span>
           )}
@@ -102,7 +100,7 @@ export function Sidebar({
           {/* Section: MENU */}
           <div className="space-y-1">
             {!collapsed && (
-              <div className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider px-3 mb-2 font-mono">
+              <div className="text-[11px] font-bold text-white/40 uppercase tracking-wider px-3 mb-2 font-mono">
                 Menu
               </div>
             )}
@@ -115,22 +113,18 @@ export function Sidebar({
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group relative",
+                    "flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group",
                     isActive
-                      ? "bg-[#EAF5EE] text-[#113D2B] font-bold"
-                      : "text-[#6B7280] hover:text-[#111827] hover:bg-[#F4F7F4]"
+                      ? "bg-white text-[#113D2B] font-bold shadow-xs"
+                      : "text-white/70 hover:text-white hover:bg-white/10"
                   )}
                 >
-                  {/* Left indicator bar on active item (Donezo style) */}
-                  {isActive && (
-                    <span className="absolute left-0 top-2 bottom-2 w-1.5 bg-[#113D2B] rounded-r-md" />
-                  )}
                   <item.icon
                     className={cn(
                       "w-4 h-4 shrink-0 transition-colors",
                       isActive
                         ? "text-[#113D2B]"
-                        : "text-[#9CA3AF] group-hover:text-[#111827]"
+                        : "text-white/60 group-hover:text-white"
                     )}
                   />
                   {!collapsed && <span className="truncate">{item.label}</span>}
@@ -138,50 +132,24 @@ export function Sidebar({
               );
             })}
           </div>
-
-          {/* Donezo Dark Forest Pine Card Banner in Sidebar */}
-          {!collapsed && (
-            <div className="pt-2">
-              <div className="rounded-2xl bg-gradient-to-b from-[#113D2B] to-[#0A261A] text-white p-4 space-y-2.5 shadow-xs">
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-lg bg-white/15 flex items-center justify-center">
-                    <Sparkles className="w-3.5 h-3.5 text-[#F2C94C]" />
-                  </div>
-                  <span className="text-[11px] font-bold text-white/90">
-                    AI Readiness Track
-                  </span>
-                </div>
-                <p className="text-[11px] text-white/70 leading-snug">
-                  Benchmark your profile across 9 engineering tracks.
-                </p>
-                <Link
-                  href="/interview"
-                  className="inline-flex items-center justify-between w-full px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 text-white text-[11px] font-bold transition-colors"
-                >
-                  <span>Practice Interview</span>
-                  <ArrowRight className="w-3 h-3" />
-                </Link>
-              </div>
-            </div>
-          )}
         </div>
 
         {/* User Footer Profile with Logout Trigger */}
         {user && (
-          <div className="p-4 border-t border-[#E5EBE5] flex items-center justify-between gap-2 bg-[#FAFBF9]">
+          <div className="p-4 border-t border-[#1B4634] flex items-center justify-between gap-2 bg-[#0E2E20]/50">
             <div className="flex items-center gap-3 min-w-0">
-              <Avatar className="h-9 w-9 border border-[#E5EBE5] shrink-0">
+              <Avatar className="h-9 w-9 border border-white/20 shrink-0">
                 {user.avatar_url && <AvatarImage src={user.avatar_url} />}
-                <AvatarFallback className="text-xs bg-[#EAF5EE] text-[#113D2B] font-bold font-mono">
+                <AvatarFallback className="text-xs bg-white/10 text-white font-bold font-mono">
                   {getInitials(user.full_name || user.email)}
                 </AvatarFallback>
               </Avatar>
               {!collapsed && (
                 <div className="flex flex-col min-w-0">
-                  <span className="text-xs font-bold text-[#111827] truncate">
+                  <span className="text-xs font-bold text-white truncate">
                     {user.full_name || "Engineer"}
                   </span>
-                  <span className="text-[11px] text-[#6B7280] truncate font-mono">
+                  <span className="text-[11px] text-white/60 truncate font-mono">
                     {user.email}
                   </span>
                 </div>
@@ -190,7 +158,7 @@ export function Sidebar({
             <button
               onClick={() => setLogoutDialogOpen(true)}
               title="Sign out"
-              className="p-2 rounded-xl text-[#9CA3AF] hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer shrink-0"
+              className="p-2 rounded-xl text-white/60 hover:text-white hover:bg-white/10 transition-colors cursor-pointer shrink-0"
             >
               <LogOut className="w-4 h-4" />
             </button>

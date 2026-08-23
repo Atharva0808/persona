@@ -7,8 +7,6 @@ import {
   Search,
   RefreshCw,
   CheckCircle2,
-  GitBranch,
-  Users,
 } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
@@ -68,7 +66,7 @@ export default function GitHubPage() {
                 setAnalysis(null);
                 setUsername("");
               }}
-              className="rounded-xl border-[#113D2B] text-[#113D2B] hover:bg-[#EAF5EE] font-bold text-xs"
+              className="rounded-xl border-[#E5EBE5] text-[#111827] hover:bg-[#F4F7F4] font-medium"
             >
               <RefreshCw className="h-3.5 w-3.5 mr-2" />
               New Audit
@@ -121,51 +119,45 @@ export default function GitHubPage() {
         </Card>
       ) : (
         <div className="space-y-6">
-          {/* Donezo Forest Pine Hero Card */}
-          <div className="rounded-3xl bg-[#113D2B] text-white p-7 sm:p-9 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-sm">
-            <div className="flex items-center gap-5">
-              <Avatar className="h-18 w-18 border-2 border-white/20 shrink-0">
+          {/* Profile Header */}
+          <div className="rounded-3xl border border-[#E5EBE5] bg-white p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-2xs">
+            <div className="flex items-center gap-4">
+              <Avatar className="h-16 w-16 border border-[#E5EBE5]">
                 <AvatarImage src={analysis.profile.avatar_url} />
-                <AvatarFallback className="bg-white/10 text-white font-mono font-bold text-base">
+                <AvatarFallback className="bg-[#EAF5EE] text-[#113D2B] font-mono font-bold text-sm">
                   {analysis.username.slice(0, 2).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-2.5">
-                  <h2 className="text-2xl font-bold text-white tracking-tight">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-xl font-bold text-[#111827]">
                     {analysis.profile.name || analysis.username}
                   </h2>
-                  <span className="text-xs text-white/70 font-mono bg-white/10 px-2.5 py-0.5 rounded-lg">
+                  <span className="text-xs text-[#6B7280] font-mono">
                     @{analysis.username}
                   </span>
                 </div>
                 {analysis.profile.bio && (
-                  <p className="text-xs text-white/80 max-w-lg leading-relaxed">{analysis.profile.bio}</p>
+                  <p className="text-xs text-[#6B7280]">{analysis.profile.bio}</p>
                 )}
-                <div className="flex items-center gap-4 pt-1 text-xs text-white/70 font-mono">
-                  <span className="flex items-center gap-1.5">
-                    <GitBranch className="w-3.5 h-3.5" />
-                    {analysis.profile.public_repos} Repositories
-                  </span>
+                <div className="flex items-center gap-4 pt-1 text-xs text-[#9CA3AF] font-mono">
+                  <span>{analysis.profile.public_repos} Repositories</span>
                   <span>•</span>
-                  <span className="flex items-center gap-1.5">
-                    <Users className="w-3.5 h-3.5" />
-                    {analysis.profile.followers} Followers
-                  </span>
+                  <span>{analysis.profile.followers} Followers</span>
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center justify-center p-4 rounded-2xl bg-white/10 border border-white/15 shrink-0">
-              <ScoreRing score={analysis.score} label="GitHub Rating" size={105} />
+            <div className="flex items-center justify-center p-3 rounded-2xl bg-[#F4F7F4] border border-[#E5EBE5] shrink-0">
+              <ScoreRing score={analysis.score} label="GitHub Rating" size={100} />
             </div>
           </div>
 
           {/* Commit & Languages */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="rounded-3xl border border-[#E5EBE5] bg-white p-6 space-y-3 shadow-2xs hover:border-[#113D2B]/30 transition-colors">
+            <div className="rounded-3xl border border-[#E5EBE5] bg-white p-6 space-y-3 shadow-2xs">
               <div className="flex items-center justify-between border-b border-[#E5EBE5] pb-3">
-                <h3 className="text-xs font-bold text-[#111827] uppercase tracking-wider font-mono">
+                <h3 className="text-xs font-bold text-[#111827] uppercase tracking-wider">
                   Commit Activity
                 </h3>
                 <span className="text-xs font-mono font-bold text-[#113D2B] bg-[#EAF5EE] px-2.5 py-0.5 rounded-lg">
@@ -188,8 +180,8 @@ export default function GitHubPage() {
               </div>
             </div>
 
-            <div className="rounded-3xl border border-[#E5EBE5] bg-white p-6 space-y-3 shadow-2xs hover:border-[#113D2B]/30 transition-colors">
-              <h3 className="text-xs font-bold text-[#111827] uppercase tracking-wider font-mono border-b border-[#E5EBE5] pb-3">
+            <div className="rounded-3xl border border-[#E5EBE5] bg-white p-6 space-y-3 shadow-2xs">
+              <h3 className="text-xs font-bold text-[#111827] uppercase tracking-wider border-b border-[#E5EBE5] pb-3">
                 Language Distribution
               </h3>
               <div className="flex flex-wrap gap-2 pt-1 font-mono text-xs">
@@ -207,10 +199,10 @@ export default function GitHubPage() {
 
           {/* Recommendations */}
           <div className="rounded-3xl border border-[#E5EBE5] bg-white p-6 sm:p-8 space-y-3 shadow-2xs">
-            <h3 className="text-xs font-bold text-[#111827] uppercase tracking-wider font-mono border-b border-[#E5EBE5] pb-3">
+            <h3 className="text-xs font-bold text-[#111827] uppercase tracking-wider border-b border-[#E5EBE5] pb-3">
               Recommendations
             </h3>
-            <div className="space-y-2.5">
+            <div className="space-y-2">
               {analysis.recommendations.map((rec, idx) => (
                 <div
                   key={idx}
