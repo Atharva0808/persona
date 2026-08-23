@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -14,6 +14,15 @@ import {
 import { GithubIcon as Github, LinkedinIcon as Linkedin } from "@/components/icons";
 import { Logo } from "@/components/ui/logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { getInitials } from "@/lib/utils";
 
 const menuItems = [
@@ -66,93 +75,134 @@ export function Sidebar({
   onSignOut,
 }: SidebarProps) {
   const pathname = usePathname();
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
 
   return (
-    <aside
-      className={cn(
-        "flex flex-col h-full bg-white border-r border-[#E5EBE5] transition-all duration-300 z-20 select-none",
-        collapsed ? "w-20" : "w-64"
-      )}
-    >
-      {/* Brand Header */}
-      <div className="flex items-center gap-3 px-6 h-20 border-b border-[#E5EBE5]/60">
-        <Logo size={32} />
-        {!collapsed && (
-          <span className="text-xl font-bold text-[#111827] tracking-tight font-[family-name:var(--font-display)]">
-            persona
-          </span>
+    <>
+      <aside
+        className={cn(
+          "flex flex-col h-full bg-white border-r border-[#E5EBE5] transition-all duration-300 z-20 select-none",
+          collapsed ? "w-20" : "w-64"
         )}
-      </div>
-
-      {/* Main Navigation */}
-      <div className="flex-1 px-4 py-5 space-y-6 overflow-y-auto">
-        {/* Section: MENU */}
-        <div className="space-y-1">
+      >
+        {/* Brand Header */}
+        <div className="flex items-center gap-3 px-6 h-20 border-b border-[#E5EBE5]/60">
+          <Logo size={32} />
           {!collapsed && (
-            <div className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider px-3 mb-2">
-              Menu
-            </div>
+            <span className="text-xl font-bold text-[#111827] tracking-tight font-[family-name:var(--font-display)]">
+              persona
+            </span>
           )}
-          {menuItems.map((item) => {
-            const isActive =
-              pathname === item.href ||
-              (item.href !== "/dashboard" && pathname.startsWith(item.href));
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group",
-                  isActive
-                    ? "bg-[#EAF5EE] text-[#113D2B] font-semibold"
-                    : "text-[#6B7280] hover:text-[#111827] hover:bg-[#F4F7F4]"
-                )}
-              >
-                <item.icon
-                  className={cn(
-                    "w-4 h-4 shrink-0 transition-colors",
-                    isActive
-                      ? "text-[#113D2B]"
-                      : "text-[#9CA3AF] group-hover:text-[#111827]"
-                  )}
-                />
-                {!collapsed && <span className="truncate">{item.label}</span>}
-              </Link>
-            );
-          })}
         </div>
-      </div>
 
-      {/* User Footer Profile with Logout right on profile */}
-      {user && (
-        <div className="p-4 border-t border-[#E5EBE5] flex items-center justify-between gap-2">
-          <div className="flex items-center gap-3 min-w-0">
-            <Avatar className="h-9 w-9 border border-[#E5EBE5] shrink-0">
-              {user.avatar_url && <AvatarImage src={user.avatar_url} />}
-              <AvatarFallback className="text-xs bg-[#EAF5EE] text-[#113D2B] font-bold font-mono">
-                {getInitials(user.full_name || user.email)}
-              </AvatarFallback>
-            </Avatar>
+        {/* Main Navigation */}
+        <div className="flex-1 px-4 py-5 space-y-6 overflow-y-auto">
+          {/* Section: MENU */}
+          <div className="space-y-1">
             {!collapsed && (
-              <div className="flex flex-col min-w-0">
-                <span className="text-xs font-bold text-[#111827] truncate">
-                  {user.full_name || "Engineer"}
-                </span>
-                <span className="text-[11px] text-[#6B7280] truncate font-mono">
-                  {user.email}
-                </span>
+              <div className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider px-3 mb-2">
+                Menu
               </div>
             )}
+            {menuItems.map((item) => {
+              const isActive =
+                pathname === item.href ||
+                (item.href !== "/dashboard" && pathname.startsWith(item.href));
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group",
+                    isActive
+                      ? "bg-[#EAF5EE] text-[#113D2B] font-semibold"
+                      : "text-[#6B7280] hover:text-[#111827] hover:bg-[#F4F7F4]"
+                  )}
+                >
+                  <item.icon
+                    className={cn(
+                      "w-4 h-4 shrink-0 transition-colors",
+                      isActive
+                        ? "text-[#113D2B]"
+                        : "text-[#9CA3AF] group-hover:text-[#111827]"
+                    )}
+                  />
+                  {!collapsed && <span className="truncate">{item.label}</span>}
+                </Link>
+              );
+            })}
           </div>
-          <button
-            onClick={onSignOut}
-            title="Sign out"
-            className="p-2 rounded-xl text-[#9CA3AF] hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer shrink-0"
-          >
-            <LogOut className="w-4 h-4" />
-          </button>
         </div>
-      )}
-    </aside>
+
+        {/* User Footer Profile with Logout Trigger */}
+        {user && (
+          <div className="p-4 border-t border-[#E5EBE5] flex items-center justify-between gap-2">
+            <div className="flex items-center gap-3 min-w-0">
+              <Avatar className="h-9 w-9 border border-[#E5EBE5] shrink-0">
+                {user.avatar_url && <AvatarImage src={user.avatar_url} />}
+                <AvatarFallback className="text-xs bg-[#EAF5EE] text-[#113D2B] font-bold font-mono">
+                  {getInitials(user.full_name || user.email)}
+                </AvatarFallback>
+              </Avatar>
+              {!collapsed && (
+                <div className="flex flex-col min-w-0">
+                  <span className="text-xs font-bold text-[#111827] truncate">
+                    {user.full_name || "Engineer"}
+                  </span>
+                  <span className="text-[11px] text-[#6B7280] truncate font-mono">
+                    {user.email}
+                  </span>
+                </div>
+              )}
+            </div>
+            <button
+              onClick={() => setLogoutDialogOpen(true)}
+              title="Sign out"
+              className="p-2 rounded-xl text-[#9CA3AF] hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer shrink-0"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+      </aside>
+
+      {/* Logout Confirmation Dialog */}
+      <Dialog open={logoutDialogOpen} onOpenChange={setLogoutDialogOpen}>
+        <DialogContent className="max-w-sm">
+          <div className="flex flex-col items-center text-center space-y-3 pt-2">
+            <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-600">
+              <LogOut className="w-6 h-6" />
+            </div>
+            <DialogHeader className="text-center space-y-1">
+              <DialogTitle className="text-lg font-bold text-[#111827] text-center">
+                Log out of Persona?
+              </DialogTitle>
+              <DialogDescription className="text-xs text-[#6B7280] text-center leading-relaxed">
+                Are you sure you want to sign out? You will need to sign in again to access your assessment footprint and mock interview sessions.
+              </DialogDescription>
+            </DialogHeader>
+          </div>
+
+          <DialogFooter className="flex-row justify-center gap-3 pt-4 sm:justify-center">
+            <Button
+              variant="outline"
+              onClick={() => setLogoutDialogOpen(false)}
+              className="rounded-full border-[#E5EBE5] text-[#111827] hover:bg-[#F4F7F4] text-xs font-bold px-5 h-10"
+            >
+              Cancel
+            </Button>
+            <button
+              onClick={() => {
+                setLogoutDialogOpen(false);
+                onSignOut?.();
+              }}
+              className="px-5 h-10 rounded-full bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-all shadow-sm cursor-pointer"
+            >
+              Yes, Log Out
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
