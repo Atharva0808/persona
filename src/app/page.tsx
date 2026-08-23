@@ -194,9 +194,6 @@ export default function LandingPage() {
                 Five pillars of candidate readiness
               </h2>
             </div>
-            <p className="text-xs sm:text-sm text-[#6B7280] max-w-md">
-              Every vector is parsed using Gemini 2.5 Flash with multimodal document ingestion.
-            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
