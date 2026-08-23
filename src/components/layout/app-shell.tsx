@@ -26,21 +26,24 @@ export function AppShell({ children, user }: AppShellProps) {
   };
 
   return (
-    <div className="flex h-screen bg-[#F4F7F4] text-[#111827] font-sans overflow-hidden">
-      {/* Sidebar Navigation */}
-      <Sidebar
-        user={user}
-        collapsed={collapsed}
-        onCollapse={() => setCollapsed(!collapsed)}
-        onSignOut={handleSignOut}
-      />
+    <div className="min-h-screen bg-[#EAEFEA] p-2 sm:p-4 text-[#111827] font-sans antialiased">
+      {/* Donezo Floating Rounded App Container */}
+      <div className="flex h-[calc(100vh-16px)] sm:h-[calc(100vh-32px)] bg-[#F4F6F4] rounded-[28px] sm:rounded-[36px] border border-[#E5EBE5] overflow-hidden shadow-xs">
+        {/* Sidebar Navigation */}
+        <Sidebar
+          user={user}
+          collapsed={collapsed}
+          onCollapse={() => setCollapsed(!collapsed)}
+          onSignOut={handleSignOut}
+        />
 
-      {/* Main Dynamic Scrollable Page Content */}
-      <main className="flex-1 overflow-y-auto">
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 py-8 sm:py-10">
-          {children}
-        </div>
-      </main>
+        {/* Main Content Area */}
+        <main className="flex-1 overflow-y-auto bg-[#F4F6F4]">
+          <div className="max-w-7xl mx-auto px-6 sm:px-10 py-6 sm:py-8">
+            {children}
+          </div>
+        </main>
+      </div>
     </div>
   );
 }

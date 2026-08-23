@@ -10,6 +10,7 @@ import {
   X,
   RefreshCw,
   HelpCircle,
+  Sparkles,
 } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
@@ -130,7 +131,7 @@ export default function LinkedInPage() {
     return (
       <div
         key={title}
-        className="rounded-3xl border border-[#E5EBE5] bg-white p-6 space-y-3 shadow-2xs"
+        className="rounded-3xl border border-[#E5EBE5] bg-white p-6 space-y-3 shadow-2xs hover:border-[#113D2B]/30 transition-colors"
       >
         <div className="flex items-center justify-between border-b border-[#E5EBE5] pb-3">
           <h3 className="text-sm font-bold text-[#111827]">{title}</h3>
@@ -141,7 +142,7 @@ export default function LinkedInPage() {
 
         <div className="space-y-2.5">
           <div className="p-3.5 rounded-2xl border border-[#E5EBE5] bg-[#FAFBF9] text-xs">
-            <span className="text-[10px] font-bold uppercase text-[#6B7280] block mb-1">
+            <span className="text-[10px] font-bold uppercase text-[#6B7280] block mb-1 font-mono">
               Current Content
             </span>
             <p className="text-[#111827] line-clamp-3">
@@ -173,7 +174,7 @@ export default function LinkedInPage() {
     <div className="space-y-7 pb-10 text-[#111827]">
       <PageHeader
         title="LinkedIn Profile Review"
-        description="Optimize headline, experience summaries, and skill keywords for recruiter search rank."
+        description="Audit headline keyword density, summary impact, and recruiter search discoverability."
         actions={
           analysis ? (
             <Button
@@ -183,7 +184,7 @@ export default function LinkedInPage() {
                 setAnalysis(null);
                 setFile(null);
               }}
-              className="rounded-xl border-[#E5EBE5] text-[#111827] hover:bg-[#F4F7F4] font-medium"
+              className="rounded-xl border-[#113D2B] text-[#113D2B] hover:bg-[#EAF5EE] font-bold text-xs"
             >
               <RefreshCw className="h-3.5 w-3.5 mr-2" />
               New Review
@@ -194,57 +195,52 @@ export default function LinkedInPage() {
 
       {!analysis ? (
         <div className="space-y-6">
-          {/* Step-by-Step Guide Callout */}
+          {/* How to export guide banner */}
           {showGuide && (
-            <div className="rounded-3xl border border-[#E5EBE5] bg-white p-6 relative space-y-3 shadow-2xs">
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-[#113D2B] font-bold uppercase tracking-wider flex items-center gap-2">
-                  <HelpCircle className="w-4 h-4 text-[#113D2B]" />
-                  How to export your LinkedIn Profile PDF in 3 seconds
-                </span>
-                <button
-                  onClick={() => setShowGuide(false)}
-                  className="text-[#9CA3AF] hover:text-[#111827] text-xs cursor-pointer p-1"
-                >
-                  <X className="w-4 h-4" />
-                </button>
+            <div className="rounded-3xl border border-[#E5EBE5] bg-white p-5 sm:p-6 flex items-start justify-between gap-4 shadow-2xs">
+              <div className="flex items-start gap-3.5">
+                <div className="w-9 h-9 rounded-xl bg-[#EAF5EE] flex items-center justify-center text-[#113D2B] shrink-0 mt-0.5">
+                  <HelpCircle className="w-4 h-4" />
+                </div>
+                <div className="space-y-1 text-xs text-[#6B7280]">
+                  <p className="font-bold text-[#111827]">
+                    How to get your LinkedIn PDF export:
+                  </p>
+                  <p>
+                    On LinkedIn desktop, go to your profile → Click <strong>More</strong> button under your headline → Select <strong>Save to PDF</strong>.
+                  </p>
+                </div>
               </div>
-
-              <ol className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs text-[#6B7280]">
-                <li className="p-3.5 rounded-2xl border border-[#E5EBE5] bg-[#FAFBF9]">
-                  <span className="text-[#113D2B] font-bold mr-1">1.</span> Open your profile page on LinkedIn.
-                </li>
-                <li className="p-3.5 rounded-2xl border border-[#E5EBE5] bg-[#FAFBF9]">
-                  <span className="text-[#113D2B] font-bold mr-1">2.</span> Click the <strong className="text-[#111827]">&quot;More&quot;</strong> button near your header.
-                </li>
-                <li className="p-3.5 rounded-2xl border border-[#E5EBE5] bg-[#FAFBF9]">
-                  <span className="text-[#113D2B] font-bold mr-1">3.</span> Select <strong className="text-[#111827]">&quot;Save to PDF&quot;</strong> &amp; upload below!
-                </li>
-              </ol>
+              <button
+                onClick={() => setShowGuide(false)}
+                className="text-[#9CA3AF] hover:text-[#111827] p-1 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
           )}
 
-          {/* Mode Switch Tabs */}
-          <div className="flex border-b border-[#E5EBE5] gap-6 text-xs">
+          {/* Tab Selector */}
+          <div className="flex gap-2 p-1 bg-white border border-[#E5EBE5] rounded-2xl w-fit">
             <button
               onClick={() => setActiveTab("pdf")}
-              className={`pb-3 font-bold transition-colors cursor-pointer ${
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 activeTab === "pdf"
-                  ? "border-b-2 border-[#113D2B] text-[#113D2B]"
+                  ? "bg-[#113D2B] text-white shadow-2xs"
                   : "text-[#6B7280] hover:text-[#111827]"
               }`}
             >
-              Upload LinkedIn PDF (Recommended)
+              PDF Export (Recommended)
             </button>
             <button
               onClick={() => setActiveTab("manual")}
-              className={`pb-3 font-bold transition-colors cursor-pointer ${
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 activeTab === "manual"
-                  ? "border-b-2 border-[#113D2B] text-[#113D2B]"
+                  ? "bg-[#113D2B] text-white shadow-2xs"
                   : "text-[#6B7280] hover:text-[#111827]"
               }`}
             >
-              Manual Form Input
+              Manual Form Entry
             </button>
           </div>
 
@@ -281,7 +277,7 @@ export default function LinkedInPage() {
                         variant="ghost"
                         size="sm"
                         onClick={() => setFile(null)}
-                        className="text-xs text-rose-600 hover:bg-rose-50 rounded-xl"
+                        className="text-xs text-rose-600 hover:bg-rose-50 rounded-xl font-bold"
                       >
                         <X className="h-3.5 w-3.5 mr-1" />
                         Remove file
@@ -289,7 +285,7 @@ export default function LinkedInPage() {
                     </div>
                   ) : (
                     <div className="flex flex-col items-center gap-3">
-                      <div className="w-12 h-12 rounded-2xl bg-[#F4F7F4] border border-[#E5EBE5] flex items-center justify-center text-[#6B7280]">
+                      <div className="w-12 h-12 rounded-2xl bg-[#EAF5EE] flex items-center justify-center text-[#113D2B]">
                         <Upload className="h-6 w-6" />
                       </div>
                       <div className="space-y-1">
@@ -423,21 +419,25 @@ export default function LinkedInPage() {
         </div>
       ) : (
         <div className="space-y-6">
-          <div className="rounded-3xl border border-[#E5EBE5] bg-white p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-2xs">
-            <div className="space-y-2 max-w-xl">
-              <div className="text-xs font-bold text-[#113D2B] uppercase tracking-wider">
-                Recruiter Search Attractiveness
+          {/* Donezo Forest Pine Hero Card */}
+          <div className="rounded-3xl bg-[#113D2B] text-white p-7 sm:p-9 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-sm">
+            <div className="space-y-3 max-w-xl">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-[#F2C94C]" />
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-white/80">
+                  Recruiter Search Attractiveness
+                </span>
               </div>
-              <h2 className="text-2xl font-bold text-[#111827]">
-                Score: {analysis.recruiter_attractiveness} / 100
+              <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
+                {analysis.recruiter_attractiveness}% Discoverability
               </h2>
-              <p className="text-xs text-[#6B7280] leading-relaxed">
-                Your profile rank reflects inbound search matches for software engineering positions.
+              <p className="text-xs sm:text-sm text-white/80 leading-relaxed">
+                Your profile rank reflects keyword density and headline search discoverability for technical engineering roles.
               </p>
             </div>
 
-            <div className="flex items-center justify-center p-3 rounded-2xl bg-[#F4F7F4] border border-[#E5EBE5] shrink-0">
-              <ScoreRing score={analysis.recruiter_attractiveness} label="Recruiter Rank" size={100} />
+            <div className="flex items-center justify-center p-4 rounded-2xl bg-white/10 border border-white/15 shrink-0">
+              <ScoreRing score={analysis.recruiter_attractiveness} label="Recruiter Rank" size={105} />
             </div>
           </div>
 
