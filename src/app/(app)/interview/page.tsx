@@ -3,14 +3,15 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
 import {
-  RefreshCw,
   ArrowRight,
+  RefreshCw,
   CheckCircle2,
   Send,
 } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Spinner } from "@/components/ui/spinner";
 import {
@@ -20,9 +21,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
 import { createClient } from "@/lib/supabase/client";
-import type { InterviewSession, TargetRole } from "@/lib/types";
+import type {
+  TargetRole,
+  InterviewSession,
+  InterviewQuestion,
+} from "@/lib/types";
 
 const TARGET_ROLES: { value: TargetRole; label: string }[] = [
   { value: "frontend", label: "Frontend Developer" },
@@ -36,32 +40,32 @@ const TARGET_ROLES: { value: TargetRole; label: string }[] = [
   { value: "cybersecurity", label: "Cybersecurity Engineer" },
 ];
 
-interface EvaluationResult {
-  score: number;
-  strengths: string[];
-  missing_points: string[];
-  model_answer: string;
-  follow_up: string;
-}
-
 export default function InterviewPage() {
   const [loading, setLoading] = useState(false);
-  const [session, setSession] = useState<InterviewSession | null>(null);
   const [targetRole, setTargetRole] = useState<TargetRole | "">("");
-
-  // Interactive Session State
+  const [session, setSession] = useState<InterviewSession | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Real-time answer interactive state
   const [candidateAnswer, setCandidateAnswer] = useState("");
   const [evaluating, setEvaluating] = useState(false);
-  const [evaluation, setEvaluation] = useState<EvaluationResult | null>(null);
+  const [evaluation, setEvaluation] = useState<{
+    score: number;
+    strengths: string[];
+    missing_points: string[];
+    model_answer: string;
+    follow_up: string;
+  } | null>(null);
 
+  // Context flags
   const [hasResume, setHasResume] = useState(false);
   const [hasGithub, setHasGithub] = useState(false);
   const [hasSkills, setHasSkills] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
-    const fetchContext = async () => {
+
+    async function checkContextData() {
       try {
         const supabase = createClient();
         const {
@@ -70,23 +74,35 @@ export default function InterviewPage() {
 
         if (!user || !isMounted) return;
 
-        const [resumeRes, githubRes, skillsRes] = await Promise.all([
-          supabase.from("resume_analyses").select("id").eq("user_id", user.id).limit(1),
-          supabase.from("github_analyses").select("id").eq("user_id", user.id).limit(1),
-          supabase.from("skill_gap_analyses").select("id").eq("user_id", user.id).limit(1),
+        const [r, g, s] = await Promise.all([
+          supabase
+            .from("resume_analyses")
+            .select("id")
+            .eq("user_id", user.id)
+            .limit(1),
+          supabase
+            .from("github_analyses")
+            .select("id")
+            .eq("user_id", user.id)
+            .limit(1),
+          supabase
+            .from("skill_gap_analyses")
+            .select("id")
+            .eq("user_id", user.id)
+            .limit(1),
         ]);
 
         if (isMounted) {
-          setHasResume((resumeRes.data?.length ?? 0) > 0);
-          setHasGithub((githubRes.data?.length ?? 0) > 0);
-          setHasSkills((skillsRes.data?.length ?? 0) > 0);
+          setHasResume(Boolean(r.data?.length));
+          setHasGithub(Boolean(g.data?.length));
+          setHasSkills(Boolean(s.data?.length));
         }
-      } catch (error) {
-        console.error("Failed to fetch context status", error);
+      } catch (err) {
+        console.error("Failed to load interview context:", err);
       }
-    };
+    }
 
-    fetchContext();
+    checkContextData();
 
     return () => {
       isMounted = false;
@@ -96,7 +112,7 @@ export default function InterviewPage() {
   const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!targetRole) {
-      toast.error("Please select a target role");
+      toast.error("Please select a target interview role");
       return;
     }
 
@@ -112,17 +128,25 @@ export default function InterviewPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Generation failed");
+        throw new Error(data.error || "Failed to generate questions");
       }
 
-      setSession(data);
+      setSession({
+        id: "session-" + Date.now(),
+        user_id: "",
+        role: targetRole,
+        questions: data.questions as InterviewQuestion[],
+        created_at: new Date().toISOString(),
+      });
       setCurrentIndex(0);
       setCandidateAnswer("");
       setEvaluation(null);
-      toast.success("Generated 20 tailored mock interview questions!");
+      toast.success("20 tailored mock questions generated");
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : "Failed to generate questions";
+        error instanceof Error
+          ? error.message
+          : "Failed to generate mock interview questions";
       toast.error(message);
     } finally {
       setLoading(false);
@@ -130,7 +154,10 @@ export default function InterviewPage() {
   };
 
   const handleEvaluateAnswer = async () => {
-    if (!session || !candidateAnswer.trim()) return;
+    if (!session || !candidateAnswer.trim()) {
+      toast.error("Please enter your answer response");
+      return;
+    }
 
     const currentQ = session.questions[currentIndex];
     setEvaluating(true);
@@ -141,8 +168,8 @@ export default function InterviewPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           question: currentQ.question,
-          expectedAnswer: currentQ.expected_answer,
           candidateAnswer: candidateAnswer.trim(),
+          expectedAnswer: currentQ.expected_answer,
           targetRole: session.role,
         }),
       });
@@ -152,9 +179,10 @@ export default function InterviewPage() {
 
       setEvaluation(data);
       toast.success("Answer evaluated!");
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Evaluation failed";
-      toast.error(message);
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "Failed to evaluate answer"
+      );
     } finally {
       setEvaluating(false);
     }
@@ -165,6 +193,10 @@ export default function InterviewPage() {
     if (currentIndex < session.questions.length - 1) {
       setCurrentIndex((prev) => prev + 1);
       setCandidateAnswer("");
+      setEvaluation(null);
+    } else {
+      toast.success("Mock interview session completed!");
+      setSession(null);
       setEvaluation(null);
     }
   };
@@ -183,7 +215,7 @@ export default function InterviewPage() {
                 setSession(null);
                 setEvaluation(null);
               }}
-              className="rounded-full border-[#E5EBE5] text-[#111827] hover:bg-[#F4F7F4] font-medium"
+              className="rounded-xl border-[#E5EBE5] text-[#111827] hover:bg-[#F4F7F4] font-medium"
             >
               <RefreshCw className="h-3.5 w-3.5 mr-2" />
               New Session
@@ -253,7 +285,7 @@ export default function InterviewPage() {
                 <button
                   disabled={loading || !targetRole}
                   type="submit"
-                  className="h-11 px-7 rounded-full bg-[#113D2B] hover:bg-[#0D3122] disabled:opacity-50 text-white text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shadow-sm"
+                  className="h-11 px-7 rounded-xl bg-[#113D2B] hover:bg-[#0D3122] disabled:opacity-50 text-white text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shadow-sm"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">
@@ -297,7 +329,7 @@ export default function InterviewPage() {
           {/* Current Question Card */}
           <Card className="rounded-3xl border border-[#E5EBE5] bg-white p-6 sm:p-8 space-y-6 shadow-2xs">
             <div className="space-y-2">
-              <span className="text-xs font-bold text-[#113D2B] bg-[#EAF5EE] px-3 py-1 rounded-full uppercase">
+              <span className="text-xs font-bold text-[#113D2B] bg-[#EAF5EE] px-3 py-1 rounded-lg uppercase">
                 Question {currentIndex + 1}
               </span>
               <h3 className="text-base sm:text-lg font-bold text-[#111827] leading-snug pt-2">
@@ -324,7 +356,7 @@ export default function InterviewPage() {
                   <button
                     disabled={!candidateAnswer.trim() || evaluating}
                     onClick={handleEvaluateAnswer}
-                    className="h-11 px-7 rounded-full bg-[#113D2B] hover:bg-[#0D3122] disabled:opacity-50 text-white text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shadow-sm"
+                    className="h-11 px-7 rounded-xl bg-[#113D2B] hover:bg-[#0D3122] disabled:opacity-50 text-white text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shadow-sm"
                   >
                     {evaluating ? (
                       <span className="flex items-center gap-2">
@@ -349,7 +381,7 @@ export default function InterviewPage() {
                   <span className="text-xs font-bold uppercase tracking-wider text-[#113D2B]">
                     AI Evaluation Score
                   </span>
-                  <span className="text-base font-bold font-mono text-[#113D2B] bg-[#EAF5EE] px-3 py-1 rounded-full">
+                  <span className="text-base font-bold font-mono text-[#113D2B] bg-[#EAF5EE] px-3 py-1 rounded-lg">
                     {evaluation.score} / 100
                   </span>
                 </div>
@@ -393,7 +425,7 @@ export default function InterviewPage() {
                 <div className="flex justify-end pt-2">
                   <Button
                     onClick={handleNextQuestion}
-                    className="h-11 px-7 rounded-full bg-[#113D2B] hover:bg-[#0D3122] text-white font-bold text-xs shadow-sm"
+                    className="h-11 px-7 rounded-xl bg-[#113D2B] hover:bg-[#0D3122] text-white font-bold text-xs shadow-sm"
                   >
                     Next Question
                     <ArrowRight className="w-3.5 h-3.5 ml-2" />

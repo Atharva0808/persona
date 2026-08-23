@@ -92,7 +92,7 @@ export default function SkillsPage() {
               variant="outline"
               size="sm"
               onClick={() => setAnalysis(null)}
-              className="rounded-full border-[#E5EBE5] text-[#111827] hover:bg-[#F4F7F4] font-medium"
+              className="rounded-xl border-[#E5EBE5] text-[#111827] hover:bg-[#F4F7F4] font-medium"
             >
               <RefreshCw className="h-3.5 w-3.5 mr-2" />
               New Audit
@@ -143,7 +143,7 @@ export default function SkillsPage() {
                 <button
                   disabled={loading || !targetRole || !skillsInput.trim()}
                   type="submit"
-                  className="h-11 px-7 rounded-full bg-[#113D2B] hover:bg-[#0D3122] disabled:opacity-50 text-white text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shadow-sm"
+                  className="h-11 px-7 rounded-xl bg-[#113D2B] hover:bg-[#0D3122] disabled:opacity-50 text-white text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shadow-sm"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">
@@ -197,7 +197,7 @@ export default function SkillsPage() {
                   className="rounded-3xl border border-[#E5EBE5] bg-white p-6 space-y-3 shadow-2xs"
                 >
                   <div className="flex items-center justify-between border-b border-[#E5EBE5] pb-3">
-                    <span className="text-xs font-bold text-[#113D2B] bg-[#EAF5EE] px-3 py-1 rounded-full">
+                    <span className="text-xs font-bold text-[#113D2B] bg-[#EAF5EE] px-3 py-1 rounded-lg">
                       Phase {phase.phase}: {phase.title}
                     </span>
                     <span className="text-xs text-[#6B7280] font-mono">{phase.duration}</span>

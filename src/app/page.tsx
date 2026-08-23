@@ -2,11 +2,9 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { ArrowRight, FileText, Target, MessageSquare } from "lucide-react";
+import { GithubIcon as Github, LinkedinIcon as Linkedin } from "@/components/icons";
 import { Logo } from "@/components/ui/logo";
-
-/* ── Animation Presets ──
-   Crisp, confident easing — no bounce, no spring wobble.
-   This is editorial/brutalist, animations should feel intentional and sharp. */
 
 const EASE_REVEAL = [0.16, 1, 0.3, 1] as const;
 
@@ -19,37 +17,21 @@ const slideUp = (delay = 0) => ({
 
 // Fade in with slight upward drift
 const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 30 },
+  initial: { opacity: 0, y: 24 },
   animate: { opacity: 1, y: 0 },
   transition: { duration: 0.7, delay, ease: EASE_REVEAL },
 });
 
 // Scroll-triggered fade up
 const scrollFadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 40 },
+  initial: { opacity: 0, y: 30 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-80px" },
-  transition: { duration: 0.7, delay, ease: EASE_REVEAL },
-});
-
-// Scroll-triggered slide from left
-const scrollSlideLeft = (delay = 0) => ({
-  initial: { opacity: 0, x: -60 },
-  whileInView: { opacity: 1, x: 0 },
   viewport: { once: true, margin: "-60px" },
   transition: { duration: 0.7, delay, ease: EASE_REVEAL },
-});
-
-// Scroll-triggered scale reveal for color blocks
-const scrollBlockReveal = (delay = 0) => ({
-  initial: { opacity: 0, scale: 0.92 },
-  whileInView: { opacity: 1, scale: 1 },
-  viewport: { once: true, margin: "-60px" },
-  transition: { duration: 0.8, delay, ease: EASE_REVEAL },
 });
 
 // Stagger container
-const staggerContainer = (staggerDelay = 0.1) => ({
+const staggerContainer = (staggerDelay = 0.08) => ({
   initial: "initial",
   animate: "animate",
   variants: {
@@ -70,24 +52,34 @@ const staggerChild = {
 
 const FEATURES = [
   {
-    word: "Resume",
-    desc: "Upload your PDF. Get ATS compatibility scoring, weak bullet detection, and quantified action rewrites.",
+    word: "Resume ATS",
+    icon: FileText,
+    tag: "Keyword & Verb Scoring",
+    desc: "Upload your PDF resume. Get ATS compatibility scoring, weak bullet detection, and XYZ-formula quantified action rewrites.",
   },
   {
-    word: "GitHub",
-    desc: "Paste your handle. Commit consistency, README quality, repository depth — all evaluated.",
+    word: "GitHub Depth",
+    icon: Github,
+    tag: "Repository & Code Health",
+    desc: "Analyze your profile and codebases. Commit frequency, README architecture depth, and technical quality are evaluated.",
   },
   {
-    word: "LinkedIn",
-    desc: "Share your profile details. Headline keyword analysis and recruiter search optimization tips.",
+    word: "LinkedIn Rank",
+    icon: Linkedin,
+    tag: "Recruiter Inbound Magnet",
+    desc: "Audit your public profile or exported PDF. Headline keyword optimization and recruiter search rank recommendations.",
   },
   {
-    word: "Skills",
-    desc: "Select your target role. Gap analysis across engineering tracks with a phased learning roadmap.",
+    word: "Skill Gap",
+    icon: Target,
+    tag: "9 Engineering Tracks",
+    desc: "Benchmark your current competencies against target roles to generate a prioritized 4-phase learning roadmap.",
   },
   {
-    word: "Interview",
-    desc: "Get tailored mock questions generated from your actual resume, projects, and target position.",
+    word: "Mock Interview",
+    icon: MessageSquare,
+    tag: "Interactive AI Room",
+    desc: "Get 20 tailored mock questions generated from your actual background with real-time feedback and model answers.",
   },
 ];
 
@@ -95,302 +87,280 @@ const HERO_WORDS = ["Know", "where", "you", "stand"];
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[#FAFAF8] text-[#0A0A0A] font-sans overflow-x-hidden selection:bg-[#E84B2B]/20 selection:text-[#E84B2B]">
+    <div className="min-h-screen bg-[#F4F7F4] text-[#111827] font-sans overflow-x-hidden selection:bg-[#113D2B]/15 selection:text-[#113D2B]">
       {/* ─── Navigation ─── */}
       <motion.nav
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="w-full px-6 sm:px-10 py-5 flex items-center justify-between bg-[#0A0A0A] text-[#FAFAF8]"
+        className="w-full px-6 sm:px-12 py-5 flex items-center justify-between bg-white border-b border-[#E5EBE5]"
       >
         <Link href="/" className="flex items-center gap-3">
           <Logo size={36} />
-          <span className="text-xl font-bold tracking-tight font-[family-name:var(--font-display)]">
+          <span className="text-xl font-bold tracking-tight font-[family-name:var(--font-display)] text-[#111827]">
             persona
           </span>
         </Link>
-        <div className="flex items-center gap-6 text-sm">
-          <Link href="/login" className="text-[#FAFAF8]/70 hover:text-[#FAFAF8] transition-colors">
+        <div className="flex items-center gap-5 text-xs font-bold">
+          <Link
+            href="/login"
+            className="text-[#6B7280] hover:text-[#111827] transition-colors px-3 py-2"
+          >
             Sign in
           </Link>
           <Link
             href="/signup"
-            className="bg-[#FAFAF8] text-[#0A0A0A] px-5 py-2.5 text-sm font-semibold hover:bg-[#FAFAF8]/90 transition-colors"
+            className="bg-[#113D2B] text-white px-5 py-2.5 rounded-xl hover:bg-[#0D3122] transition-colors shadow-2xs cursor-pointer"
           >
             Get Started
           </Link>
         </div>
       </motion.nav>
 
-      {/* ─── Hero: Color Block Grid ─── */}
-      <section className="grid grid-cols-1 md:grid-cols-3 min-h-[80vh] md:min-h-[85vh]">
-        {/* Left block — warm red, massive type with staggered word reveals */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="bg-[#E84B2B] text-[#0A0A0A] p-8 sm:p-12 flex flex-col justify-end relative overflow-hidden min-h-[50vh] md:min-h-0"
-        >
-          <motion.h1
-            {...staggerContainer(0.08)}
-            className="font-[family-name:var(--font-display)] text-[clamp(3.5rem,12vw,9rem)] font-bold leading-[0.85] tracking-[-0.04em] uppercase"
+      {/* ─── Hero: Unified Color Block Grid ─── */}
+      <section className="p-4 sm:p-6 lg:p-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 min-h-[75vh]">
+          {/* Left Block — Deep Forest Pine, Bold Type with Staggered Word Reveal */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="bg-[#113D2B] text-white p-8 sm:p-12 rounded-3xl flex flex-col justify-end relative overflow-hidden min-h-[45vh] md:min-h-0 shadow-sm"
           >
-            {HERO_WORDS.map((word) => (
-              <span key={word} className="block overflow-hidden">
-                <motion.span className="block" variants={staggerChild}>
-                  {word}
-                </motion.span>
+            <div className="absolute top-8 left-8">
+              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-white/70 bg-white/10 px-3 py-1 rounded-xl">
+                Diagnostic Engine
               </span>
-            ))}
-          </motion.h1>
-        </motion.div>
-
-        {/* Center block — black, value proposition */}
-        <motion.div
-          {...fadeUp(0.4)}
-          className="bg-[#0A0A0A] text-[#FAFAF8] p-8 sm:p-12 flex flex-col justify-between min-h-[40vh] md:min-h-0"
-        >
-          <motion.div
-            {...fadeUp(0.6)}
-            className="text-xs uppercase tracking-[0.2em] text-[#FAFAF8]/40 font-[family-name:var(--font-display)]"
-          >
-            Interview Readiness Tool
-          </motion.div>
-          <div className="mt-auto">
-            <motion.p
-              {...fadeUp(0.7)}
-              className="text-lg sm:text-xl leading-relaxed text-[#FAFAF8]/80 max-w-sm"
+            </div>
+            <motion.h1
+              {...staggerContainer(0.08)}
+              className="font-[family-name:var(--font-display)] text-[clamp(3.2rem,10vw,7.5rem)] font-bold leading-[0.88] tracking-[-0.04em] uppercase text-white mt-16"
             >
-              Persona evaluates your resume, GitHub, LinkedIn profile, and technical skills — then tells you
-              exactly what to fix.
-            </motion.p>
-            <motion.p
-              {...fadeUp(0.9)}
-              className="text-sm text-[#FAFAF8]/40 mt-6 leading-relaxed max-w-xs"
-            >
-              No vanity metrics. No inflated scores.
-              <br />
-              Just an honest assessment and a roadmap.
-            </motion.p>
-          </div>
-        </motion.div>
-
-        {/* Right block — warm golden yellow, serif accent + CTA */}
-        <motion.div
-          {...fadeUp(0.5)}
-          className="bg-[#F2C94C] text-[#0A0A0A] p-8 sm:p-12 flex flex-col justify-between min-h-[50vh] md:min-h-0"
-        >
-          <motion.div
-            {...fadeUp(0.7)}
-            className="text-xs uppercase tracking-[0.2em] text-[#0A0A0A]/60 font-[family-name:var(--font-display)]"
-          >
-            For Software Engineers
+              {HERO_WORDS.map((word) => (
+                <span key={word} className="block overflow-hidden">
+                  <motion.span className="block" variants={staggerChild}>
+                    {word}
+                  </motion.span>
+                </span>
+              ))}
+            </motion.h1>
           </motion.div>
-          <div className="mt-auto">
-            <div className="overflow-hidden">
+
+          {/* Center Block — Crisp White, Value Proposition & Anti-Hype Mission */}
+          <motion.div
+            {...fadeUp(0.2)}
+            className="bg-white border border-[#E5EBE5] text-[#111827] p-8 sm:p-12 rounded-3xl flex flex-col justify-between min-h-[40vh] md:min-h-0 shadow-2xs"
+          >
+            <div>
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#113D2B] bg-[#EAF5EE] px-3 py-1 rounded-xl font-mono">
+                Interview Readiness
+              </span>
+            </div>
+            <div className="mt-auto pt-8">
               <motion.p
-                {...slideUp(0.8)}
-                className="font-serif italic text-[clamp(2.5rem,6vw,5rem)] leading-[1] text-[#0A0A0A] tracking-[-0.01em]"
+                {...fadeUp(0.3)}
+                className="text-lg sm:text-xl font-bold leading-snug text-[#111827]"
               >
-                before
-                <br />
-                you apply.
+                Persona evaluates your resume, GitHub, LinkedIn profile, and technical skills — then tells you exactly what to fix.
+              </motion.p>
+              <motion.p
+                {...fadeUp(0.4)}
+                className="text-xs sm:text-sm text-[#6B7280] mt-5 leading-relaxed"
+              >
+                No vanity metrics. No inflated scores. Just an honest assessment and an actionable engineering roadmap.
               </motion.p>
             </div>
-            <motion.div {...fadeUp(1.1)}>
-              <Link
-                href="/signup"
-                className="inline-block mt-8 text-sm font-semibold text-[#0A0A0A] border-b-2 border-[#0A0A0A]/60 pb-1 hover:border-[#0A0A0A] transition-colors font-[family-name:var(--font-display)]"
-              >
-                Get Started →
-              </Link>
-            </motion.div>
-          </div>
-        </motion.div>
-      </section>
-
-      {/* ─── What It Does: Typography Feature Stack ─── */}
-      <section className="bg-[#0A0A0A] text-[#FAFAF8] py-20 sm:py-28 px-6 sm:px-10">
-        <div className="max-w-6xl mx-auto">
-          <motion.div
-            {...scrollFadeUp(0)}
-            className="text-xs uppercase tracking-[0.25em] text-[#FAFAF8]/30 mb-16 font-[family-name:var(--font-display)]"
-          >
-            What Persona Does
           </motion.div>
 
-          {/* Feature list — massive type with descriptions, scroll-triggered */}
-          <div className="space-y-0">
-            {FEATURES.map((feature, i) => (
-              <div
-                key={feature.word}
-                className="border-t border-[#FAFAF8]/10 py-8 sm:py-10 grid grid-cols-1 md:grid-cols-[1fr_1fr] gap-4 md:gap-12 items-end group"
-              >
-                <div className="overflow-hidden">
-                  <motion.h2
-                    {...scrollSlideLeft(i * 0.06)}
-                    className="font-[family-name:var(--font-display)] text-[clamp(3rem,8vw,7rem)] font-bold leading-[0.9] tracking-[-0.04em] uppercase text-[#FAFAF8]/90 group-hover:text-[#E84B2B] transition-colors duration-300"
-                  >
-                    {feature.word}
-                  </motion.h2>
-                </div>
+          {/* Right Block — Warm Golden Butter Yellow, Serif Accent + CTA */}
+          <motion.div
+            {...fadeUp(0.3)}
+            className="bg-[#F2C94C] text-[#111827] p-8 sm:p-12 rounded-3xl flex flex-col justify-between min-h-[45vh] md:min-h-0 shadow-sm"
+          >
+            <div>
+              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#111827]/70 bg-[#111827]/10 px-3 py-1 rounded-xl">
+                For Software Engineers
+              </span>
+            </div>
+            <div className="mt-auto pt-8">
+              <div className="overflow-hidden">
                 <motion.p
-                  {...scrollFadeUp(i * 0.06 + 0.15)}
-                  className="text-sm sm:text-base text-[#FAFAF8]/50 leading-relaxed max-w-md pb-1"
+                  {...slideUp(0.4)}
+                  className="font-serif italic text-[clamp(2.5rem,5.5vw,4.5rem)] leading-[0.95] text-[#111827] tracking-tight"
                 >
-                  {feature.desc}
+                  before
+                  <br />
+                  you apply.
                 </motion.p>
               </div>
+              <motion.div {...fadeUp(0.5)} className="pt-6">
+                <Link
+                  href="/signup"
+                  className="inline-flex items-center gap-2 bg-[#113D2B] text-white px-6 py-3.5 rounded-xl text-xs font-bold hover:bg-[#0D3122] transition-colors shadow-sm cursor-pointer"
+                >
+                  <span>Get Started Free</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </motion.div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ─── What Persona Does: Feature Cards Stack ─── */}
+      <section className="px-4 sm:px-6 lg:px-8 py-16">
+        <div className="max-w-7xl mx-auto space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 px-2">
+            <div>
+              <span className="text-xs font-bold text-[#113D2B] uppercase tracking-wider font-mono">
+                Evaluation Engines
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-bold text-[#111827] tracking-tight mt-1">
+                Five pillars of candidate readiness
+              </h2>
+            </div>
+            <p className="text-xs sm:text-sm text-[#6B7280] max-w-md">
+              Every vector is parsed using Gemini 2.5 Flash with multimodal document ingestion.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {FEATURES.map((feature, i) => (
+              <motion.div
+                key={feature.word}
+                {...scrollFadeUp(i * 0.08)}
+                className="rounded-3xl bg-white border border-[#E5EBE5] p-7 flex flex-col justify-between shadow-2xs space-y-4 hover:border-[#113D2B]/30 transition-colors"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="w-11 h-11 rounded-2xl bg-[#EAF5EE] flex items-center justify-center text-[#113D2B]">
+                    <feature.icon className="w-5 h-5" />
+                  </div>
+                  <span className="text-[10px] font-mono font-bold text-[#113D2B] bg-[#EAF5EE] px-2.5 py-1 rounded-xl">
+                    {feature.tag}
+                  </span>
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-[#111827]">
+                    {feature.word}
+                  </h3>
+                  <p className="text-xs text-[#6B7280] mt-2 leading-relaxed">
+                    {feature.desc}
+                  </p>
+                </div>
+              </motion.div>
             ))}
-            <div className="border-t border-[#FAFAF8]/10" />
+
+            {/* Final Highlight Card */}
+            <motion.div
+              {...scrollFadeUp(0.4)}
+              className="rounded-3xl bg-[#113D2B] text-white p-7 flex flex-col justify-between shadow-sm space-y-4"
+            >
+              <div>
+                <span className="text-[10px] font-mono font-bold text-white/80 bg-white/10 px-2.5 py-1 rounded-xl">
+                  Unified Result
+                </span>
+                <h3 className="text-lg font-bold text-white mt-4">
+                  Honest Readiness Score
+                </h3>
+                <p className="text-xs text-white/80 mt-2 leading-relaxed">
+                  Calculated from your genuine code, resume ATS parse, and live interview responses. No fake scores.
+                </p>
+              </div>
+              <div>
+                <Link
+                  href="/signup"
+                  className="inline-flex items-center gap-2 bg-white text-[#113D2B] px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-[#F4F7F4] transition-colors"
+                >
+                  <span>Start Evaluation</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* ─── How It Works: Color Block Grid ─── */}
-      <section className="grid grid-cols-1 md:grid-cols-3">
-        {/* Connect — navy */}
-        <motion.div
-          {...scrollBlockReveal(0)}
-          className="bg-[#1A1F5C] text-[#FAFAF8] p-8 sm:p-12 flex flex-col justify-between min-h-[50vh]"
-        >
-          <motion.div
-            {...scrollFadeUp(0.1)}
-            className="text-xs uppercase tracking-[0.2em] text-[#FAFAF8]/40 font-[family-name:var(--font-display)]"
-          >
-            Step 01
-          </motion.div>
-          <div className="mt-auto">
-            <div className="overflow-hidden">
-              <motion.h3
-                {...scrollSlideLeft(0.15)}
-                className="font-[family-name:var(--font-display)] text-[clamp(3rem,7vw,5.5rem)] font-bold leading-[0.85] tracking-[-0.04em] uppercase mb-6"
-              >
-                Connect
-              </motion.h3>
-            </div>
-            <motion.p
-              {...scrollFadeUp(0.25)}
-              className="text-sm text-[#FAFAF8]/60 leading-relaxed max-w-xs"
-            >
-              Upload your resume PDF, paste your GitHub username, and fill in your LinkedIn profile details.
-            </motion.p>
+      {/* ─── How It Works: 3 Step Cards ─── */}
+      <section className="px-4 sm:px-6 lg:px-8 py-16 bg-white border-y border-[#E5EBE5]">
+        <div className="max-w-7xl mx-auto space-y-10">
+          <div className="text-center max-w-xl mx-auto space-y-2">
+            <span className="text-xs font-bold text-[#113D2B] uppercase tracking-wider font-mono">
+              Simple Workflow
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#111827] tracking-tight">
+              Three steps to complete clarity
+            </h2>
           </div>
-        </motion.div>
 
-        {/* Analyze — cream */}
-        <motion.div
-          {...scrollBlockReveal(0.12)}
-          className="bg-[#F5DDD5] text-[#0A0A0A] p-8 sm:p-12 flex flex-col justify-between min-h-[50vh]"
-        >
-          <motion.div
-            {...scrollFadeUp(0.22)}
-            className="text-xs uppercase tracking-[0.2em] text-[#0A0A0A]/40 font-[family-name:var(--font-display)]"
-          >
-            Step 02
-          </motion.div>
-          <div className="mt-auto">
-            <div className="overflow-hidden">
-              <motion.h3
-                {...scrollSlideLeft(0.27)}
-                className="font-[family-name:var(--font-display)] text-[clamp(3rem,7vw,5.5rem)] font-bold leading-[0.85] tracking-[-0.04em] uppercase mb-6"
-              >
-                Analyze
-              </motion.h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {/* Step 1 */}
+            <div className="rounded-3xl bg-[#FAFBF9] border border-[#E5EBE5] p-8 space-y-4">
+              <span className="text-xs font-bold text-[#113D2B] bg-[#EAF5EE] px-3 py-1 rounded-xl font-mono">
+                Step 01
+              </span>
+              <h3 className="text-xl font-bold text-[#111827] pt-2">
+                Connect Signals
+              </h3>
+              <p className="text-xs text-[#6B7280] leading-relaxed">
+                Upload your resume PDF, paste your public GitHub handle, and provide your LinkedIn profile details.
+              </p>
             </div>
-            <motion.p
-              {...scrollFadeUp(0.37)}
-              className="text-sm text-[#0A0A0A]/60 leading-relaxed max-w-xs"
-            >
-              AI evaluates ATS keyword matching, repository quality, profile optimization, and skill alignment against your target role.
-            </motion.p>
-          </div>
-        </motion.div>
 
-        {/* Improve — yellow */}
-        <motion.div
-          {...scrollBlockReveal(0.24)}
-          className="bg-[#F2C94C] text-[#0A0A0A] p-8 sm:p-12 flex flex-col justify-between min-h-[50vh]"
-        >
-          <motion.div
-            {...scrollFadeUp(0.34)}
-            className="text-xs uppercase tracking-[0.2em] text-[#0A0A0A]/40 font-[family-name:var(--font-display)]"
-          >
-            Step 03
-          </motion.div>
-          <div className="mt-auto">
-            <div className="overflow-hidden">
-              <motion.h3
-                {...scrollSlideLeft(0.39)}
-                className="font-[family-name:var(--font-display)] text-[clamp(3rem,7vw,5.5rem)] font-bold leading-[0.85] tracking-[-0.04em] uppercase mb-6"
-              >
-                Improve
-              </motion.h3>
+            {/* Step 2 */}
+            <div className="rounded-3xl bg-[#FAFBF9] border border-[#E5EBE5] p-8 space-y-4">
+              <span className="text-xs font-bold text-[#113D2B] bg-[#EAF5EE] px-3 py-1 rounded-xl font-mono">
+                Step 02
+              </span>
+              <h3 className="text-xl font-bold text-[#111827] pt-2">
+                Deep Audit
+              </h3>
+              <p className="text-xs text-[#6B7280] leading-relaxed">
+                Gemini 2.5 Flash analyzes ATS keyword matching, repository commit depth, and skill gaps across 9 engineering tracks.
+              </p>
             </div>
-            <motion.p
-              {...scrollFadeUp(0.49)}
-              className="text-sm text-[#0A0A0A]/60 leading-relaxed max-w-xs"
-            >
-              Get your readiness score, rewritten bullet points, skill gap roadmap, and mock interview questions — all personalized.
-            </motion.p>
+
+            {/* Step 3 */}
+            <div className="rounded-3xl bg-[#FAFBF9] border border-[#E5EBE5] p-8 space-y-4">
+              <span className="text-xs font-bold text-[#113D2B] bg-[#EAF5EE] px-3 py-1 rounded-xl font-mono">
+                Step 03
+              </span>
+              <h3 className="text-xl font-bold text-[#111827] pt-2">
+                Action Roadmap
+              </h3>
+              <p className="text-xs text-[#6B7280] leading-relaxed">
+                Get your rewritten bullet points, phased learning roadmap, and practice 20 tailored mock questions.
+              </p>
+            </div>
           </div>
-        </motion.div>
+        </div>
       </section>
 
-      {/* ─── CTA: Split Block ─── */}
-      <section className="grid grid-cols-1 md:grid-cols-2">
-        {/* Left — red, massive question */}
-        <motion.div
-          {...scrollBlockReveal(0)}
-          className="bg-[#E84B2B] text-[#0A0A0A] p-8 sm:p-14 flex flex-col justify-end min-h-[45vh]"
-        >
-          <div className="overflow-hidden">
-            <motion.h2
-              initial={{ y: "110%", rotate: 2 }}
-              whileInView={{ y: "0%", rotate: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.9, ease: EASE_REVEAL }}
-              className="font-[family-name:var(--font-display)] text-[clamp(4rem,10vw,9rem)] font-bold leading-[0.82] tracking-[-0.05em] uppercase"
-            >
-              Ready?
-            </motion.h2>
+      {/* ─── Bottom CTA Banner ─── */}
+      <section className="p-4 sm:p-6 lg:p-8">
+        <div className="rounded-3xl bg-[#113D2B] text-white p-8 sm:p-14 flex flex-col md:flex-row items-center justify-between gap-8 shadow-sm">
+          <div className="space-y-2 max-w-xl text-center md:text-left">
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight font-[family-name:var(--font-display)]">
+              Ready to benchmark your profile?
+            </h2>
+            <p className="text-xs sm:text-sm text-white/80 leading-relaxed">
+              Create your account. Upload your resume. Get your honest assessment in minutes.
+            </p>
           </div>
-        </motion.div>
 
-        {/* Right — black, CTA copy */}
-        <motion.div
-          {...scrollBlockReveal(0.1)}
-          className="bg-[#0A0A0A] text-[#FAFAF8] p-8 sm:p-14 flex flex-col justify-end min-h-[45vh]"
-        >
-          <motion.p
-            {...scrollFadeUp(0.2)}
-            className="text-lg sm:text-xl text-[#FAFAF8]/70 leading-relaxed max-w-sm mb-8"
+          <Link
+            href="/signup"
+            className="inline-flex items-center gap-2 bg-white text-[#113D2B] px-7 py-3.5 rounded-xl text-xs font-bold hover:bg-[#F4F7F4] transition-colors shadow-sm shrink-0 cursor-pointer"
           >
-            Create your account. Upload your resume. Get your honest assessment in minutes — not marketing promises.
-          </motion.p>
-          <motion.div {...scrollFadeUp(0.35)}>
-            <Link
-              href="/signup"
-              className="inline-flex items-center self-start bg-[#FAFAF8] text-[#0A0A0A] px-8 py-4 text-sm font-bold tracking-wide uppercase hover:bg-[#FAFAF8]/90 transition-colors font-[family-name:var(--font-display)] group"
-            >
-              <span>Get Started</span>
-              <motion.span
-                className="inline-block ml-2"
-                initial={{ x: 0 }}
-                whileHover={{ x: 4 }}
-                transition={{ duration: 0.2 }}
-              >
-                →
-              </motion.span>
-            </Link>
-          </motion.div>
-        </motion.div>
+            <span>Get Started Free</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
       </section>
 
       {/* ─── Footer ─── */}
-      <footer className="bg-[#0A0A0A] text-[#FAFAF8]/40 px-6 sm:px-10 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-[#FAFAF8]/8">
-        <span className="flex items-center gap-2 text-xs font-[family-name:var(--font-display)]">
-          <Logo size={20} />
+      <footer className="bg-white text-[#6B7280] px-6 sm:px-12 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-[#E5EBE5]">
+        <span className="flex items-center gap-2.5 text-xs font-bold text-[#111827] font-[family-name:var(--font-display)]">
+          <Logo size={22} />
           persona
         </span>
         <span className="text-xs">

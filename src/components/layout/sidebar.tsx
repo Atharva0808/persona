@@ -187,7 +187,7 @@ export function Sidebar({
             <Button
               variant="outline"
               onClick={() => setLogoutDialogOpen(false)}
-              className="rounded-full border-[#E5EBE5] text-[#111827] hover:bg-[#F4F7F4] text-xs font-bold px-5 h-10"
+              className="rounded-xl border-[#E5EBE5] text-[#111827] hover:bg-[#F4F7F4] text-xs font-bold px-5 h-10"
             >
               Cancel
             </Button>
@@ -196,7 +196,7 @@ export function Sidebar({
                 setLogoutDialogOpen(false);
                 onSignOut?.();
               }}
-              className="px-5 h-10 rounded-full bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-all shadow-sm cursor-pointer"
+              className="px-5 h-10 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-all shadow-sm cursor-pointer"
             >
               Yes, Log Out
             </button>

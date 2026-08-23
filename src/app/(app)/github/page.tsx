@@ -66,7 +66,7 @@ export default function GitHubPage() {
                 setAnalysis(null);
                 setUsername("");
               }}
-              className="rounded-full border-[#E5EBE5] text-[#111827] hover:bg-[#F4F7F4] font-medium"
+              className="rounded-xl border-[#E5EBE5] text-[#111827] hover:bg-[#F4F7F4] font-medium"
             >
               <RefreshCw className="h-3.5 w-3.5 mr-2" />
               New Audit
@@ -99,7 +99,7 @@ export default function GitHubPage() {
                 <button
                   disabled={!username.trim() || loading}
                   type="submit"
-                  className="h-11 px-7 rounded-full bg-[#113D2B] hover:bg-[#0D3122] disabled:opacity-50 text-white text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shadow-sm"
+                  className="h-11 px-7 rounded-xl bg-[#113D2B] hover:bg-[#0D3122] disabled:opacity-50 text-white text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shadow-sm"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">
@@ -160,7 +160,7 @@ export default function GitHubPage() {
                 <h3 className="text-xs font-bold text-[#111827] uppercase tracking-wider">
                   Commit Activity
                 </h3>
-                <span className="text-xs font-mono font-bold text-[#113D2B] bg-[#EAF5EE] px-2.5 py-0.5 rounded-full">
+                <span className="text-xs font-mono font-bold text-[#113D2B] bg-[#EAF5EE] px-2.5 py-0.5 rounded-lg">
                   {analysis.commit_activity.consistency}
                 </span>
               </div>

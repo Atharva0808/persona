@@ -1,47 +1,50 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import { toast } from "sonner";
 import {
-  CheckCircle2,
-  ArrowRight,
-  RefreshCw,
   Upload,
   FileText,
-  HelpCircle,
+  CheckCircle2,
+  ArrowRight,
   X,
+  RefreshCw,
+  HelpCircle,
 } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Spinner } from "@/components/ui/spinner";
 import { ScoreRing } from "@/components/ui/score";
 import type { LinkedInAnalysis, SectionAnalysis } from "@/lib/types";
 
 export default function LinkedInPage() {
-  const [loading, setLoading] = useState(false);
-  const [analysis, setAnalysis] = useState<LinkedInAnalysis | null>(null);
   const [activeTab, setActiveTab] = useState<"pdf" | "manual">("pdf");
-  const [showGuide, setShowGuide] = useState(true);
-
-  // PDF Upload State
   const [file, setFile] = useState<File | null>(null);
   const [dragActive, setDragActive] = useState(false);
+  const [showGuide, setShowGuide] = useState(true);
 
-  // Form State
   const [formData, setFormData] = useState({
     profileUrl: "",
     headline: "",
     about: "",
     experience: "",
     skills: "",
-    featured: "",
   });
 
-  const handleDrag = useCallback((e: React.DragEvent) => {
+  const [loading, setLoading] = useState(false);
+  const [analysis, setAnalysis] = useState<LinkedInAnalysis | null>(null);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (e.type === "dragenter" || e.type === "dragover") {
@@ -49,9 +52,9 @@ export default function LinkedInPage() {
     } else if (e.type === "dragleave") {
       setDragActive(false);
     }
-  }, []);
+  };
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
+  const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
@@ -60,15 +63,8 @@ export default function LinkedInPage() {
     if (droppedFile?.type === "application/pdf") {
       setFile(droppedFile);
     } else {
-      toast.error("Please upload a PDF file");
+      toast.error("Please upload a LinkedIn profile PDF export");
     }
-  }, []);
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleAnalyzePDF = async () => {
@@ -76,26 +72,23 @@ export default function LinkedInPage() {
     setLoading(true);
 
     try {
-      const data = new FormData();
-      data.append("file", file);
+      const body = new FormData();
+      body.append("file", file);
 
       const res = await fetch("/api/linkedin/analyze", {
         method: "POST",
-        body: data,
+        body,
       });
 
-      const resData = await res.json();
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Analysis failed");
 
-      if (!res.ok) {
-        throw new Error(resData.error || "Analysis failed");
-      }
-
-      setAnalysis(resData);
-      toast.success("LinkedIn PDF analyzed successfully!");
+      setAnalysis(data);
+      toast.success("LinkedIn profile analyzed successfully");
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Failed to analyze LinkedIn PDF";
-      toast.error(message);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to analyze LinkedIn PDF"
+      );
     } finally {
       setLoading(false);
     }
@@ -103,8 +96,8 @@ export default function LinkedInPage() {
 
   const handleAnalyzeManual = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.profileUrl && !formData.headline && !formData.about) {
-      toast.error("Please provide at least a profile URL or headline to analyze");
+    if (!formData.profileUrl) {
+      toast.error("Please provide your LinkedIn profile URL");
       return;
     }
 
@@ -118,23 +111,22 @@ export default function LinkedInPage() {
       });
 
       const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || "Analysis failed");
-      }
+      if (!res.ok) throw new Error(data.error || "Analysis failed");
 
       setAnalysis(data);
-      toast.success("LinkedIn profile analyzed successfully!");
+      toast.success("LinkedIn profile analyzed successfully");
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Failed to analyze LinkedIn profile";
-      toast.error(message);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to analyze profile"
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  const renderSectionAnalysis = (title: string, section: SectionAnalysis) => {
+  const renderSectionAnalysis = (title: string, section?: SectionAnalysis) => {
+    if (!section) return null;
+
     return (
       <div
         key={title}
@@ -142,7 +134,7 @@ export default function LinkedInPage() {
       >
         <div className="flex items-center justify-between border-b border-[#E5EBE5] pb-3">
           <h3 className="text-sm font-bold text-[#111827]">{title}</h3>
-          <span className="text-xs font-mono font-bold text-[#113D2B] bg-[#EAF5EE] px-2.5 py-0.5 rounded-full">
+          <span className="text-xs font-mono font-bold text-[#113D2B] bg-[#EAF5EE] px-2.5 py-0.5 rounded-lg">
             {section.score} / 100
           </span>
         </div>
@@ -191,7 +183,7 @@ export default function LinkedInPage() {
                 setAnalysis(null);
                 setFile(null);
               }}
-              className="rounded-full border-[#E5EBE5] text-[#111827] hover:bg-[#F4F7F4] font-medium"
+              className="rounded-xl border-[#E5EBE5] text-[#111827] hover:bg-[#F4F7F4] font-medium"
             >
               <RefreshCw className="h-3.5 w-3.5 mr-2" />
               New Review
@@ -289,7 +281,7 @@ export default function LinkedInPage() {
                         variant="ghost"
                         size="sm"
                         onClick={() => setFile(null)}
-                        className="text-xs text-rose-600 hover:bg-rose-50 rounded-full"
+                        className="text-xs text-rose-600 hover:bg-rose-50 rounded-xl"
                       >
                         <X className="h-3.5 w-3.5 mr-1" />
                         Remove file
@@ -308,7 +300,7 @@ export default function LinkedInPage() {
                           Drag & drop or select file from your device
                         </p>
                       </div>
-                      <label className="mt-2 inline-flex items-center justify-center px-5 py-2.5 rounded-full text-xs font-bold bg-[#113D2B] hover:bg-[#0D3122] text-white cursor-pointer transition-colors shadow-2xs">
+                      <label className="mt-2 inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-xs font-bold bg-[#113D2B] hover:bg-[#0D3122] text-white cursor-pointer transition-colors shadow-2xs">
                         Browse Files
                         <input
                           type="file"
@@ -328,7 +320,7 @@ export default function LinkedInPage() {
                   <button
                     disabled={!file || loading}
                     onClick={handleAnalyzePDF}
-                    className="h-11 px-7 rounded-full bg-[#113D2B] hover:bg-[#0D3122] disabled:opacity-50 text-white text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shadow-sm"
+                    className="h-11 px-7 rounded-xl bg-[#113D2B] hover:bg-[#0D3122] disabled:opacity-50 text-white text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shadow-sm"
                   >
                     {loading ? (
                       <span className="flex items-center gap-2">
@@ -409,7 +401,7 @@ export default function LinkedInPage() {
                     <button
                       disabled={loading}
                       type="submit"
-                      className="h-11 px-7 rounded-full bg-[#113D2B] hover:bg-[#0D3122] disabled:opacity-50 text-white text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shadow-sm"
+                      className="h-11 px-7 rounded-xl bg-[#113D2B] hover:bg-[#0D3122] disabled:opacity-50 text-white text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shadow-sm"
                     >
                       {loading ? (
                         <span className="flex items-center gap-2">

@@ -218,7 +218,7 @@ export default function DashboardPage() {
             <span className="text-xs text-white/80 font-medium">
               Overall Readiness
             </span>
-            <span className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-white text-xs font-bold font-mono">
+            <span className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center text-white text-xs font-bold font-mono">
               {completedCount}/4
             </span>
           </div>
@@ -242,7 +242,7 @@ export default function DashboardPage() {
             </span>
             <Link
               href="/resume"
-              className="w-7 h-7 rounded-full border border-[#E5EBE5] hover:bg-[#F4F7F4] flex items-center justify-center text-[#111827] transition-colors"
+              className="w-7 h-7 rounded-lg border border-[#E5EBE5] hover:bg-[#F4F7F4] flex items-center justify-center text-[#111827] transition-colors"
             >
               <ArrowUpRight className="w-4 h-4" />
             </Link>
@@ -265,7 +265,7 @@ export default function DashboardPage() {
             </span>
             <Link
               href="/github"
-              className="w-7 h-7 rounded-full border border-[#E5EBE5] hover:bg-[#F4F7F4] flex items-center justify-center text-[#111827] transition-colors"
+              className="w-7 h-7 rounded-lg border border-[#E5EBE5] hover:bg-[#F4F7F4] flex items-center justify-center text-[#111827] transition-colors"
             >
               <ArrowUpRight className="w-4 h-4" />
             </Link>
@@ -288,7 +288,7 @@ export default function DashboardPage() {
             </span>
             <Link
               href="/skills"
-              className="w-7 h-7 rounded-full border border-[#E5EBE5] hover:bg-[#F4F7F4] flex items-center justify-center text-[#111827] transition-colors"
+              className="w-7 h-7 rounded-lg border border-[#E5EBE5] hover:bg-[#F4F7F4] flex items-center justify-center text-[#111827] transition-colors"
             >
               <ArrowUpRight className="w-4 h-4" />
             </Link>
@@ -318,7 +318,7 @@ export default function DashboardPage() {
                   Core evaluation tools across your engineering footprint
                 </p>
               </div>
-              <span className="text-xs font-mono font-bold text-[#113D2B] bg-[#EAF5EE] px-3 py-1 rounded-full">
+              <span className="text-xs font-mono font-bold text-[#113D2B] bg-[#EAF5EE] px-3 py-1 rounded-xl">
                 {completedCount} / 4 Complete
               </span>
             </div>
@@ -344,7 +344,7 @@ export default function DashboardPage() {
                             {engine.name}
                           </span>
                           {engine.scoreKey === null && (
-                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#113D2B] text-white">
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#113D2B] text-white">
                               20 Qs
                             </span>
                           )}
@@ -362,15 +362,15 @@ export default function DashboardPage() {
                             Loading...
                           </span>
                         ) : isDone ? (
-                          <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-[#EAF5EE] text-[#113D2B]">
+                          <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-[#EAF5EE] text-[#113D2B]">
                             Score: {score}%
                           </span>
                         ) : engine.scoreKey ? (
-                          <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-[#F4F7F4] text-[#6B7280] border border-[#E5EBE5]">
+                          <span className="text-xs font-medium px-2.5 py-1 rounded-lg bg-[#F4F7F4] text-[#6B7280] border border-[#E5EBE5]">
                             Not Analyzed
                           </span>
                         ) : (
-                          <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-[#EAF5EE] text-[#113D2B]">
+                          <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-[#EAF5EE] text-[#113D2B]">
                             Ready
                           </span>
                         )}
@@ -390,7 +390,7 @@ export default function DashboardPage() {
           <div className="rounded-3xl bg-white border border-[#E5EBE5] p-6 shadow-2xs space-y-4">
             <div className="flex items-center justify-between text-xs text-[#6B7280] font-medium">
               <span>Next Recommended Action</span>
-              <span className="px-2 py-0.5 rounded-full bg-[#EAF5EE] text-[#113D2B] font-bold text-[10px]">
+              <span className="px-2 py-0.5 rounded-lg bg-[#EAF5EE] text-[#113D2B] font-bold text-[10px]">
                 Priority
               </span>
             </div>
@@ -405,7 +405,7 @@ export default function DashboardPage() {
 
             <Link
               href={nextAction.href}
-              className="w-full mt-2 py-3 rounded-full bg-[#113D2B] hover:bg-[#0D3122] text-white text-xs font-bold flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-sm"
+              className="w-full mt-2 py-3 rounded-xl bg-[#113D2B] hover:bg-[#0D3122] text-white text-xs font-bold flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-sm"
             >
               <span>{nextAction.cta}</span>
               <ArrowRight className="w-3.5 h-3.5" />

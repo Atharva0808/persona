@@ -102,7 +102,7 @@ export default function ResumePage() {
               variant="outline"
               size="sm"
               onClick={resetAnalysis}
-              className="rounded-full border-[#E5EBE5] text-[#111827] hover:bg-[#F4F7F4] font-medium"
+              className="rounded-xl border-[#E5EBE5] text-[#111827] hover:bg-[#F4F7F4] font-medium"
             >
               <RefreshCw className="h-3.5 w-3.5 mr-2" />
               New Audit
@@ -144,7 +144,7 @@ export default function ResumePage() {
                     variant="ghost"
                     size="sm"
                     onClick={() => setFile(null)}
-                    className="text-xs text-rose-600 hover:bg-rose-50 rounded-full"
+                    className="text-xs text-rose-600 hover:bg-rose-50 rounded-xl"
                   >
                     <X className="h-3.5 w-3.5 mr-1" />
                     Remove file
@@ -163,7 +163,7 @@ export default function ResumePage() {
                       Or select a file from your device (PDF up to 5 MB)
                     </p>
                   </div>
-                  <label className="mt-2 inline-flex items-center justify-center px-5 py-2.5 rounded-full text-xs font-bold bg-[#113D2B] hover:bg-[#0D3122] text-white cursor-pointer transition-colors shadow-2xs">
+                  <label className="mt-2 inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-xs font-bold bg-[#113D2B] hover:bg-[#0D3122] text-white cursor-pointer transition-colors shadow-2xs">
                     Browse Files
                     <input
                       type="file"
@@ -180,7 +180,7 @@ export default function ResumePage() {
               <button
                 disabled={!file || loading}
                 onClick={handleAnalyze}
-                className="h-11 px-7 rounded-full bg-[#113D2B] hover:bg-[#0D3122] disabled:opacity-50 text-white text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shadow-sm"
+                className="h-11 px-7 rounded-xl bg-[#113D2B] hover:bg-[#0D3122] disabled:opacity-50 text-white text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shadow-sm"
               >
                 {loading ? (
                   <span className="flex items-center gap-2">
@@ -229,7 +229,7 @@ export default function ResumePage() {
                   <h3 className="text-sm font-bold text-[#111827]">
                     {section.name}
                   </h3>
-                  <span className="text-xs font-mono font-bold text-[#113D2B] bg-[#EAF5EE] px-2.5 py-0.5 rounded-full">
+                  <span className="text-xs font-mono font-bold text-[#113D2B] bg-[#EAF5EE] px-2.5 py-0.5 rounded-lg">
                     {section.score} / 100
                   </span>
                 </div>
