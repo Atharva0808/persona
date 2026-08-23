@@ -108,7 +108,7 @@ export async function analyzeGitHub(
 
   let profile: GitHubProfile;
   let repos: GitHubRepo[] = [];
-  let commitActivity: CommitActivity = {
+  const commitActivity: CommitActivity = {
     total_commits: 12,
     avg_per_week: 3,
     streak: 5,

@@ -223,10 +223,10 @@ export default function LinkedInPage() {
                   <span className="text-[#113D2B] font-bold mr-1">1.</span> Open your profile page on LinkedIn.
                 </li>
                 <li className="p-3.5 rounded-2xl border border-[#E5EBE5] bg-[#FAFBF9]">
-                  <span className="text-[#113D2B] font-bold mr-1">2.</span> Click the <strong className="text-[#111827]">"More"</strong> button near your header.
+                  <span className="text-[#113D2B] font-bold mr-1">2.</span> Click the <strong className="text-[#111827]">&quot;More&quot;</strong> button near your header.
                 </li>
                 <li className="p-3.5 rounded-2xl border border-[#E5EBE5] bg-[#FAFBF9]">
-                  <span className="text-[#113D2B] font-bold mr-1">3.</span> Select <strong className="text-[#111827]">"Save to PDF"</strong> & upload below!
+                  <span className="text-[#113D2B] font-bold mr-1">3.</span> Select <strong className="text-[#111827]">&quot;Save to PDF&quot;</strong> &amp; upload below!
                 </li>
               </ol>
             </div>

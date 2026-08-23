@@ -3,12 +3,9 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
 import {
-  MessageSquare,
   RefreshCw,
   ArrowRight,
   CheckCircle2,
-  AlertCircle,
-  Sparkles,
   Send,
 } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
@@ -63,31 +60,38 @@ export default function InterviewPage() {
   const [hasSkills, setHasSkills] = useState(false);
 
   useEffect(() => {
-    checkContextData();
+    let isMounted = true;
+    const fetchContext = async () => {
+      try {
+        const supabase = createClient();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user || !isMounted) return;
+
+        const [resumeRes, githubRes, skillsRes] = await Promise.all([
+          supabase.from("resume_analyses").select("id").eq("user_id", user.id).limit(1),
+          supabase.from("github_analyses").select("id").eq("user_id", user.id).limit(1),
+          supabase.from("skill_gap_analyses").select("id").eq("user_id", user.id).limit(1),
+        ]);
+
+        if (isMounted) {
+          setHasResume((resumeRes.data?.length ?? 0) > 0);
+          setHasGithub((githubRes.data?.length ?? 0) > 0);
+          setHasSkills((skillsRes.data?.length ?? 0) > 0);
+        }
+      } catch (error) {
+        console.error("Failed to fetch context status", error);
+      }
+    };
+
+    fetchContext();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
-
-  const checkContextData = async () => {
-    try {
-      const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) return;
-
-      const [resumeRes, githubRes, skillsRes] = await Promise.all([
-        supabase.from("resume_analyses").select("id").eq("user_id", user.id).limit(1),
-        supabase.from("github_analyses").select("id").eq("user_id", user.id).limit(1),
-        supabase.from("skill_gap_analyses").select("id").eq("user_id", user.id).limit(1),
-      ]);
-
-      setHasResume((resumeRes.data?.length ?? 0) > 0);
-      setHasGithub((githubRes.data?.length ?? 0) > 0);
-      setHasSkills((skillsRes.data?.length ?? 0) > 0);
-    } catch (error) {
-      console.error("Failed to fetch context status", error);
-    }
-  };
 
   const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault();

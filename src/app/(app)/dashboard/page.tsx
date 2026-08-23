@@ -8,10 +8,6 @@ import {
   FileText,
   Target,
   MessageSquare,
-  Sparkles,
-  CheckCircle2,
-  AlertCircle,
-  HelpCircle,
 } from "lucide-react";
 import { GithubIcon as Github, LinkedinIcon as Linkedin } from "@/components/icons";
 import { createClient } from "@/lib/supabase/client";
