@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { toast } from "sonner";
-import { ArrowRight, RefreshCw, Sparkles, BookOpen } from "lucide-react";
+import { ArrowRight, RefreshCw, Target, BookOpen } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -167,7 +167,7 @@ export default function SkillsPage() {
           <div className="rounded-3xl bg-[#113D2B] text-white p-7 sm:p-9 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-sm">
             <div className="space-y-3 max-w-xl">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-[#F2C94C]" />
+                <Target className="w-4 h-4 text-[#EAF5EE]" />
                 <span className="text-xs font-mono font-bold uppercase tracking-wider text-white/80">
                   Role Alignment Match
                 </span>

@@ -7,7 +7,7 @@ import {
   RefreshCw,
   CheckCircle2,
   Send,
-  Sparkles,
+  MessageSquare,
 } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
@@ -316,7 +316,7 @@ export default function InterviewPage() {
           <div className="rounded-3xl bg-[#113D2B] text-white p-7 sm:p-9 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-sm">
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-[#F2C94C]" />
+                <MessageSquare className="w-4 h-4 text-[#EAF5EE]" />
                 <span className="text-xs font-mono font-bold uppercase tracking-wider text-white/80">
                   Question {currentIndex + 1} of {session.questions.length}
                 </span>

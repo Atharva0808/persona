@@ -10,8 +10,8 @@ import {
   X,
   RefreshCw,
   HelpCircle,
-  Sparkles,
 } from "lucide-react";
+import { LinkedinIcon as Linkedin } from "@/components/icons";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -423,7 +423,7 @@ export default function LinkedInPage() {
           <div className="rounded-3xl bg-[#113D2B] text-white p-7 sm:p-9 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-sm">
             <div className="space-y-3 max-w-xl">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-[#F2C94C]" />
+                <Linkedin size={16} className="text-[#EAF5EE]" />
                 <span className="text-xs font-mono font-bold uppercase tracking-wider text-white/80">
                   Recruiter Search Attractiveness
                 </span>
