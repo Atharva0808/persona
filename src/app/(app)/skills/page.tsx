@@ -2,16 +2,10 @@
 
 import React, { useState } from "react";
 import { toast } from "sonner";
-import {
-  ArrowRight,
-  RefreshCw,
-  Target,
-  BookOpen,
-  CheckCircle2,
-  Layers,
-} from "lucide-react";
+import { ArrowRight, RefreshCw, Sparkles, BookOpen } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
@@ -37,61 +31,12 @@ const TARGET_ROLES: { value: TargetRole; label: string }[] = [
   { value: "cybersecurity", label: "Cybersecurity Engineer" },
 ];
 
-const QUICK_SKILLS = [
-  "TypeScript",
-  "React",
-  "Next.js",
-  "Node.js",
-  "Python",
-  "PostgreSQL",
-  "Docker",
-  "Kubernetes",
-  "AWS",
-  "GraphQL",
-  "Redis",
-  "Go",
-];
-
-const ROADMAP_PHASES_INFO = [
-  {
-    phase: "01",
-    title: "Language Core & Foundations",
-    desc: "Syntax mastery, memory models, data structures, and idiomatic type systems.",
-  },
-  {
-    phase: "02",
-    title: "Frameworks & State Management",
-    desc: "Component architecture, concurrency models, API design, and client-side optimization.",
-  },
-  {
-    phase: "03",
-    title: "Distributed Systems & Cloud",
-    desc: "Caching layers, queue architectures, microservices, containerization, and observability.",
-  },
-  {
-    phase: "04",
-    title: "Production System Milestone",
-    desc: "End-to-end fullstack capstone project with automated CI/CD and deployment.",
-  },
-];
-
 export default function SkillsPage() {
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState<SkillGapAnalysis | null>(null);
 
   const [skillsInput, setSkillsInput] = useState("");
   const [targetRole, setTargetRole] = useState<TargetRole | "">("");
-
-  const handleAddSkill = (skill: string) => {
-    const existing = skillsInput
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean);
-
-    if (!existing.includes(skill)) {
-      setSkillsInput(existing.length > 0 ? `${skillsInput}, ${skill}` : skill);
-    }
-  };
 
   const handleAnalyze = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -157,158 +102,77 @@ export default function SkillsPage() {
       />
 
       {!analysis ? (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-          {/* ═══ Left Column (Span 7): Input Form ═══ */}
-          <div className="lg:col-span-7">
-            <div className="rounded-3xl border border-[#E5EBE5] bg-white p-6 sm:p-8 shadow-2xs space-y-6">
-              <div className="flex items-center justify-between border-b border-[#F0F4F0] pb-4">
-                <div>
-                  <h2 className="text-base font-bold text-[#111827]">
-                    Role Track Benchmark
-                  </h2>
-                  <p className="text-xs text-[#6B7280] mt-0.5">
-                    Compare technical competencies against role seniority requirements
-                  </p>
-                </div>
-                <span className="text-[11px] font-mono font-bold text-[#113D2B] bg-[#EAF5EE] px-2.5 py-1 rounded-lg">
-                  9 Tracks
-                </span>
+        <Card className="rounded-3xl border border-[#E5EBE5] bg-white p-6 sm:p-8 shadow-2xs">
+          <CardContent className="p-0">
+            <form onSubmit={handleAnalyze} className="space-y-5 max-w-xl">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-bold text-[#111827]">
+                  Target Role Track *
+                </Label>
+                <Select
+                  value={targetRole}
+                  onValueChange={(v) => setTargetRole(v as TargetRole)}
+                >
+                  <SelectTrigger className="h-10 bg-[#FAFBF9] border-[#E5EBE5] text-[#111827] rounded-xl focus:border-[#113D2B] text-sm">
+                    <SelectValue placeholder="Select target role" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white border-[#E5EBE5] text-[#111827] shadow-lg">
+                    {TARGET_ROLES.map((role) => (
+                      <SelectItem key={role.value} value={role.value}>
+                        {role.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
-              <form onSubmit={handleAnalyze} className="space-y-5">
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-bold text-[#111827]">
-                    Target Role Track *
-                  </Label>
-                  <Select
-                    value={targetRole}
-                    onValueChange={(v) => setTargetRole(v as TargetRole)}
-                  >
-                    <SelectTrigger className="h-11 bg-[#FAFBF9] border-[#E5EBE5] text-[#111827] rounded-xl focus:border-[#113D2B] text-sm">
-                      <SelectValue placeholder="Select target role track..." />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white border-[#E5EBE5] text-[#111827] shadow-lg">
-                      {TARGET_ROLES.map((role) => (
-                        <SelectItem key={role.value} value={role.value}>
-                          {role.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs font-bold text-[#111827]">
+                  Current Skills (Comma Separated) *
+                </Label>
+                <Input
+                  placeholder="e.g. React, TypeScript, Node.js, PostgreSQL, Docker"
+                  value={skillsInput}
+                  onChange={(e) => setSkillsInput(e.target.value)}
+                  className="h-10 bg-[#FAFBF9] border-[#E5EBE5] text-[#111827] rounded-xl focus:border-[#113D2B] text-sm"
+                  required
+                />
+              </div>
 
-                <div className="space-y-2">
-                  <Label className="text-xs font-bold text-[#111827]">
-                    Current Skills (Comma Separated) *
-                  </Label>
-                  <Input
-                    placeholder="e.g. React, TypeScript, Node.js, PostgreSQL, Docker"
-                    value={skillsInput}
-                    onChange={(e) => setSkillsInput(e.target.value)}
-                    className="h-11 bg-[#FAFBF9] border-[#E5EBE5] text-[#111827] rounded-xl focus:border-[#113D2B] text-sm font-mono"
-                    required
-                  />
-
-                  {/* Quick skill chips */}
-                  <div className="space-y-1 pt-1">
-                    <span className="text-[11px] text-[#6B7280] font-mono block">
-                      Click to add common technologies:
+              <div className="pt-2 flex justify-end">
+                <button
+                  disabled={loading || !targetRole || !skillsInput.trim()}
+                  type="submit"
+                  className="h-11 px-7 rounded-xl bg-[#113D2B] hover:bg-[#0D3122] disabled:opacity-50 text-white text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shadow-sm"
+                >
+                  {loading ? (
+                    <span className="flex items-center gap-2">
+                      <Spinner className="h-4 w-4 text-white" />
+                      Computing Skill Matrix...
                     </span>
-                    <div className="flex flex-wrap gap-1.5 pt-0.5">
-                      {QUICK_SKILLS.map((sk) => (
-                        <button
-                          key={sk}
-                          type="button"
-                          onClick={() => handleAddSkill(sk)}
-                          className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-[#FAFBF9] hover:bg-[#EAF5EE] text-[#113D2B] border border-[#E5EBE5] transition-colors cursor-pointer"
-                        >
-                          + {sk}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-2 border-t border-[#F0F4F0] flex items-center justify-between">
-                  <span className="text-xs text-[#6B7280]">
-                    Generates a customized phased learning roadmap
-                  </span>
-                  <button
-                    disabled={loading || !targetRole || !skillsInput.trim()}
-                    type="submit"
-                    className="h-11 px-7 rounded-xl bg-[#113D2B] hover:bg-[#0D3122] disabled:opacity-50 text-white text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shadow-sm"
-                  >
-                    {loading ? (
-                      <span className="flex items-center gap-2">
-                        <Spinner className="h-4 w-4 text-white" />
-                        Computing Skill Matrix...
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-2">
-                        Analyze Skill Gap
-                        <ArrowRight className="h-4 w-4" />
-                      </span>
-                    )}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-
-          {/* ═══ Right Column (Span 5): 4-Phase Progression ═══ */}
-          <div className="lg:col-span-5 space-y-4">
-            <div className="rounded-3xl border border-[#E5EBE5] bg-white p-6 shadow-2xs space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-[#111827]">
-                  Roadmap Structure
-                </h3>
-                <span className="text-[10px] font-mono font-bold text-[#113D2B] bg-[#EAF5EE] px-2 py-0.5 rounded-md">
-                  4 Phased Milestones
-                </span>
-              </div>
-
-              <div className="space-y-3 pt-1">
-                {ROADMAP_PHASES_INFO.map((item) => (
-                  <div
-                    key={item.phase}
-                    className="p-3.5 rounded-2xl bg-[#FAFBF9] border border-[#E5EBE5] flex items-start gap-3 transition-colors hover:bg-[#F4F7F4]"
-                  >
-                    <span className="w-8 h-8 rounded-xl bg-[#EAF5EE] text-[#113D2B] flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold font-mono">
-                      {item.phase}
+                  ) : (
+                    <span className="flex items-center gap-2">
+                      Analyze Skill Gap
+                      <ArrowRight className="h-4 w-4" />
                     </span>
-                    <div className="min-w-0">
-                      <h4 className="text-xs font-bold text-[#111827]">
-                        {item.title}
-                      </h4>
-                      <p className="text-[11px] text-[#6B7280] leading-relaxed mt-0.5">
-                        {item.desc}
-                      </p>
-                    </div>
-                  </div>
-                ))}
+                  )}
+                </button>
               </div>
-            </div>
-
-            <div className="rounded-2xl bg-[#FAFBF9] border border-[#E5EBE5] p-4 text-xs text-[#6B7280] flex items-start gap-3">
-              <CheckCircle2 className="w-4 h-4 text-[#113D2B] shrink-0 mt-0.5" />
-              <span>
-                Tip: Engineering interview loops heavily weight systems design and production operational patterns alongside core syntax.
-              </span>
-            </div>
-          </div>
-        </div>
+            </form>
+          </CardContent>
+        </Card>
       ) : (
         <div className="space-y-6">
           {/* Forest Pine Hero Card */}
           <div className="rounded-3xl bg-[#113D2B] text-white p-7 sm:p-9 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-sm">
             <div className="space-y-3 max-w-xl">
               <div className="flex items-center gap-2">
-                <Target className="w-4 h-4 text-[#EAF5EE]" />
+                <Sparkles className="w-4 h-4 text-[#F2C94C]" />
                 <span className="text-xs font-mono font-bold uppercase tracking-wider text-white/80">
-                  Role Alignment Matrix
+                  Role Alignment Match
                 </span>
               </div>
-              <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight font-[family-name:var(--font-display)]">
+              <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
                 {analysis.match_percentage}% Match
               </h2>
               <div className="flex items-center gap-2 text-xs text-white/80">
